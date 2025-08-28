@@ -1,0 +1,79 @@
+<!-- Name Field -->
+<div class="form-group col-sm-6">
+    <label for="nom" class="form-label">Nom</label>
+    <input type="text" name="nom" id="nom" class="form-control" maxlength="255"
+           value="{{ old('nom', $user->nom ?? null) }}" required>
+</div>
+<div class="form-group col-sm-6">
+    <label for="prenom" class="form-label">Prénom</label>
+    <input type="text" name="prenom" id="prenom" class="form-control" maxlength="255"
+           value="{{ old('prenom', $user->prenom ?? null) }}" required>
+</div>
+
+<div class="form-group col-sm-6">
+    <label for="matricule" class="form-label">Matricule</label>
+    <input type="text" name="matricule" id="matricule" class="form-control" maxlength="255"
+           value="{{ old('matricule', $user->matricule ?? null) }}" required>
+</div>
+<div class="form-group col-sm-6">
+    <label for="fonction" class="form-label">Fonction</label>
+    <input type="text" name="fonction" id="fonction" class="form-control" maxlength="255"
+           value="{{ old('fonction', $user->fonction ?? null) }}" required>
+</div>
+<div class="form-group col-sm-6">
+    <label for="telephone" class="form-label">Telephone</label>
+    <input type="text" name="telephone" id="telephone" class="form-control" maxlength="255"
+           value="{{ old('telephone', $user->telephone ?? null) }}" required>
+</div>
+<div class="form-group col-sm-6">
+    <label for="commune_id" class="form-label">Commune</label>
+    <select class="form-control" name="commune_id"
+            data-placeholder="Selectionner" style="width: 100%;">
+        @foreach($communes as $commune)
+        <option class="select2-selection__choice" value="{{ $commune->id }}"
+                @if(isset($user) && $user->commune_id == $commune->id) selected @endif>
+            {{ $commune->libelle }}
+        </option>
+        @endforeach
+    </select>
+</div>
+
+<!-- Email Field -->
+<div class="form-group col-sm-6">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" name="email" id="email" class="form-control" required maxlength="255"
+           value="{{ old('email', $user->email ?? null) }}">
+</div>
+
+<!-- Password Field -->
+<div class="form-group col-sm-6">
+    <label for="password" class="form-label">Mot de passe</label>
+    <input type="password" name="password" id="password" class="form-control" maxlength="255">
+</div>
+
+<div class="form-group col-sm-6">
+    <label for="confirm-password" class="form-label">Ressaisissez le mot de passe</label>
+    <input type="password" name="confirm-password" id="confirm-password"
+           class="form-control" placeholder="Confirmez">
+</div>
+
+<div class="form-group col-sm-6">
+
+    <div class="custom-file">
+        <label class="form-label">Photo de profil</label>
+        <input type="file" class="form-control @error('photo') is-invalid @enderror" name="photo" accept="image/*">
+        @error('photo')
+        <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+    <small class="form-text text-muted">
+        Formats acceptés: JPG, PNG, GIF. Taille max: 2MB.
+    </small>
+    @if(isset($user) && $user->photo != null)
+    <div class="avatar-preview">
+        <img src="{{ asset('storage/'.$user->photo) }}" alt="PHOTO PROFIL" >
+    </div>
+    @endif
+</div>

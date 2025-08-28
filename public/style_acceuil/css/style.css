@@ -1,0 +1,305 @@
+@charset "UTF-8";
+html {
+    height: 100%;
+    scroll-padding-top: calc(4.5rem - 1px);
+}
+body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    background-color: var(--bs-body-bg);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+main {
+    flex: 1;
+}
+h2 {
+    margin-top: 60px;
+}
+hr {
+    margin: 1rem 0;
+    color: inherit;
+    border: 0;
+    border-top: 1px solid;
+    opacity: 0.25;
+}
+/* .p1 {
+    font-family: "Brush Script MT";
+} */
+.btn-success {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #198754;
+    --bs-btn-border-color: #198754;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #157347;
+    --bs-btn-hover-border-color: #146c43;
+    --bs-btn-focus-shadow-rgb: 60, 153, 110;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #146c43;
+    --bs-btn-active-border-color: #13653f;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #198754;
+    --bs-btn-disabled-border-color: #198754;
+}
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+.fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+.justify-content-center {
+    justify-content: center !important;
+}
+.align-items-center {
+    align-items: center !important;
+}
+.align-self-end {
+    align-self: flex-end !important;
+}
+.align-self-baseline {
+    align-self: baseline !important;
+}
+.text-black-50 {
+    --bs-text-opacity: 1;
+    color: rgba(0, 0, 0, 0.5) !important;
+}
+.text-white-50 {
+    --bs-text-opacity: 1;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+.page-section {
+    padding: 8rem 0;
+}
+
+.text-white-75 {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.btn-xl {
+    padding: 1.25rem 2.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10rem;
+}
+
+hr.divider {
+    height: 0.2rem;
+    max-width: 3.25rem;
+    margin: 1.5rem auto;
+    background-color: black;
+    opacity: 1;
+}
+
+hr.divider-light {
+    background-color: black;
+}
+
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: #198754;
+    color: white;
+    border-bottom: none;
+    padding: 20px 25px;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.search-box {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50px 0 0 50px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    border-color: #4b6cb7;
+    box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+}
+
+.search-btn {
+    background: #198754;
+    color: white;
+    border: none;
+    border-radius: 0 50px 50px 0;
+    padding: 0 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #0e4c2f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    cursor: pointer;
+}
+#mainNav {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+    transition: background-color 0.2s ease;
+}
+#mainNav .navbar-brand {
+    font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+    font-weight: 700;
+    color: #212529;
+}
+#mainNav .navbar-nav .nav-item .nav-link {
+    color: #100d10;
+    font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.75rem 0;
+}
+#mainNav .navbar-nav .nav-item .nav-link:hover,
+#mainNav .navbar-nav .nav-item .nav-link:active {
+    color: #0a1de9;
+}
+#mainNav .navbar-nav .nav-item .nav-link.active {
+    color: #0929e2 !important;
+}
+@media (min-width: 992px) {
+    #mainNav {
+        box-shadow: none;
+        background-color: transparent;
+    }
+    #mainNav .navbar-brand {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    #mainNav .navbar-brand:hover {
+        color: #190298;
+    }
+    #mainNav .navbar-nav .nav-item .nav-link {
+        color: rgba(8, 8, 8, 0.7);
+        padding: 0 1rem;
+    }
+    #mainNav .navbar-nav .nav-item .nav-link:hover {
+        color: #3504a8;
+    }
+    #mainNav .navbar-nav .nav-item:last-child .nav-link {
+        padding-right: 0;
+    }
+    #mainNav.navbar-shrink {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        background-color: #fff;
+    }
+    #mainNav.navbar-shrink .navbar-brand {
+        color: #212529;
+    }
+    #mainNav.navbar-shrink .navbar-brand:hover {
+        color: blue;
+    }
+    #mainNav.navbar-shrink .navbar-nav .nav-item .nav-link {
+        color: #060606;
+    }
+    #mainNav.navbar-shrink .navbar-nav .nav-item .nav-link:hover {
+        color: blue;
+    }
+}
+
+header.masthead {
+    padding-top: 10rem;
+    padding-bottom: calc(10rem - 4.5rem);
+    background: linear-gradient(
+            to bottom,
+            rgba(92, 77, 66, 0.8) 0%,
+            rgba(92, 77, 66, 0.8) 100%
+        ),
+        url("/img/image1.jpeg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: cover;
+}
+header.masthead h1,
+header.masthead .h1 {
+    font-size: 2.25rem;
+}
+@media (min-width: 992px) {
+    header.masthead {
+        height: 100vh;
+        min-height: 40rem;
+        padding-top: 4.5rem;
+        padding-bottom: 0;
+    }
+    header.masthead p {
+        font-size: 1.15rem;
+    }
+    header.masthead h1,
+    header.masthead .h1 {
+        font-size: 3rem;
+    }
+}
+@media (min-width: 1200px) {
+    header.masthead h1,
+    header.masthead .h1 {
+        font-size: 3.5rem;
+    }
+}
+
+footer {
+    background-color: #2a54c8;
+}
+#logoStyle {
+    height: 60px;
+}
+#about {
+    background-color: #f7f7f7;
+}
+.voirplus {
+    background-color: #a1800c;
+    color: white;
+}
+.rouge {
+    color: red;
+}

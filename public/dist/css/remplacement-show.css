@@ -1,0 +1,25 @@
+.info-item {
+    padding: 8px 0;
+}
+
+.info-item strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.badge {
+    font-size: 0.875em;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
