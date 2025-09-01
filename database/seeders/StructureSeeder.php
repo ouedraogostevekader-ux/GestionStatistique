@@ -13,6 +13,6 @@ class StructureSeeder extends Seeder
      */
     public function run(): void
     {
-        $structure = Structure::create(['nom' => 'DGESS', 'sigle' => 'DGESS', 'type_structure' => 'Direction generale']);
+        //$structure = Structure::create(['nom' => 'DGESS', 'sigle' => 'DGESS', 'type_structure' => 'Direction generale']);
     }
 }

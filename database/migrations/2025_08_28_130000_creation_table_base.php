@@ -110,9 +110,9 @@ return new class extends Migration {
             $table->string('unite_mesure');
             $table->string('valeur_ref');
             $table->string('valeur_cible');
-            $table->foreignUlid('objectif_specifique_id')->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate()->nullable();
-            $table->foreignUlid('objectif_strategique_id')->constrained('objectifs_strategiques')->restrictOnDelete()->cascadeOnUpdate()->nullable();
-            $table->foreignUlid('activites_id')->constrained('activites')->restrictOnDelete()->cascadeOnUpdate()->nullable();
+            $table->foreignUlid('objectif_specifique_id')->nullable()->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('objectif_strategique_id')->nullable()->constrained('objectifs_strategiques')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('activites_id')->nullable()->constrained('activites')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
         });
