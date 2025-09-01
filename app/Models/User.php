@@ -29,6 +29,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'telephone',
+        'matricule',
+        'nom',
+        'prenom',
+        'fonction',
+        'structure_id'
+
     ];
 
     /**
