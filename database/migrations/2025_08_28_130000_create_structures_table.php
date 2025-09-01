@@ -1,0 +1,169 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        // Structures
+        Schema::create('structures', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('nom');
+            $table->string('sigle');
+            $table->string('type_structure');
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+
+        // Programmes d’activités
+        Schema::create('programmes_activites', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle');
+            $table->string('annee');
+            $table->string('file')->nullable();
+            $table->dateTime('date_generation');
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // Programmes budgétaires
+        Schema::create('programmes_budgetaires', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle');
+            $table->string('numero_programme');
+            $table->foreignUlid('programme_activite_id')->constrained('programmes_activites')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // Objectifs stratégiques
+        Schema::create('objectifs_strategiques', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle');
+            $table->foreignUlid('programme_budgetaire_id')->constrained('programmes_budgetaires')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // Rapports d’activités
+        Schema::create('rapports_activites', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle');
+            $table->string('periode_rapport');
+            $table->dateTime('date_rapport');
+            $table->string('file')->nullable();
+            $table->foreignUlid('programme_activite_id')->constrained('programmes_activites')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // users
+        Schema::table('users', function (Blueprint $table) {
+
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('telephone')->unique()->nullable();
+            $table->string('matricule')->unique();
+
+            $table->string('fonction')->nullable();
+            $table->foreignUlid('structure_id')->constrained('structures')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+        });
+
+        // Actions
+        Schema::create('actions', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle');
+            $table->foreignUlid('objectif_strategique_id')->constrained('objectifs_strategiques')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // Objectifs spécifiques
+        Schema::create('objectifs_specifiques', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle');
+            $table->foreignUlid('action_id')->constrained('actions')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // Activités
+        Schema::create('activites', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->decimal('cout_previsionnel', 15, 2);
+            $table->string('periode');
+            $table->string('libelle');
+
+            $table->foreignUlid('objectif_specifique_id')->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // Indicateurs programmes
+        Schema::create('indicateurs_programmes', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle');
+            $table->string('unite_mesure');
+            $table->string('valeur_ref');
+            $table->string('valeur_cible');
+            $table->foreignUlid('objectif_specifique_id')->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate()->nullable();
+            $table->foreignUlid('objectif_strategique_id')->constrained('objectifs_strategiques')->restrictOnDelete()->cascadeOnUpdate()->nullable();
+            $table->foreignUlid('activites_id')->constrained('activites')->restrictOnDelete()->cascadeOnUpdate()->nullable();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        // Suivi
+        Schema::create('suivis', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->decimal('cout_effectif', 15, 2)->nullable();
+            $table->float('resultat_atteint')->nullable();
+            $table->string('observations')->nullable();
+            $table->string('periode');
+            $table->foreignUlid('indicateur_programme_id')->constrained('indicateurs_programmes')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+
+
+        //table pivot
+        Schema::create('programme_budgetaire_structure', function (Blueprint $table) {
+            $table->foreignUlid('structure_id')->constrained('structures')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('programme_budgetaire_id')->constrained('programmes_budgetaires')->restrictOnDelete()->cascadeOnUpdate();
+            $table->primary(['structure_id', 'programme_budgetaire_id']);
+        });
+
+        Schema::create('responsables', function (Blueprint $table) {
+            $table->foreignUlid('user_id')->constrained('users')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('programme_budgetaire_id')->constrained('programmes_budgetaires')->restrictOnDelete()->cascadeOnUpdate();
+            $table->date('date_debut');
+            $table->date('date_fin')->nullable();
+            $table->primary(['user_id', 'programme_budgetaire_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('responsables');
+        Schema::dropIfExists('programme_budgetaire_structure');
+
+        Schema::dropIfExists('activites');
+        Schema::dropIfExists('suivis');
+        Schema::dropIfExists('indicateurs_programmes');
+        Schema::dropIfExists('objectifs_specifiques');
+        Schema::dropIfExists('actions');
+
+        Schema::dropIfExists('rapports_activites');
+        Schema::dropIfExists('objectifs_strategiques');
+        Schema::dropIfExists('programmes_budgetaires');
+        Schema::dropIfExists('programmes_activites');
+
+
+        Schema::dropIfExists('structures');
+    }
+};
