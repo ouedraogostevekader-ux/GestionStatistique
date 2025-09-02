@@ -139,6 +139,17 @@
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        {{-- @can('manageObjectifStrategique') --}}
+                            <li class="nav-item">
+                                <a href="{{ route('objectifStrategiques.index') }}"
+                                    class="nav-link {{ Request::is('objectifStrategiques*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-house-gear"></i>
+                                    <p>Objectifs Strategiques</p>
+                                </a>
+                            </li>
+                        {{-- @endcan --}}
+                    </ul>
 
                     {{-- <ul class="nav nav-treeview">
                         @can('manageCommune')
