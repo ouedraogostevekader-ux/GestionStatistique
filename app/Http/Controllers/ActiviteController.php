@@ -47,8 +47,8 @@ class ActiviteController extends Controller
 
     public function show($id)
     {
-        $activite = $this->activiteRepository->find($id);
-        return response()->json($activite);
+        $activite = Activite::findOrFail($id);
+        return view('activites.show', compact('activite'));
     }
 
     public function update(UpdateActiviteRequest $request, Activite $activite)
