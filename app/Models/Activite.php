@@ -36,8 +36,8 @@ class Activite extends Model
     /**
      * Relation avec ObjectifSpecifique
      */
-    /*  public function objectifSpecifique()
-     {
-         return $this->belongsTo(ObjectifSpecifique::class);
-     } */
+    public function objectifSpecifique()
+    {
+        return $this->belongsTo(ObjectifSpecifique::class);
+    }
 }
