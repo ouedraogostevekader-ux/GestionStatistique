@@ -4,9 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProgrammesActivite;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ProgrammeActiviteController extends Controller
+class ProgrammeActiviteController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:programme_Activite-list', only: ['index', 'show']),
+            new Middleware('permission:programme_Activite-create', only: ['create', 'store']),
+            new Middleware('permission:programme_Activite-edit', only: ['edit', 'update']),
+            new Middleware('permission:programme_Activite-delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

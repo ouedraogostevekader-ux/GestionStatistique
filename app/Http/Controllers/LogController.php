@@ -8,16 +8,16 @@ use App\Models\User;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
-class LogController extends Controller //implements HasMiddleware
+class LogController extends Controller implements HasMiddleware
 {
 
-    // public static function middleware(): array
-    // {
-    //     return [
-    //         new Middleware('permission:log-list', only: ['index', 'causedBy', 'subjectOn']),
-    //         new Middleware('permission:log-show', only: ['show', 'causedBy', 'subjectOn']),
-    //     ];
-    // }
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:log-list', only: ['index', 'causedBy', 'subjectOn']),
+            new Middleware('permission:log-show', only: ['show', 'causedBy', 'subjectOn']),
+        ];
+    }
 
     public function index(Request $request)
     {
