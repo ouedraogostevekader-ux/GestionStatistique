@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('breadcrumb', 'Activités')
 
 @section('content')
     <div class="offset-2 container mt-4">

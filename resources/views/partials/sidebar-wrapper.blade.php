@@ -179,9 +179,9 @@
                 </li>
             @endcan
             <li
-                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') ? 'menu-open' : '' }}">
+                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
                 <a href="#"
-                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') ? 'active' : '' }}">
+                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
                     <i class="nav-icon bi bi-folder-fill"></i>
                     <p>
                         Programmation
@@ -201,6 +201,28 @@
                             class="nav-link {{ Request::is('objectifStrategiques*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-house-gear"></i>
                             <p>Objectifs Strategiques</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('actions.index') }}"
+                            class="nav-link {{ Request::is('actions*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-house-gear"></i>
+                            <p>Actions</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('objectifs-specifiques.index') }}"
+                            class="nav-link {{ Request::is('objectifs-specifiques*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-house-gear"></i>
+                            <p>Objectifs spécifiques</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('indicateurs-programmes.index') }}"
+                            class="nav-link {{ Request::is('indicateurs-programmes*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-house-gear"></i>
+                            <p>Indicateurs programme</p>
                         </a>
                     </li>
 

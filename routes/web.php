@@ -38,6 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
     route::resource('suivis', App\Http\Controllers\SuiviController::class);
+    Route::resource('actions', App\Http\Controllers\ActionController::class);
+    Route::resource('objectifs-specifiques', App\Http\Controllers\ObjectifSpecifiqueController::class);
+    Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
 });
 
 
