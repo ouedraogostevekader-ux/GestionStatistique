@@ -31,7 +31,7 @@
 
                 <div class="card-body">
                     <div class="row">
-                        @include('admin.roles.fields')
+                        @include('roles.fields')
                     </div>
                 </div>
 
