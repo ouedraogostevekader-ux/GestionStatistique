@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
+use App\Models\User as User;
+use App\Models\Structure;
+use Illuminate\Support\Facades\Hash;
+
 
 class DataSeeder extends Seeder
 {
@@ -304,6 +308,13 @@ class DataSeeder extends Seeder
                 ]);
             }
         }
+
+        $structure = Structure::create(['nom' => 'DGESS', 'sigle' => 'DGESS', 'type_structure' => 'Direction generale']);
+        $user = User::create(['name' => 'admin', 'nom' => 'admin', 'prenom' => 'admin', 'telephone' => '77000000', 'matricule' => 'K983', 'fonction' => 'admin', 'email' => 'admin@admin.bf', 'password' => Hash::make('password'), 'structure_id' => $structure->id]);
+
+        $user->assignRole('Admin');
+        
+        $user->assignRole('Super-Admin');
 
         $this->command->info('Base de données seedée avec succès !');
         $this->command->info('Structures créées: ' . count($structures));
