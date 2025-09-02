@@ -32,7 +32,7 @@
                 <div class="card-body">
 
                     <div class="row">
-                        @include('admin.permissions.fields')
+                        @include('permissions.fields')
                     </div>
 
                 </div>

@@ -31,7 +31,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="card">
-            @include('admin.roles.table')
+            @include('roles.table')
         </div>
     </section>
 @endsection
