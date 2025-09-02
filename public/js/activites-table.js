@@ -4,9 +4,54 @@ document.addEventListener("DOMContentLoaded", function () {
         searching: true,
         ordering: true,
         info: true,
+        lengthMenu: [
+            [10, 40, 50, 100, 200, -1],
+            [10, 40, 50, 100, 200, "Tous"],
+        ],
         pageLength: 10,
+        dom: "Bfrtip", // <-- ajoute la barre de boutons
+        buttons: [
+            {
+                extend: "csvHtml5",
+                text: "Exporter CSV",
+                title: function () {
+                    return (
+                        "Liste des activités du " +
+                        new Date().toLocaleDateString()
+                    );
+                },
+                className: "btn btn-outline-primary btn-sm",
+            },
+            {
+                extend: "excelHtml5",
+                text: "Exporter Excel",
+                title: function () {
+                    return (
+                        "Liste des activités du " +
+                        new Date().toLocaleDateString()
+                    );
+                },
+                className: "btn btn-outline-success btn-sm",
+            },
+            {
+                extend: "pdfHtml5",
+                text: "Exporter PDF",
+                title: function () {
+                    return (
+                        "Liste des activités du " +
+                        new Date().toLocaleDateString()
+                    );
+                },
+                className: "btn btn-outline-danger btn-sm",
+            },
+            {
+                extend: "print",
+                text: "Imprimer",
+                className: "btn btn-outline-dark btn-sm",
+            },
+        ],
         language: {
-            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json",
+            // url: "",
             decimal: ",",
             thousands: " ",
             search: "Rechercher :",

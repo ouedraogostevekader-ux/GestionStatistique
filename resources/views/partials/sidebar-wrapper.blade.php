@@ -185,7 +185,7 @@
             <li class="nav-item">
                 <a href="{{ route('activites.index') }}"
                     class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-person-check-fill"></i>
+                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
                     <p>Activités</p>
                 </a>
             </li>

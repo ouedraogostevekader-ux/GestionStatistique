@@ -34,7 +34,7 @@ class ActiviteController extends Controller
     public function store(StoreActiviteRequest $request)
     {
         $activite = $this->activiteRepository->create($request->validated());
-        return redirect()->route('activites.index')->with('success', $activite, );
+        return redirect()->route('activites.index')->with('success', "L'activité " . $activite->libelle . "a été enregistrée.", );
     }
 
     /* Create Activite */

@@ -14,7 +14,7 @@
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
                         <a class="btn btn-primary" href="{{ route('activites.create') }}">
-                            Ajouter
+                            <i class="bi bi-plus"></i> Ajouter
                         </a>
                     </div>
                 </div>
