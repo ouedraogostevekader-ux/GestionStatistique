@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('logs/show', [App\Http\Controllers\LogController::class, 'show'])->name('logs.show');
     Route::get('logs/{id}/causedBy', [App\Http\Controllers\LogController::class, 'causedBy'])->name('logs.causedBy');
     Route::get('logs/{id}/{model}/subjectOn', [App\Http\Controllers\LogController::class, 'subjectOn'])->name('logs.subjectOn');
+
+    // Activites
+    Route::resource('activites', ActiviteController::class);
 });
 
 require __DIR__ . '/auth.php';

@@ -34,7 +34,7 @@ return new class extends Migration {
             $table->ulid('id')->primary()->unique();
             $table->string('libelle');
             $table->string('numero_programme');
-            $table->foreignUlid('programme_activite_id')->constrained('programmes_activites')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('programme_activite_id')->nullable()->constrained('programmes_activites')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -62,12 +62,10 @@ return new class extends Migration {
 
         // users
         Schema::table('users', function (Blueprint $table) {
-
             $table->string('nom');
             $table->string('prenom');
             $table->string('telephone')->unique()->nullable();
             $table->string('matricule')->unique();
-
             $table->string('fonction')->nullable();
             $table->foreignUlid('structure_id')->constrained('structures')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
@@ -97,7 +95,6 @@ return new class extends Migration {
             $table->decimal('cout_previsionnel', 15, 2);
             $table->string('periode');
             $table->string('libelle');
-
             $table->foreignUlid('objectif_specifique_id')->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
