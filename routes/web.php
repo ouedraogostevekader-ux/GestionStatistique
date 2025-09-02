@@ -30,6 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::get('logs/show', [App\Http\Controllers\LogController::class, 'show'])->name('logs.show');
     Route::get('logs/{id}/causedBy', [App\Http\Controllers\LogController::class, 'causedBy'])->name('logs.causedBy');
     Route::get('logs/{id}/{model}/subjectOn', [App\Http\Controllers\LogController::class, 'subjectOn'])->name('logs.subjectOn');
+
+    Route::resource('actions', App\Http\Controllers\ActionController::class);
+    Route::resource('objectifs-specifiques', App\Http\Controllers\ObjectifSpecifiqueController::class);
+    Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
 });
 
 require __DIR__ . '/auth.php';
