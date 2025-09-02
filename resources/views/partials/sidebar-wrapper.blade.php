@@ -21,14 +21,6 @@
                                 </a>
                             </li>
                         @endcan
-                        {{-- @can('managePermission') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('permissions.index') }}"
-                                class="nav-link {{ Request::is('permissions*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-people-fill"></i>
-                                <p>Permissions</p>
-                            </a>
-                        </li>
                         {{-- @endcan --}}
                         {{-- @can('manageBrigadier')
                             <li class="nav-item">
@@ -69,8 +61,7 @@
                         {{-- @endcan --}}
                         {{-- @can('manageLog') --}}
                         <li class="nav-item">
-                            <a href="{{ route('logs.index') }}"
-                                class="nav-link {{ Request::is('logs*') ? 'active' : '' }}">
+                            <a href="{{ route('logs.index') }}" class="nav-link {{ Request::is('logs*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-file-text-fill"></i>
                                 <p>Logs</p>
                             </a>
