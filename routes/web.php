@@ -5,6 +5,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProgrammeBudgetaireController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
@@ -34,6 +35,8 @@ Route::middleware('auth')->group(function () {
 
     // Activites
     Route::resource('activites', ActiviteController::class);
+    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
 });
+
 
 require __DIR__ . '/auth.php';
