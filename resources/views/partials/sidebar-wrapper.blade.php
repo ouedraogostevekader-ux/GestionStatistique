@@ -30,15 +30,9 @@
                                 </a>
                             </li>
                         @endcan
-                        {{-- @can('manageBrigadier')
-                            <li class="nav-item">
-                                <a href="{{ route('recrutement_vc.ouvert') }}"
-                                    class="nav-link {{ Request::is('brigadier*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-house-gear"></i>
-                                    <p>Candidature</p>
-                                </a>
-                            </li>
-                        @endcan --}}
+                      
+                          
+                         
                         @can('manageUser')
                             <li class="nav-item">
                                 <a href="{{ route('users.index') }}"
@@ -57,6 +51,16 @@
                                 </a>
                             </li>
                         @endcan
+                        <li class="nav-item">
+                                <a href="{{ route('programmebudgetaire.index') }}"
+                                class="nav-link {{ Request::is('programmebudgetaire*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-journal-text"></i
+                                >
+
+                                    <p>Programme budgetaire</p>
+                                    
+                                </a>
+                            </li>
 
                         {{-- @can('managePermission')
                             <li class="nav-item">
@@ -76,7 +80,9 @@
                                 </a>
                             </li>
                         @endcan --}}
-                    </ul>
+                    
+
+            </li>
                 </li>
             @endcan
 

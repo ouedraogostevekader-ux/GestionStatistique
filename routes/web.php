@@ -4,6 +4,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProgrammeBudgetaireController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('logs/show', [App\Http\Controllers\LogController::class, 'show'])->name('logs.show');
     Route::get('logs/{id}/causedBy', [App\Http\Controllers\LogController::class, 'causedBy'])->name('logs.causedBy');
     Route::get('logs/{id}/{model}/subjectOn', [App\Http\Controllers\LogController::class, 'subjectOn'])->name('logs.subjectOn');
+
+    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
 });
+
 
 require __DIR__ . '/auth.php';
