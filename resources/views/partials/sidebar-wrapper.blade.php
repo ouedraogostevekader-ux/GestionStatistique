@@ -141,13 +141,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         {{-- @can('manageObjectifStrategique') --}}
-                            <li class="nav-item">
-                                <a href="{{ route('objectifStrategiques.index') }}"
-                                    class="nav-link {{ Request::is('objectifStrategiques*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-house-gear"></i>
-                                    <p>Objectifs Strategiques</p>
-                                </a>
-                            </li>
+
                         {{-- @endcan --}}
                     </ul>
 
@@ -193,21 +187,40 @@
                     </ul> --}}
                 </li>
             @endcan
-            <li class="nav-item">
-                <a href="{{ route('programmebudgetaire.index') }}"
-                    class="nav-link {{ Request::is('programmebudgetaire*') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-journal-text"></i>
-
-                    <p>Programme budgetaire</p>
-
+            <li
+                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') ? 'menu-open' : '' }}">
+                <a href="#"
+                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-folder-fill"></i>
+                    <p>
+                        Programmation
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </p>
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('activites.index') }}"
-                    class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
-                    <p>Activités</p>
-                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('programmebudgetaire.index') }}"
+                            class="nav-link {{ Request::is('programmebudgetaire*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-journal-text"></i>
+                            <p>Programme budgetaire</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('objectifStrategiques.index') }}"
+                            class="nav-link {{ Request::is('objectifStrategiques*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-house-gear"></i>
+                            <p>Objectifs Strategiques</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('activites.index') }}"
+                            class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                            <p>Activités</p>
+                        </a>
+                    </li>
+                </ul>
             </li>
         </ul>
         <!--end::Sidebar Menu-->
