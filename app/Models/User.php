@@ -61,6 +61,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function structure()
+    {
+        return $this->belongsTo(Structure::class);
+    }
+
     //Methode pour les logs
     public function getDescriptionForEvent(string $eventName): string
     {

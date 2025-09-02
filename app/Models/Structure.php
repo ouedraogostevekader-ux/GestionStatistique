@@ -27,6 +27,12 @@ class Structure extends Model
         'sigle',
         'type_structure',
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     //Methode pour les logs
     public function getDescriptionForEvent(string $eventName): string
     {
