@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+}
+        .navbar {
+            background-color: #51884D !important; /* Couleur sombre pour un look professionnel */
+        }
+        .carousel-inner img {
+            width: 100%;
+            height: 300px; /* Hauteur réduite pour le slider */
+            object-fit: cover;
+        }
+        .stats-section {
+            padding: 50px 0;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .table-container {
+            margin-top: 30px;
+        }
+        .navbar-brand {
+            margin-right: auto; /* Pousse le logo à gauche */
+        }
+        .navbar-nav-left {
+            margin-right: auto; /* Pousse les liens de navigation à gauche */
+        }
+        .navbar-nav-right {
+            margin-left: auto; /* Pousse le bouton de connexion à droite */
+        }
+        /* Style pour la barre de défilement */
+        .ticker-container {
+            background-color: black;
+            height: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .ticker-text {
+            color: white;
+            font-size: 14px;
+            position: absolute;
+            white-space: nowrap;
+            animation: ticker 10s linear infinite;
+        }
+        @keyframes ticker {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        /* Style pour le footer */
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        .footer a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .footer .social-icons a {
+            margin: 0 10px;
+            font-size: 24px;
+        }
+        /* Centrer le texte du carousel */
+        .carousel-caption {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            }
