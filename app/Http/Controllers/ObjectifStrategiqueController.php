@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\ObjectifStrategiqueRequest;
 use App\Models\ObjectifsStrategique;
+use App\Models\ProgrammeBudgetaire;
 use Illuminate\Support\Facades\DB;
 
 class ObjectifStrategiqueController extends Controller
@@ -12,8 +13,9 @@ class ObjectifStrategiqueController extends Controller
     //
     public function index()
     {
-        $objectifStrategiques = ObjectifsStrategique::paginate(10);
-        return view('objectifStrategiques.index', compact('objectifStrategiques'));
+        $objectifStrategiques = ObjectifsStrategique::all();
+        $programmeBudgetaires = ProgrammeBudgetaire::all();
+        return view('objectifStrategiques.index', compact('objectifStrategiques','programmeBudgetaires'));
     }
     
     // Show objectif strategique
@@ -25,8 +27,7 @@ class ObjectifStrategiqueController extends Controller
     public function create()
     {
         // Selectionner les programmes budgétaires dans la table programme_budgetaires pour le formulaire
-        $programmeBudgetaires = DB::table('programmes_budgetaires')->get();
-        //$programmeBudgetaires = collect();
+        $programmeBudgetaires = ProgrammeBudgetaire::all();
         return view('objectifStrategiques.create', compact('programmeBudgetaires'));
     }
 
@@ -39,7 +40,7 @@ class ObjectifStrategiqueController extends Controller
     public function edit($id)
     {
         $objectifStrategique = ObjectifsStrategique::findOrFail($id);
-        $programmeBudgetaires = DB::table('programmes_budgetaires')->get();
+        $programmeBudgetaires = ProgrammeBudgetaire::all();
         return view('objectifStrategiques.edit', compact('objectifStrategique', 'programmeBudgetaires'));
         
     }

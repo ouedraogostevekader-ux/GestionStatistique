@@ -233,6 +233,13 @@
                             <p>Activités</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('suivis.index') }}"
+                            class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-eye-fill"></i>
+                            <p>Suivis</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>

@@ -24,8 +24,8 @@ class Suivi extends Model
     ];
 
     protected $casts = [
-        'cout_effectif' => 'decimal:15,2',
-        'resultat_atteint' => 'float',
+        //'cout_effectif' => 'decimal:15,2',
+        //'resultat_atteint' => 'float',
     ];
 
     /**
@@ -33,7 +33,7 @@ class Suivi extends Model
      */
     public function indicateurProgramme()
     {
-        //return $this->belongsTo(IndicateurProgramme::class, 'indicateur_programme_id');
+        return $this->belongsTo(IndicateurProgramme::class, 'indicateur_programme_id');
     }
 
     public function getDescriptionForEvent(string $eventName): string
