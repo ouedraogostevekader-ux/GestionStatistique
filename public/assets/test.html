@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>En-tête Bootstrap Amélioré</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Fond vert pour la barre de navigation avec ombre */
+        .navbar {
+            background-color: #28a745; /* Fond vert */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+        }
+
+        /* Style du logo avec une taille plus grande et en gras */
+        .navbar-brand {
+            font-size: 1.75rem; /* Taille du texte du logo */
+            font-weight: bold; /* Texte en gras */
+            color: #ffffff; /* Texte blanc */
+        }
+
+        /* Centrages et styles des éléments de navigation */
+        .navbar-nav {
+            margin-left: auto; /* Alignement à droite */
+            margin-right: auto; /* Alignement à gauche pour centrer */
+        }
+        
+        /* Couleur des liens de navigation et effet de survol */
+        .navbar-light .navbar-nav .nav-link {
+            color: #ffffff; /* Texte blanc */
+            font-weight: bold; /* Texte en gras */
+        }
+
+        .navbar-light .navbar-nav .nav-link:hover,
+        .navbar-light .navbar-nav .nav-link:focus {
+            color: #ffffff; /* Couleur du texte au survol */
+            background-color: #c0392b; /* Fond rouge bordeaux au survol */
+            text-decoration: none; /* Supprime le soulignement au survol */
+            border-radius: 0.25rem; /* Coins arrondis au survol */
+        }
+
+        /* Style du menu déroulant */
+        .dropdown-menu {
+            background-color: #28a745; /* Fond vert du menu déroulant */
+            border-radius: 0.25rem; /* Coins arrondis */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre pour le menu déroulant */
+        }
+
+        .dropdown-item {
+            color: #ffffff; /* Couleur du texte des éléments du menu déroulant */
+            font-weight: bold; /* Texte en gras */
+        }
+        
+        .hd{
+            height: 100px;
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background-color: #c0392b; /* Fond rouge bordeaux au survol */
+            color: #ffffff; /* Couleur du texte au survol */
+        }
+
+        /* Style du bouton de basculement pour les petits écrans */
+        .navbar-toggler {
+            border-color: #ffffff; /* Bordure blanche pour le bouton */
+        }
+
+        .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiI+PHBhdGggZD0iTTAsMEM0LjQsMCw4LDQuNiw4LDIuOCw4TDAsMCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGF5ZXItb3BhY2l0eT0ibm9uZSIgc3Ryb2tlLWxpbmVjYz0iMiIgc3Ryb2tlLWRhc2hlZWFyPSJyb3VuZCIvPjwvc3ZnPg==');
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hd">
+        
+    </div>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="#">MonSite</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Accueil <span class="sr-only">(page actuelle)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">À propos</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Services
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Service 1</a>
+                    <a class="dropdown-item" href="#">Service 2</a>
+                    <a class="dropdown-item" href="#">Service 3</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Contact</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
