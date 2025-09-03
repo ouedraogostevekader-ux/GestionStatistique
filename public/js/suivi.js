@@ -48,7 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function openCreateModal(indicateurId) {
     document.getElementById('create_indicateur_id').value = indicateurId;
     document.getElementById('createForm').reset();
-    new bootstrap.Modal(document.getElementById('createModal')).show();
+    new bootstrap.Modal(document.getElementById('createModal'), {
+        keyboard: false
+    }).show();
 }
 
 // Ouvrir le modal d'édition
@@ -80,12 +82,12 @@ document.getElementById('createForm').addEventListener('submit', async function(
     e.preventDefault();
     
     const formData = new FormData(this);
-    
+    console.log(...formData);
     try {
         const response = await fetch('/suivis', {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'X-CSRF-TOKEN': "{{ csrf_token() }}",
             },
             body: formData
         });
@@ -111,9 +113,10 @@ document.getElementById('createForm').addEventListener('submit', async function(
             });
         }
     } catch (error) {
+        console.error('Erreur:', error);
         Swal.fire({
             title: "Erreur !",
-            text: "Une erreur est survenue lors de la creation.",
+            text: "Une erreur est survenue lors de la requête.",
             icon: "error",
         });
     }

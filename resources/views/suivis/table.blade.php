@@ -107,7 +107,7 @@
 </div>
 
 <!-- Create Modal -->
-<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" data-backdrop="false" aria-hidden="true" data-bs-backdrop="false" data-bs-keyboard="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -149,7 +149,7 @@
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true" aria-labelledby="editModalLabel" data-backdrop="false" data-bs-backdrop="true" data-bs-keyboard="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
