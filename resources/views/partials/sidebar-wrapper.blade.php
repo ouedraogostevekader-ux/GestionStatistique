@@ -10,7 +10,8 @@
                         Tableau de bord
                     </p>
                 </a>
-                <li class="nav-item">
+                <li
+                    class="nav-item {{ Route::is('logs.index*') || Route::is('users*') || Route::is('roles*') || Route::is('permissions*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-person-fill-gear"></i>
                         <p>
@@ -19,24 +20,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        @can('manageLog')
-                            <li class="nav-item">
-                                <a href="{{ route('logs.index') }}" class="nav-link {{ Request::is('logs*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-clipboard-data-fill"></i>
-                                    <p>Logs</p>
-                                </a>
-                            </li>
-                        @endcan
-                        {{-- @endcan --}}
-                        {{-- @can('manageBrigadier')
-                            <li class="nav-item">
-                                <a href="{{ route('recrutement_vc.ouvert') }}"
-                                    class="nav-link {{ Request::is('brigadier*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-house-gear"></i>
-                                    <p>Candidature</p>
-                                </a>
-                            </li>
-                        @endcan --}}
+
                         @can('manageUser')
                             <li class="nav-item">
                                 <a href="{{ route('users.index') }}"
