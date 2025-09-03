@@ -4,15 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProgrammeBudgetaire;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ProgrammeBudgetaireController extends Controller
-{    /**
+class ProgrammeBudgetaireController extends Controller implements HasMiddleware
+{
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
+            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
+            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
+            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+        ];
+    }
+
+    /**
      * Afficher la liste
      */
     public function index()
     {
         $programmes = ProgrammeBudgetaire::paginate(10);
-        
+
         return view('programmebudgetaire.index', compact('programmes'));
     }
 
@@ -32,7 +47,7 @@ class ProgrammeBudgetaireController extends Controller
         $request->validate([
             'libelle' => 'required|string|max:255',
             'code' => 'required|string|max:100|unique:programmebudgetaire',
-           
+
         ]);
 
         ProgrammeBudgetaire::create($request->all());
@@ -65,7 +80,7 @@ class ProgrammeBudgetaireController extends Controller
         $request->validate([
             'libelle' => 'required|string|max:255',
             'code' => 'required|string|max:100|unique:programmebudgetaire,code,' . $ProgrammeBudgetaire->id,
-           
+
         ]);
 
         $ProgrammeBudgetaire->update($request->all());

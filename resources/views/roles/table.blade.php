@@ -1,6 +1,6 @@
 <div class="card-body p-0">
     <div class="table-responsive">
-        <table class="table table-striped table-bordered" id="example1">
+        <table class="table table-striped table-bordered" id="example2">
             <thead>
                 <tr>
                     <th>No</th>

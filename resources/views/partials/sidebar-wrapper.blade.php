@@ -20,7 +20,6 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-
                         @can('manageUser')
                             <li class="nav-item">
                                 <a href="{{ route('users.index') }}"
@@ -30,15 +29,15 @@
                                 </a>
                             </li>
                         @endcan
-                        {{-- @can('manageRole') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('roles.index') }}"
-                                class="nav-link {{ Request::is('roles*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-person-check-fill"></i>
-                                <p>Roles</p>
-                            </a>
-                        </li>
-                        {{-- @endcan --}}
+                        @can('manageRole')
+                            <li class="nav-item">
+                                <a href="{{ route('roles.index') }}"
+                                    class="nav-link {{ Request::is('roles*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-person-check-fill"></i>
+                                    <p>Roles</p>
+                                </a>
+                            </li>
+                        @endcan
 
                         {{-- @can('managePermission') --}}
                         <li class="nav-item">
@@ -62,56 +61,6 @@
                 </li>
             @endcan
 
-            {{-- @can('manageRecrutementCommune')
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-house-fill"></i>
-                        <p>
-                            Commune
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-
-                    <ul class="nav nav-treeview">
-                        @can('recrutementCommune-list')
-                            <li class="nav-item">
-                                <a href="{{ route('recrutements.mesures-sociales') }}"
-                                    class="nav-link {{ Request::is('recrutements.mesures-sociales*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-clipboard-data-fill"></i>
-                                    <p>Mesures sociales</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('recrutementCommune-create')
-                            <li class="nav-item">
-                                <a href="{{ route('recrutements.commune') }}"
-                                    class="nav-link {{ Request::is('recrutements.commune*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>Recrutement</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('manageVeillecitoyenne')
-                            <li class="nav-item">
-                                <a href="{{ route('veillecitoyennes.index') }}"
-                                    class="nav-link {{ Request::is('veillecitoyennes*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>Veille citoyenne</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('managePdi')
-                            <li class="nav-item">
-                                <a href="{{ route('pdis.index') }}"
-                                    class="nav-link {{ Request::is('pdis*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>PDI</p>
-                                </a>
-                            </li>
-                        @endcan
-                    </ul>
-                </li>
-            @endcan --}}
             @can('manageParametre')
                 <li class="nav-item {{ Route::is('structures*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
