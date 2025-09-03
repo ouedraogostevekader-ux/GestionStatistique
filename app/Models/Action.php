@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\ObjectifStrategique;
+use App\Models\ObjectifSpecifique;
 
 class Action extends Model
 {
@@ -17,13 +19,13 @@ class Action extends Model
     ];
 
     // Relations
-    // public function objectifStrategique()
-    // {
-    //     return $this->belongsTo(ObjectifStrategique::class);
-    // }
+    public function objectifStrategique()
+    {
+        return $this->belongsTo(ObjectifsStrategique::class);
+    }
 
-    // public function objectifsSpecifiques()
-    // {
-    //     return $this->hasMany(ObjectifSpecifique::class);
-    // }
+    public function objectifsSpecifiques()
+    {
+        return $this->hasMany(ObjectifSpecifique::class);
+    }
 }

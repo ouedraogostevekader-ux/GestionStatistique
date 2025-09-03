@@ -19,18 +19,18 @@ class ObjectifSpecifique extends Model
     ];
 
     // Relations
-    // public function action()
-    // {
-    //     return $this->belongsTo(Action::class);
-    // }
+    public function action()
+    {
+        return $this->belongsTo(Action::class);
+    }
 
-    // public function activites()
-    // {
-    //     return $this->hasMany(Activite::class);
-    // }
+    public function activites()
+    {
+        return $this->hasMany(Activite::class);
+    }
 
-    // public function indicateursProgrammes()
-    // {
-    //     return $this->hasMany(IndicateurProgramme::class);
-    // }
+    public function indicateursProgrammes()
+    {
+        return $this->hasMany(IndicateurProgramme::class);
+    }
 }
