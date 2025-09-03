@@ -63,3 +63,16 @@ a.nav-link.active {
 button.btn.btn-secondary.buttons-html5 {
     background: unset;
 }
+
+.sidebar-wrapper .nav-item {
+    max-width: 100%;
+    margin: 5px;
+}
+
+/* LOGIN */
+div#logo-login {
+    text-align: center;
+    margin-left: 25%;
+}
+
+/* FIN */

@@ -171,21 +171,21 @@
                     <li class="nav-item">
                         <a href="{{ route('objectifStrategiques.index') }}"
                             class="nav-link {{ Request::is('objectifStrategiques*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-house-gear"></i>
+                            <i class="nav-icon bi bi-bullseye"></i>
                             <p>Objectifs Strategiques</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('actions.index') }}"
                             class="nav-link {{ Request::is('actions*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-house-gear"></i>
+                            <i class="nav-icon bi bi-lightning-charge-fill"></i>
                             <p>Actions</p>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('objectifs-specifiques.index') }}"
                             class="nav-link {{ Request::is('objectifs-specifiques*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-house-gear"></i>
+                            <i class="nav-icon bi bi-bullseye"></i>
                             <p>Objectifs spécifiques</p>
                         </a>
                     </li>
@@ -193,7 +193,7 @@
                     <li class="nav-item">
                         <a href="{{ route('indicateurs-programmes.index') }}"
                             class="nav-link {{ Request::is('indicateurs-programmes*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-house-gear"></i>
+                            <i class="nav-icon bi bi-graph-up"></i>
                             <p>Indicateurs programme</p>
                         </a>
                     </li>
@@ -206,6 +206,13 @@
                         </a>
                     </li>
                 </ul>
+            <li class="nav-item">
+                <a href="{{ route('admin.statistique') }}"
+                    class="nav-link {{ Route::is('admin.statistique') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-bar-chart-fill"></i>
+                    <p>Statistiques</p>
+                </a>
+            </li>
             </li>
         </ul>
         <!--end::Sidebar Menu-->

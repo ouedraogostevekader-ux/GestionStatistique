@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
         // Page principale du tableau de bord
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/statistiques', [DashboardController::class, 'statistique'])->name('admin.statistique');
         // Routes CRUD complètes pour les structures
         Route::resource('structures', StructureController::class);
 

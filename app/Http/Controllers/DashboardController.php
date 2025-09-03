@@ -48,6 +48,36 @@ class DashboardController extends Controller
         ));
     }
 
+    public function statistique(): View
+    {
+        // Statistiques générales
+        $stats = $this->getGeneralStats();
+
+        // Statistiques financières
+        $financialStats = $this->getFinancialStats();
+
+        // Données pour les graphiques
+        $chartData = $this->getChartData();
+
+        // Activités récentes
+        $recentActivities = $this->getRecentActivities();
+
+        // Indicateurs de performance
+        $performanceIndicators = $this->getPerformanceIndicators();
+
+        // Alertes et notifications
+        $alerts = $this->getAlerts();
+
+        return view('dashboard.statistique', compact(
+            'stats',
+            'financialStats',
+            'chartData',
+            'recentActivities',
+            'performanceIndicators',
+            'alerts'
+        ));
+    }
+
     private function getGeneralStats(): array
     {
         return [
