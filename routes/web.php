@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('logs/{id}/{model}/subjectOn', [App\Http\Controllers\LogController::class, 'subjectOn'])->name('logs.subjectOn');
 
     Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+
 });
 
 

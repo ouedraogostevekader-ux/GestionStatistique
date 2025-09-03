@@ -23,10 +23,17 @@
                             <input type="number" name="montant" id="montant" class="form-control" placeholder="Ex: P0001" required>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="Programme activité" class="form-label">Programme activité</label>
-                            <input type="text" name="Programme activité" id="Programme activité" class="form-control" placeholder="Ex: ça sera un select" required>
-                        </div>
+           <div class="mb-3">
+    <label for="structures" class="form-label fw-bold">Structures concernées</label>
+    <select name="structures[]" id="structures" class="form-select" multiple required>
+        @foreach($structures as $structure)
+            <option value="{{ $structure->id }}">{{ $structure->nom }}</option>
+        @endforeach
+    </select>
+    <small class="form-text text-muted">Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs structures.</small>
+</div>
+
+
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('programmebudgetaire.index') }}" class="btn btn-outline-secondary">Annuler</a>

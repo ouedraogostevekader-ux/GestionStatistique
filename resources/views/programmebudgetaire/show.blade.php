@@ -18,7 +18,8 @@
                             <strong>Code :</strong> {{ $ProgrammeBudgetaire->numero_programme }}
                         </li>
                         <li class="list-group-item">
-                            <strong>Activités :</strong> {{ $ProgrammeBudgetaire->programme_activite_id }}
+                            <strong>Structure</strong> {{($ProgrammeBudgetaire->structure_id)
+                                                                                    }}
                         </li>
                     </ul>
 

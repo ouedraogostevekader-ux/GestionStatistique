@@ -33,8 +33,7 @@
                                 <tr>
                                     <td>{{ $programme->libelle }}</td>
                                     <td>{{ $programme->numero_programme }}</td>
-                                    <td>{{ $programme->programme_activite_id }}</td>
-                                    <td>{{ $programme->code }} </td>
+                                    <td>{{$programme->structure_id}}</td>
                               <td class="text-end">
     <div class="d-flex justify-content-end gap-2">
         <a href="{{ route('programmebudgetaire.show', $programme->id) }}" 
