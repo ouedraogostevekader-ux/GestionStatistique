@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
 }
         .navbar {
-            background-color: #51884D !important; /* Couleur sombre pour un look professionnel */
+            background-color: #51884D !important; 
         }
         .carousel-inner img {
             width: 100%;
@@ -22,27 +22,26 @@ body {
             margin-top: 30px;
         }
         .navbar-brand {
-            margin-right: auto; /* Pousse le logo à gauche */
+            margin-right: auto; 
         }
         .navbar-nav-left {
-            margin-right: auto; /* Pousse les liens de navigation à gauche */
+            margin-right: auto; 
         }
         .navbar-nav-right {
-            margin-left: auto; /* Pousse le bouton de connexion à droite */
+            margin-left: auto; 
         }
         /* Style pour la barre de défilement */
         .ticker-container {
             background-color: black;
-            height: 20px;
+            height: 30px;
             overflow: hidden;
             position: relative;
         }
-        .ticker-text {
-            color: white;
-            font-size: 14px;
+        .ticker-text {            color: white;
+            font-size: 18px;
             position: absolute;
             white-space: nowrap;
-            animation: ticker 10s linear infinite;
+            animation: ticker 20s linear infinite;
         }
         @keyframes ticker {
             0% {
@@ -52,6 +51,26 @@ body {
                 transform: translateX(-100%);
             }
         }
+
+         /* armoiries img style */
+         .armoiries img{
+            width: 40px;  
+            height: auto;
+        }
+       
+        /* slider img style */
+        .carousel-item img{
+            filter: grayscale(50%) brightness(40%) contrast(120%);
+        }
+
+        /* connexion btn style */
+        .connexion_btn{
+            background-color: #EEEE14;
+        }
+        .connexion_btn:hover{
+            background-color: #d9ff05;
+        }
+
         /* Style pour le footer */
         .footer {
             background-color: #343a40;
