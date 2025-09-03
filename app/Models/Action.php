@@ -12,7 +12,8 @@ use App\Models\ObjectifSpecifique;
 class Action extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
-
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $fillable = [
         'libelle',
         'objectif_strategique_id',
@@ -21,11 +22,12 @@ class Action extends Model
     // Relations
     public function objectifStrategique()
     {
-        return $this->belongsTo(ObjectifsStrategique::class);
+        return $this->belongsTo(ObjectifsStrategique::class, 'objectif_strategique_id', 'id');
     }
+
 
     public function objectifsSpecifiques()
     {
-        return $this->hasMany(ObjectifSpecifique::class);
+        return $this->hasMany(ObjectifSpecifique::class, 'action_id', 'id');
     }
 }

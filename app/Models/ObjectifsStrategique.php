@@ -13,7 +13,8 @@ class ObjectifsStrategique extends Model
 {
     use HasFactory;
     use HasUlids, LogsActivity, SoftDeletes;
-
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $fillable = [
         'libelle',
         'programme_budgetaire_id',
@@ -21,19 +22,27 @@ class ObjectifsStrategique extends Model
 
     public function programmeBudgetaire()
     {
-        //return $this->belongsTo(ProgrammeBudgetaire::class);
+        return $this->belongsTo(ProgrammeBudgetaire::class);
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(Action::class, 'objectif_strategique_id', 'id');
     }
 
     public function getDescriptionForEvent(string $eventName): string
     {
-        if ($eventName == 'created')
-        { return 'Creation';}
+        if ($eventName == 'created') {
+            return 'Creation';
+        }
 
-        if ($eventName == 'updated')
-        {return 'Modification';}
+        if ($eventName == 'updated') {
+            return 'Modification';
+        }
 
-        if ($eventName == 'deleted')
-        {return 'Suppression';}
+        if ($eventName == 'deleted') {
+            return 'Suppression';
+        }
 
         return "{$eventName}";
     }

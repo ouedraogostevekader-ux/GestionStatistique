@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserMaillable;
 use App\Models\Role;
 use App\Models\Structure;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +22,9 @@ use Spatie\Permission\Models\Role as ModelsRole;
 
 class UserController extends Controller implements HasMiddleware
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public static function middleware(): array
     {
@@ -55,7 +59,7 @@ class UserController extends Controller implements HasMiddleware
     {
         $request->validate(
             [
-                'email' =>  ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
+                'email' => ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
                 'password' => [
                     'required',
                     'string',
@@ -99,13 +103,14 @@ class UserController extends Controller implements HasMiddleware
 
         DB::beginTransaction();
         try {
-            $user =  User::create($input);
+            $user = User::create($input);
             if ($request->hasFile('photo')) {
                 $path = $request->file('photo')->store('photos-profile', 'public');
                 $user->update(['photo' => $path]);
             }
             $user->assignRole($request->input('roles'));
             DB::commit();
+            $this->sendWelcomeEmail($user);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('users.index')->with('error', 'Erreur lors de la création de User');
@@ -340,5 +345,19 @@ class UserController extends Controller implements HasMiddleware
             Storage::disk('public')->delete($user->photo);
         }
         return redirect()->route('users.index')->with('success', 'User supprimé avec success');
+    }
+
+    /* Send mail */
+    public function sendWelcomeEmail(User $user)
+    {
+        try {
+            Mail::to($user->email)
+                ->send(new UserMaillable($user));
+            //  return response()->json(['message' => 'Email envoyé avec succès']);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur envoi email: ' . $e->getMessage());
+            // return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email'], 500);
+        }
     }
 }
