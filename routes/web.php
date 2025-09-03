@@ -24,7 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::get('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwd'])->name('users.changepwd');
     Route::patch('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwdstore'])->name('users.changepwdstore');
 
+    //Logs, Utilisateurs, Roles et Permissions
     Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::patch('/users/{id}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
+    Route::patch('/users/{id}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
+
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::get('logs', [App\Http\Controllers\LogController::class, 'index'])->name('logs.index');

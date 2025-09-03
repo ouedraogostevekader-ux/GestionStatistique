@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\Role;
 use App\Models\Structure;
 use App\Models\User;
@@ -51,48 +52,9 @@ class UserController extends Controller implements HasMiddleware
     /**
      * Store a newly created User in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreUserRequest $request): RedirectResponse
     {
-        $request->validate(
-            [
-                'email' =>  ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
-                'password' => [
-                    'required',
-                    'string',
-                    'min:8',             // must be at least 8 characters in length
-                    'regex:/[a-z]/',      // must contain at least one lowercase letter
-                    //'regex:/[A-Z]/',      // must contain at least one uppercase letter
-                    //'regex:/[0-9]/',      // must contain at least one digit
-                    //'regex:/[@$!%*#?&]/', // must contain a special character
-                ],
-                'password_confirm' => 'same:password',
-                'roles' => 'required',
-                'confirm-password' => 'required|same:password',
-                'nom' => 'required|string',
-                'prenom' => 'required|string',
-                'fonction' => 'required|string',
-                'matricule' => ['required', 'string', Rule::unique('users', 'matricule')->whereNull('deleted_at')],
-                'telephone' => 'required|string',
-                'structure_id' => 'required|string',
-                // 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ],
-            [
-                'nom.*' => 'Le nom est obligatoire',
-                'prenom.*' => 'Le prénom est obligatoire',
-                'matricule.required' => 'Le matricule est obligatoire',
-                'matricule.unique' => 'Ce matricule est déjà utilisé',
-                'telephone.*' => 'Le telephone est obligatoire',
-                'password.required' => 'Le mot de passe est obligatoire',
-                'password.min' => 'Le mot de passe doit avoir au moins 8 caractères',
-                'password.same' => 'Les saisies ne sont pas conformes',
-                'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
-                'confirm-password.required' => 'Veuillez confirmer le mot de passe',
-                // 'photo.required' => 'Veuillez sélectionner une image',
-                // 'photo.image' => 'Le fichier doit être une image',
-                // 'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
-                // 'photo.max' => 'La taille maximale est de 2MB'
-            ]
-        );
+        $request->validate();
 
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
@@ -206,7 +168,7 @@ class UserController extends Controller implements HasMiddleware
                 'fonction' => 'required|string',
                 'matricule' => ['required', 'string', Rule::unique('users', 'matricule')->ignore($id)->whereNull('deleted_at')],
                 'telephone' => 'required|string',
-                'commune_id' => 'required|string',
+                'structure_id' => 'required|string',
                 'email' => ['required', Rule::unique('users', 'email')->ignore($id)->whereNull('deleted_at')],
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ],
@@ -221,10 +183,10 @@ class UserController extends Controller implements HasMiddleware
                 'password.same' => 'Les saisies ne sont pas conformes',
                 'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
                 'confirm-password.required' => 'Veuillez confirmer le mot de passe',
-                'photo.required' => 'Veuillez sélectionner une image',
-                'photo.image' => 'Le fichier doit être une image',
-                'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
-                'photo.max' => 'La taille maximale est de 2MB'
+                // 'photo.required' => 'Veuillez sélectionner une image',
+                // 'photo.image' => 'Le fichier doit être une image',
+                // 'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
+                // 'photo.max' => 'La taille maximale est de 2MB'
             ]
         );
 
@@ -340,5 +302,21 @@ class UserController extends Controller implements HasMiddleware
             Storage::disk('public')->delete($user->photo);
         }
         return redirect()->route('users.index')->with('success', 'User supprimé avec success');
+    }
+
+    public function deactivate($id)
+    {
+        $user = User::find($id);
+
+        $user->update(['is_active' => false]);
+        return back()->with('success', 'Le compte utilisateur a été désactivé.');
+    }
+
+    public function activate($id)
+    {
+        $user = User::find($id);
+
+        $user->update(['is_active' => true]);
+        return back()->with('success', 'Le compte utilisateur a été réactivé.');
     }
 }
