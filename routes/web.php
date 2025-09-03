@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\ActiviteController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StructureController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
 
@@ -11,10 +13,10 @@ Route::get('/', function () {
     return view('layouts.acceuilLayout');
 });
 
-Route::get('/dashboard', function () {
+/* Route::get('/dashboard', function () {
     return view('layouts.admin');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+ */
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -32,6 +34,20 @@ Route::middleware('auth')->group(function () {
     Route::get('logs/show', [App\Http\Controllers\LogController::class, 'show'])->name('logs.show');
     Route::get('logs/{id}/causedBy', [App\Http\Controllers\LogController::class, 'causedBy'])->name('logs.causedBy');
     Route::get('logs/{id}/{model}/subjectOn', [App\Http\Controllers\LogController::class, 'subjectOn'])->name('logs.subjectOn');
+
+    // / Groupe de routes pour les structures avec middleware admin
+    Route::prefix('admin')->group(function () {
+        // Page principale du tableau de bord
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+        // Routes CRUD complètes pour les structures
+        Route::resource('structures', StructureController::class);
+
+        // Routes supplémentaires pour les fonctionnalités avancées
+        Route::get('structures/search', [StructureController::class, 'search'])->name('structures.search');
+        Route::get('structures/filter/type', [StructureController::class, 'filterByType'])->name('structures.filter.type');
+
+    });
 
     // Activites
     Route::resource('activites', ActiviteController::class);
