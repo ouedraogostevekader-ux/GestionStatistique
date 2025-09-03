@@ -22,7 +22,7 @@ class ObjectifsStrategique extends Model
 
     public function programmeBudgetaire()
     {
-        return $this->belongsTo(ProgrammeBudgetaire::class);
+        return $this->belongsTo(ProgrammeBudgetaire::class, 'programme_budgetaire_id');
     }
 
     public function actions()

@@ -14,8 +14,8 @@
             <option value="">-- Sélectionner un programme budgetaire --</option>
             @foreach ($programmeBudgetaires as $programmeBudgetaire)
                 <option value="{{ $programmeBudgetaire->id }}"
-                    {{ (old('programme_budgetaire_id') ?? ($objectifStrategique->programme_budgetaire_id ?? '')) == $programmeBudgetaire->id ? 'selected' : '' }}>
-                    {{ $programmeBudgetaire->libelle }}
+                    {{ (old('programme_budgetaire_id') ?? ($objectifStrategique->programme_budgetaire_id ?? '')) === $programmeBudgetaire->id ? 'selected' : '' }}>
+                    {{ $programmeBudgetaire->libelle ?? '' }}
                 </option>
             @endforeach
         </select>

@@ -24,8 +24,8 @@ class Suivi extends Model
     ];
 
     protected $casts = [
-        'cout_effectif' => 'decimal:15,2',
-        'resultat_atteint' => 'float',
+        //'cout_effectif' => 'decimal:15,2',
+        //'resultat_atteint' => 'float',
     ];
 
     /**

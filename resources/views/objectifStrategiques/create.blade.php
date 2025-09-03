@@ -1,5 +1,5 @@
 @extends('layouts/admin')
-
+@section('breadcrumb', 'Objectifs stratégiques')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
