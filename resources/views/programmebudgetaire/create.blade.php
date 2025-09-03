@@ -19,8 +19,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="montant" class="form-label">Numero programme</label>
-                            <input type="number" name="montant" id="montant" class="form-control" placeholder="Ex: P0001" required>
+                            <label for="numero_programme" class="form-label">Numero programme</label>
+                            <input type="number" name="numero_programme" id="numero_programme" class="form-control" placeholder="Ex: P0001" required>
                         </div>
 
            <div class="mb-3">

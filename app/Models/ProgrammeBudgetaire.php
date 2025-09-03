@@ -22,6 +22,28 @@ class ProgrammeBudgetaire extends Model
         
         
     ];
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        if ($eventName == 'created')
+        { return 'Creation';}
+
+        if ($eventName == 'updated')
+        {return 'Modification';}
+
+        if ($eventName == 'deleted')
+        {return 'Suppression';}
+
+        return "{$eventName}";
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->useLogName('Programme Budgetaire')
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     //      public function programmeActivite()
     // {

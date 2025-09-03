@@ -18,8 +18,10 @@
                             <strong>Code :</strong> {{ $ProgrammeBudgetaire->numero_programme }}
                         </li>
                         <li class="list-group-item">
-                            <strong>Structure</strong> {{($ProgrammeBudgetaire->structure_id)
-                                                                                    }}
+                            <strong>Structure</strong> {{($ProgrammeBudgetaire->structures->isEmpty()) ? 'Aucune structure associée' : ''}}
+                            @foreach($ProgrammeBudgetaire->structures as $structure)
+                                <span class="badge bg-secondary">{{ $structure->nom }}</span>
+                            @endforeach
                         </li>
                     </ul>
 

@@ -6,7 +6,7 @@
 
  <form action="{{ route('programmebudgetaire.update', $ProgrammeBudgetaire->id) }}" method="POST">
     @csrf
-    @method('PUT')
+    @method('PATCH')
 
     <div class="mb-3">
         <label for="libelle" class="form-label">Libellé</label>
