@@ -14,8 +14,7 @@
                     <tr>
                         <td>{{ $key + 1 }} </td>
                         <td>{{ $data->libelle }}</td>
-                        {{-- <td>{{ $data->programmeBudgetaire->libelle ?? " Indisponible" }}</td> --}}
-                        <td>{{ $data->programme_budgetaire_id }}</td>
+                        <td>{{ $data->programmeBudgetaire->libelle ?? " Indisponible" }}</td>
                         <td>
                             <form action="{{ route('objectifStrategiques.destroy', $data->id) }}" method="POST" class="d-inline">
                                 @csrf
@@ -61,8 +60,7 @@
     </div>
     <div class="card-footer clearfix">
         <div class="float-right">
-            {{-- pagination de objectifStrategiques --}}
-            {{ $objectifStrategiques->links() }}
+            
         </div>
     </div>
 </div>

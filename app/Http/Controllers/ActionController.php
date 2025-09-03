@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Action;
+use App\Models\ObjectifsStrategique;
 use Illuminate\Http\Request;
 
 class ActionController extends Controller
@@ -12,8 +13,7 @@ class ActionController extends Controller
      */
     public function index()
     {
-        $actions = Action::all();
-        //dd($actions);
+        $actions = Action::with('objectifStrategique')->get();
         return view('action.index', compact('actions'));
     }
 
@@ -22,7 +22,8 @@ class ActionController extends Controller
      */
     public function create()
     {
-        return view('actions.create');
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        return view('action.create', compact('objectifsStrategiques'));
     }
 
     /**
@@ -32,7 +33,7 @@ class ActionController extends Controller
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
+            'objectif_strategique_id' => 'required|exists:objectifs_strategiques,id',
         ]);
 
         $action = Action::create($validatedData);
@@ -45,7 +46,7 @@ class ActionController extends Controller
      */
     public function show(Action $action)
     {
-        return view('actions.show', compact('action'));
+        return view('action.show', compact('action'));
     }
 
     /**
@@ -53,7 +54,8 @@ class ActionController extends Controller
      */
     public function edit(Action $action)
     {
-        return view('actions.edit', compact('action'));
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        return view('action.edit', compact('action', 'objectifsStrategiques'));
     }
 
     /**
@@ -63,7 +65,7 @@ class ActionController extends Controller
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
+            'objectif_strategique_id' => 'required|exists:objectifs_strategiques,id',
         ]);
 
         $action->update($validatedData);
@@ -74,8 +76,9 @@ class ActionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Action $action)
+    public function destroy($id)
     {
+        $action = Action::findOrFail($id);
         $action->delete();
 
         return redirect()->route('actions.index')->with('success', 'Action deleted successfully.');

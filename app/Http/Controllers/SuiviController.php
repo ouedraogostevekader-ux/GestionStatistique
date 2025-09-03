@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSuiviRequest;
 use App\Http\Requests\UpdateSuiviRequest;
+use App\Models\Activite;
+use App\Models\IndicateurProgramme;
+use App\Models\ObjectifSpecifique;
+use App\Models\ObjectifsStrategique;
 use App\Models\Suivi;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class SuiviController extends Controller implements HasMiddleware
 {
@@ -29,8 +34,12 @@ class SuiviController extends Controller implements HasMiddleware
     public function index()
     {
         //
-        $suivis = Suivi::paginate(10);
-        return view('suivis.index', compact('suivis'));
+        $suivis = Suivi::all();
+        $indicateurProgrammes = IndicateurProgramme::all();
+        $activites = Activite::all();
+        $objectifSpecifiques = ObjectifSpecifique::all();
+        $objectifStrategiques = ObjectifsStrategique::all();
+        return view('suivis.index', compact('suivis', 'indicateurProgrammes', 'activites', 'objectifSpecifiques', 'objectifStrategiques'));
     }
 
     /**
@@ -38,8 +47,7 @@ class SuiviController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        //$indicateurProgrammes = IndicateurProgramme::all();
-        $indicateurProgrammes = DB::table('indicateurs_programmes')->get();
+        $indicateurProgrammes = IndicateurProgramme::all();
         return view('suivis.create', compact('indicateurProgrammes'));
     }
 
@@ -50,16 +58,27 @@ class SuiviController extends Controller implements HasMiddleware
     {
         //
         Suivi::create($request->validated());
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Suivi créé avec succès!'
+            ]);
+        }
         return redirect()->route('suivis.index')->with('success', 'Suivi créé avec succès');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         //
         $suivi = Suivi::findOrFail($id);
+        if ($request->ajax()) {
+            return response()->json($suivi->load('indicateurProgramme'));
+        }
+        
         return view('suivis.show', compact('suivi'));
     }
 
@@ -83,17 +102,30 @@ class SuiviController extends Controller implements HasMiddleware
         //
         $suivi = Suivi::findOrFail($id);
         $suivi->update($request->validated());
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Suivi mos à jour avec succès!'
+            ]);
+        }
         return redirect()->route('suivis.index')->with('success', 'Suivi mis à jour avec succès');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         //
         $suivi = Suivi::findOrFail($id);
         $suivi->delete();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Suivi supprimé avec succès!'
+            ]);
+        }
         return redirect()->route('suivis.index');
     }
 }

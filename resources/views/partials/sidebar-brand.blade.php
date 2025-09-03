@@ -1,6 +1,6 @@
 <div class="sidebar-brand">
     <!--begin::Brand Link-->
-    <a href="{{ url('/dashboard') }}" class="brand-link">
+    <a href="{{ route('dashboard') }}" class="brand-link">
         <!--begin::Brand Image-->
         <img src="{{ asset('dist/assets/img/ARMOIRIES-BF.jpg') }}" alt="ARMOIRIES-BF"
             class="brand-image opacity-75 shadow" />

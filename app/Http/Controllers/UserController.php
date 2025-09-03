@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
+use App\Mail\UserMaillable;
 use App\Models\Role;
 use App\Models\Structure;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -52,22 +55,62 @@ class UserController extends Controller implements HasMiddleware
     /**
      * Store a newly created User in storage.
      */
-    public function store(StoreUserRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $request->validate();
+        $request->validate(
+            [
+                'email' => ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',             // must be at least 8 characters in length
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    //'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    //'regex:/[0-9]/',      // must contain at least one digit
+                    //'regex:/[@$!%*#?&]/', // must contain a special character
+                ],
+                'password_confirm' => 'same:password',
+                'roles' => 'required',
+                'confirm-password' => 'required|same:password',
+                'nom' => 'required|string',
+                'prenom' => 'required|string',
+                'fonction' => 'required|string',
+                'matricule' => ['required', 'string', Rule::unique('users', 'matricule')->whereNull('deleted_at')],
+                'telephone' => 'required|string',
+                'structure_id' => 'required|string',
+                // 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ],
+            [
+                'nom.*' => 'Le nom est obligatoire',
+                'prenom.*' => 'Le prénom est obligatoire',
+                'matricule.required' => 'Le matricule est obligatoire',
+                'matricule.unique' => 'Ce matricule est déjà utilisé',
+                'telephone.*' => 'Le telephone est obligatoire',
+                'password.required' => 'Le mot de passe est obligatoire',
+                'password.min' => 'Le mot de passe doit avoir au moins 8 caractères',
+                'password.same' => 'Les saisies ne sont pas conformes',
+                'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
+                'confirm-password.required' => 'Veuillez confirmer le mot de passe',
+                // 'photo.required' => 'Veuillez sélectionner une image',
+                // 'photo.image' => 'Le fichier doit être une image',
+                // 'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
+                // 'photo.max' => 'La taille maximale est de 2MB'
+            ]
+        );
 
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
 
         DB::beginTransaction();
         try {
-            $user =  User::create($input);
+            $user = User::create($input);
             if ($request->hasFile('photo')) {
                 $path = $request->file('photo')->store('photos-profile', 'public');
                 $user->update(['photo' => $path]);
             }
             $user->assignRole($request->input('roles'));
             DB::commit();
+            $this->sendWelcomeEmail($user);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('users.index')->with('error', 'Erreur lors de la création de User');
@@ -318,5 +361,19 @@ class UserController extends Controller implements HasMiddleware
 
         $user->update(['is_active' => true]);
         return back()->with('success', 'Le compte utilisateur a été réactivé.');
+    }
+
+    /* Send mail */
+    public function sendWelcomeEmail(User $user)
+    {
+        try {
+            Mail::to($user->email)
+                ->send(new UserMaillable($user));
+            //  return response()->json(['message' => 'Email envoyé avec succès']);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur envoi email: ' . $e->getMessage());
+            // return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email'], 500);
+        }
     }
 }

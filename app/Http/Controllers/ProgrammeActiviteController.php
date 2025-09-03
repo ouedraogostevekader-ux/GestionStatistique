@@ -26,7 +26,7 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
     public function index()
     {
         //Liste des programmes d'activités paginées
-        $programmeActivites = ProgrammesActivite::paginate(10);
+        $programmeActivites = ProgrammesActivite::all();
         return view('programme_activites.index', compact('programmeActivites'));
     }
 

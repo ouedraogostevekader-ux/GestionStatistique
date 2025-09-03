@@ -24,23 +24,23 @@ class IndicateurProgramme extends Model
     ];
 
     // Relations
-    // public function objectifSpecifique()
-    // {
-    //     return $this->belongsTo(ObjectifSpecifique::class);
-    // }
+    public function objectifSpecifique()
+    {
+        return $this->belongsTo(ObjectifSpecifique::class);
+    }
 
-    // public function objectifStrategique()
-    // {
-    //     return $this->belongsTo(ObjectifStrategique::class);
-    // }
+    public function objectifStrategique()
+    {
+        return $this->belongsTo(ObjectifsStrategique::class);
+    }
 
-    // public function activite()
-    // {
-    //     return $this->belongsTo(Activite::class, 'activites_id');
-    // }
+    public function activite()
+    {
+        return $this->belongsTo(Activite::class, 'activites_id');
+    }
 
-    // public function suivis()
-    // {
-    //     return $this->hasMany(Suivi::class);
-    // }
+    public function suivis()
+    {
+        return $this->hasMany(Suivi::class);
+    }
 }
