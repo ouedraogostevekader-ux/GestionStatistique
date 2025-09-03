@@ -1,12 +1,13 @@
 <div class="card-body p-0">
     <div class="table-responsive">
-        <table class="table table-striped table-bordered" id="example1">
+        <table class="table table-striped table-bordered" id="example2">
             <thead>
                 <tr>
                     <th>Email</th>
                     <th>Nom</th>
-                    {{-- <th>Telephone</th>
-                    <th>Commune</th> --}}
+                    <th>Telephone</th>
+                    <th>Structure</th>
+                    {{-- <th>Commune</th>  --}}
                     <th>Action</th>
                 </tr>
             </thead>
@@ -15,8 +16,9 @@
                     <tr>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->name }} </td>
-                        {{-- <td>{{ $user->telephone }}</td>
-                        <td>{{ $user->commune->libelle ?? '' }}</td> --}}
+                        <td>{{ $user->telephone }}</td>
+                        <td>{{ $user->structure->sigle }}</td>
+                        {{-- <td>{{ $user->commune->libelle ?? '' }}</td>  --}}
 
                         <td style="width: 120px">
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">

@@ -1,7 +1,7 @@
 <!-- Name Field -->
 <div class="col-sm-6">
-    <label class="form-label">Name</label>:
-    {{ $user->nom_prenom }}
+    <label class="form-label">Nom & prénom</label>:
+    {{ $user->name }}
 </div>
 
 <!-- Email Field -->
@@ -11,7 +11,7 @@
 </div>
 <!-- Email Field -->
 <div class="col-sm-6">
-    <label class="form-label">Telephone</label>:
+    <label class="form-label">Téléphone</label>:
     {{ $user->telephone }}
 </div>
 
@@ -26,13 +26,13 @@
 </div>
 
 <div class="col-sm-6">
-    <label class="form-label">Commune</label>:
-    {{ $user->commune->libelle }}
+    <label class="form-label">Structure</label>:
+    {{ $user->structure->sigle }} : {{ $user->structure->nom }}
 </div>
 
 <div class="form-group col-sm-12">
     <label class="form-label">Role</label>: |
-    @foreach($user->roles as $role)
+    @foreach ($user->roles as $role)
         {{ $role->name }} |
     @endforeach
 </div>
@@ -40,10 +40,10 @@
 <div class="col-sm-6">
     <label class="form-label">Photo de profile</label>:
     <div class="avatar-preview">
-        @if($user->photo != null)
-        <img src="{{ asset('storage/'.$user->photo) }}" alt="PHOTO PROFIL" >
+        @if ($user->photo != null)
+            <img src="{{ asset('storage/' . $user->photo) }}" alt="PHOTO PROFIL">
         @else
-        Pas de photo
+            Pas de photo
         @endif
     </div>
 </div>
