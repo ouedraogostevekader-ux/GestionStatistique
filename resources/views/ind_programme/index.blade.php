@@ -30,35 +30,51 @@
         <div class="card">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="example1">
+                    <table class="table table-striped table-bordered" id="example2">
                         <thead>
                             <tr>
+                                <th>Objectif spécifique</th>
+                                <th>Objectif stratégique</th>
+                                <th>Activité</th>
                                 <th>Libellé</th>
                                 <th>Unité mesure</th>
                                 <th>Valeur</th>
                                 <th>Cible</th>
-                                <th>Objectif spécifique</th>
-                                <th>Objectif stratégique</th>
-                                <th>Activité</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($indicateurs as $indicateur)
                                 <tr>
+                                    <td>
+                                        @if ($indicateur->objectifSpecifique)
+                                            {{ $indicateur->objectifSpecifique->libelle }}
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($indicateur->objectifStrategique)
+                                            {{ $indicateur->objectifStrategique->libelle }}
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($indicateur->activite)
+                                            {{ $indicateur->activite->libelle }}
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $indicateur->libelle }}</td>
                                     <td>{{ $indicateur->unite_mesure }}</td>
                                     <td>{{ $indicateur->valeur_ref }}</td>
                                     <td>{{ $indicateur->valeur_cible }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    {{-- <td>{{ $indicateur->objectif_specifique->libelle }}</td>
-                                    <td>{{ $indicateur->objectif_strategique->libelle }}</td>
-                                    <td>{{ $indicateur->activite->libelle }}</td>
-                                    --}}
-                                    <td>
 
+                                    <td>
                                         <div class='btn-group'>
                                             {{-- @can('indicateur-list') --}}
                                             <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"

@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ObjectifSpecifique extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
-
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $table = 'objectifs_specifiques';
 
     protected $fillable = [
@@ -19,18 +20,18 @@ class ObjectifSpecifique extends Model
     ];
 
     // Relations
-    // public function action()
-    // {
-    //     return $this->belongsTo(Action::class);
-    // }
+    public function action()
+    {
+        return $this->belongsTo(Action::class, 'action_id', 'id');
+    }
 
-    // public function activites()
-    // {
-    //     return $this->hasMany(Activite::class);
-    // }
+    public function activites()
+    {
+        return $this->hasMany(Activite::class);
+    }
 
-    // public function indicateursProgrammes()
-    // {
-    //     return $this->hasMany(IndicateurProgramme::class);
-    // }
+    public function indicateursProgrammes()
+    {
+        return $this->hasMany(IndicateurProgramme::class);
+    }
 }

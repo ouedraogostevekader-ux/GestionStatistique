@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\IndicateurProgramme;
+use App\Models\ObjectifSpecifique;
+use App\Models\ObjectifsStrategique;
+use App\Models\Activite;
 use Illuminate\Http\Request;
 
 class IndicateurProgrammeController extends Controller
@@ -12,7 +15,7 @@ class IndicateurProgrammeController extends Controller
      */
     public function index()
     {
-        $indicateurs = IndicateurProgramme::all();
+        $indicateurs = IndicateurProgramme::with('objectifSpecifique', 'objectifStrategique', 'activite')->get();
         return view('ind_programme.index', compact('indicateurs'));
     }
 
@@ -21,7 +24,10 @@ class IndicateurProgrammeController extends Controller
      */
     public function create()
     {
-        return view('indicateurs.create');
+        $objectifsSpecifiques = ObjectifSpecifique::all();
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        $activites = Activite::all();
+        return view('ind_programme.create', compact('objectifsSpecifiques', 'objectifsStrategiques', 'activites'));
     }
 
     /**
@@ -34,30 +40,43 @@ class IndicateurProgrammeController extends Controller
             'unite_mesure' => 'required|string|max:255',
             'valeur_ref' => 'required|numeric',
             'valeur_cible' => 'required|numeric',
-            'objectif_specifique_id' => 'required|exists:objectifs_specifiques,id',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
-            'activites_id' => 'required|exists:activites,id',
+            'objectif_specifique_id' => 'nullable|exists:objectifs_specifiques,id',
+            'objectif_strategique_id' => 'nullable|exists:objectifs_strategiques,id',
+            'activites_id' => 'nullable|exists:activites,id',
         ]);
 
         $indicateur = IndicateurProgramme::create($validatedData);
 
-        return redirect()->route('indicateurs.index')->with('success', 'Indicateur created successfully.');
+        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(IndicateurProgramme $indicateurProgramme)
+    public function show(string $id)
     {
-        return view('indicateurs.show', compact('indicateurProgramme'));
+        $indicateur = IndicateurProgramme::findOrFail($id);
+        $indicateur = $indicateur->load([
+            'objectifSpecifique',
+            'objectifStrategique',
+            'activite',
+            'suivis'
+        ]);
+
+        return view('ind_programme.show', compact('indicateur'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(IndicateurProgramme $indicateurProgramme)
+    public function edit(string $id)
     {
-        return view('indicateurs.edit', compact('indicateurProgramme'));
+        $indicateur = IndicateurProgramme::findOrFail($id);
+        $objectifsSpecifiques = ObjectifSpecifique::all();
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        $activites = Activite::all();
+
+        return view('ind_programme.edit', compact('indicateur', 'objectifsSpecifiques', 'objectifsStrategiques', 'activites'));
     }
 
     /**
@@ -70,23 +89,24 @@ class IndicateurProgrammeController extends Controller
             'unite_mesure' => 'required|string|max:255',
             'valeur_ref' => 'required|numeric',
             'valeur_cible' => 'required|numeric',
-            'objectif_specifique_id' => 'required|exists:objectifs_specifiques,id',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
-            'activites_id' => 'required|exists:activites,id',
+            'objectif_specifique_id' => 'nullable|exists:objectifs_specifiques,id',
+            'objectif_strategique_id' => 'nullable|exists:objectifs_strategiques,id',
+            'activites_id' => 'nullable|exists:activites,id',
         ]);
 
         $indicateurProgramme->update($validatedData);
 
-        return redirect()->route('indicateurs.index')->with('success', 'Indicateur updated successfully.');
+        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(IndicateurProgramme $indicateurProgramme)
+    public function destroy($id)
     {
-        $indicateurProgramme->delete();
+        $indicateur = IndicateurProgramme::findOrFail($id);
+        $indicateur->delete();
 
-        return redirect()->route('indicateurs.index')->with('success', 'Indicateur deleted successfully.');
+        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur deleted successfully.');
     }
 }
