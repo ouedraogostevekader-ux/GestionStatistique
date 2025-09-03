@@ -193,7 +193,7 @@
                     <li class="nav-item">
                         <a href="{{ route('activites.index') }}"
                             class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                            <i class="nav-icon bi bi-journal"></i>
                             <p>Programmes d'activités</p>
                         </a>
                     </li>
@@ -202,7 +202,7 @@
                 @can('manageParametre')
                 <li class="nav-item {{ Route::is('structures*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-gear-fill"></i>
+                        <i class="nav-icon bi bi-journal-text"></i>
                         <p>
                             Rapports
                             <i class="nav-arrow bi bi-chevron-right"></i>
@@ -211,9 +211,8 @@
                     <ul class="nav nav-treeview">
                         {{-- @can('manageObjectifStrategique') --}}
                         <li class="nav-item">
-                            <a href="{{ route('structures.index') }}"
-                                class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-house-gear"></i>
+                            <a href="" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-journal-text"></i>
                                 <p>Rapport d'activités</p>
                             </a>
                         </li>
