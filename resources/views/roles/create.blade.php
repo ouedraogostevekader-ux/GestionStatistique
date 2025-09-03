@@ -1,4 +1,4 @@
-@extends('layouts/admin/admin')
+@extends('layouts.admin')
 
 @section('content')
     <section class="content-header">
@@ -30,7 +30,7 @@
                 <div class="card-body">
 
                     <div class="row">
-                        @include('admin.roles.fields')
+                        @include('roles.fields')
                     </div>
 
                 </div>

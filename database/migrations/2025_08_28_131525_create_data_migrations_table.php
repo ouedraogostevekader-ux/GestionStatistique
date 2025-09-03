@@ -50,13 +50,7 @@ return new class extends Migration
 
         $role = Role::create(['name' => 'Admin']);
         $role->syncPermissions([$pu->name, $pd->name, $pe->name, $pl->name, $pm->name, $rc->name, $rd->name, $re->name, $rl->name, $rm->name, $uc->name, $ud->name, $ue->name, $ul->name, $um->name, $am->name, $am2->name, $pam->name, $log->name, $log2->name, $log3->name]);
-
-        $structure = Structure::create(['nom' => 'DGESS', 'sigle' => 'DGESS', 'type_structure' => 'Direction generale']);
-        $user = User::create(['name' => 'admin', 'nom' => 'admin', 'prenom' => 'admin', 'telephone' => '77000000', 'matricule' => 'K983', 'fonction' => 'admin', 'email' => 'admin@admin.bf', 'password' => Hash::make('password'), 'structure_id' => $structure->id]);
-
-        $user->assignRole('Admin');
         $roleAdmin = Role::create(['name' => 'Super-Admin']);
-        $user->assignRole('Super-Admin');
         // /* fin Gestion des droits essentiels */
     }
 

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize the DataTable
-    $("#recrutements-table").DataTable({
+    $("#example2").DataTable({
         responsive: true,
         pageLength: 10,
         lengthMenu: [
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
             [5, 10, 25, 50, "Tout"],
         ],
         language: {
-            url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json",
+            url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json",
         },
     });
 });

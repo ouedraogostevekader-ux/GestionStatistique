@@ -2,39 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserMaillable;
 use App\Models\Role;
+use App\Models\Structure;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB as DB;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB as DB;
+
 use Spatie\Permission\Models\Role as ModelsRole;
 
-class UserController extends Controller //implements HasMiddleware
+class UserController extends Controller implements HasMiddleware
 {
-    // public function __construct() {}
+    public function __construct()
+    {
+    }
 
-    // public static function middleware(): array
-    // {
-    //     return [
-    //         new Middleware('permission:user-list', only: ['index', 'show']),
-    //         new Middleware('permission:user-create', only: ['create', 'store']),
-    //         new Middleware('permission:user-edit', only: ['edit', 'update']),
-    //         new Middleware('permission:user-delete', only: ['destroy']),
-    //         //new Middleware(\Spatie\Permission\Middleware\RoleMiddleware::using('manager'), except:['show']),
-    //         //new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('delete records,api'), only:['destroy']),
-    //     ];
-    // }
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:user-list', only: ['index', 'show']),
+            new Middleware('permission:user-create', only: ['create', 'store']),
+            new Middleware('permission:user-edit', only: ['edit', 'update']),
+            new Middleware('permission:user-delete', only: ['destroy']),
+        ];
+    }
 
-    /**
-     * Display a listing of the User.
-     */
     public function index(Request $request)
     {
         $users = User::all();
@@ -42,15 +43,13 @@ class UserController extends Controller //implements HasMiddleware
             ->with('users', $users);
     }
 
-    /**
-     * Show the form for creating a new User.
-     */
     public function create()
     {
         $roles = Role::all();
+        $structures = Structure::all();
         $userRole = [];
         $user = null;
-        return view('users.create', compact('roles', 'userRole', 'user', 'communes'));
+        return view('users.create', compact('roles', 'userRole', 'user', 'structures'));
     }
 
     /**
@@ -60,7 +59,7 @@ class UserController extends Controller //implements HasMiddleware
     {
         $request->validate(
             [
-                'email' =>  ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
+                'email' => ['required', Rule::unique('users', 'email')->whereNull('deleted_at')],
                 'password' => [
                     'required',
                     'string',
@@ -78,8 +77,8 @@ class UserController extends Controller //implements HasMiddleware
                 'fonction' => 'required|string',
                 'matricule' => ['required', 'string', Rule::unique('users', 'matricule')->whereNull('deleted_at')],
                 'telephone' => 'required|string',
-                'commune_id' => 'required|string',
-                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'structure_id' => 'required|string',
+                // 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ],
             [
                 'nom.*' => 'Le nom est obligatoire',
@@ -92,10 +91,10 @@ class UserController extends Controller //implements HasMiddleware
                 'password.same' => 'Les saisies ne sont pas conformes',
                 'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
                 'confirm-password.required' => 'Veuillez confirmer le mot de passe',
-                'photo.required' => 'Veuillez sélectionner une image',
-                'photo.image' => 'Le fichier doit être une image',
-                'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
-                'photo.max' => 'La taille maximale est de 2MB'
+                // 'photo.required' => 'Veuillez sélectionner une image',
+                // 'photo.image' => 'Le fichier doit être une image',
+                // 'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
+                // 'photo.max' => 'La taille maximale est de 2MB'
             ]
         );
 
@@ -104,13 +103,14 @@ class UserController extends Controller //implements HasMiddleware
 
         DB::beginTransaction();
         try {
-            $user =  User::create($input);
+            $user = User::create($input);
             if ($request->hasFile('photo')) {
                 $path = $request->file('photo')->store('photos-profile', 'public');
                 $user->update(['photo' => $path]);
             }
             $user->assignRole($request->input('roles'));
             DB::commit();
+            $this->sendWelcomeEmail($user);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('users.index')->with('error', 'Erreur lors de la création de User');
@@ -142,9 +142,10 @@ class UserController extends Controller //implements HasMiddleware
             return redirect()->route('users.index')->with('error', 'User non retrouvé');
         }
 
+        $structures = Structure::all();
         $roles = Role::all();
         $userRole = $user->roles->pluck('name', 'name')->all();
-        return view('users.edit', compact('user', 'roles', 'userRole', 'communes'));
+        return view('users.edit', compact('user', 'roles', 'userRole', 'structures'));
     }
 
     /**
@@ -157,7 +158,8 @@ class UserController extends Controller //implements HasMiddleware
         if (empty($user)) {
             return redirect()->route('users.index')->with('error', 'User non retrouvé');
         }
-        return view('users.profile', compact('user'));
+        $structures = Structure::all();
+        return view('users.profile', compact('user', 'structures'));
     }
 
     /**
@@ -266,7 +268,7 @@ class UserController extends Controller //implements HasMiddleware
                 'email' => ['required', Rule::unique('users', 'email')->ignore($id)->whereNull('deleted_at')],
                 'password' => 'same:confirm-password',
                 'confirm-password' => 'same:password',
-                'commune_id' => 'required|string',
+                'structure_id' => 'required|string',
                 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ],
             [
@@ -280,10 +282,10 @@ class UserController extends Controller //implements HasMiddleware
                 'password.same' => 'Les saisies ne sont pas conformes',
                 'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
                 'confirm-password.required' => 'Veuillez confirmer le mot de passe',
-                'photo.required' => 'Veuillez sélectionner une image',
-                'photo.image' => 'Le fichier doit être une image',
-                'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
-                'photo.max' => 'La taille maximale est de 2MB'
+                // 'photo.required' => 'Veuillez sélectionner une image',
+                // 'photo.image' => 'Le fichier doit être une image',
+                // 'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
+                // 'photo.max' => 'La taille maximale est de 2MB'
             ]
         );
 
@@ -343,5 +345,19 @@ class UserController extends Controller //implements HasMiddleware
             Storage::disk('public')->delete($user->photo);
         }
         return redirect()->route('users.index')->with('success', 'User supprimé avec success');
+    }
+
+    /* Send mail */
+    public function sendWelcomeEmail(User $user)
+    {
+        try {
+            Mail::to($user->email)
+                ->send(new UserMaillable($user));
+            //  return response()->json(['message' => 'Email envoyé avec succès']);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur envoi email: ' . $e->getMessage());
+            // return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email'], 500);
+        }
     }
 }
