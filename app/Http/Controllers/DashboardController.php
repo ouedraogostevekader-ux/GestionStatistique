@@ -38,6 +38,7 @@ class DashboardController extends Controller
         // Alertes et notifications
         $alerts = $this->getAlerts();
 
+        //dd($stats, $chartData, $financialStats, $performanceIndicators);
         return view('dashboard.index', compact(
             'stats',
             'financialStats',
@@ -67,7 +68,6 @@ class DashboardController extends Controller
 
         // Alertes et notifications
         $alerts = $this->getAlerts();
-
         return view('dashboard.statistique', compact(
             'stats',
             'financialStats',

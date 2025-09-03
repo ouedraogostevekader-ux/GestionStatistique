@@ -116,7 +116,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-primary">Budget prévisionnel</h5>
+                        <h5 class="card-title text-primary">coût prévisionnel</h5>
                         <h3 class="text-primary">{{ number_format($financialStats['budget_prevu'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
@@ -125,7 +125,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-success">Budget exécuté</h5>
+                        <h5 class="card-title text-success">coût effectif</h5>
                         <h3 class="text-success">{{ number_format($financialStats['budget_execute'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
@@ -134,16 +134,30 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-warning">Budget restant</h5>
+                        <h5 class="card-title text-warning">Taux d'éxecution physique</h5>
+                        <h3 class="text-warning">{{ $performanceIndicators['moyenne_resultats'] }} %
+                        </h3>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-warning"
+                                style="width: {{ $performanceIndicators['moyenne_resultats'] }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning">coût restant</h5>
                         <h3 class="text-warning">{{ number_format($financialStats['budget_restant'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-info">Taux d'exécution</h5>
+                        <h5 class="card-title text-info">Taux d'exécution financière</h5>
                         <h3 class="text-info">{{ $financialStats['taux_execution'] }}%</h3>
                         <div class="progress mt-2">
                             <div class="progress-bar bg-info" style="width: {{ $financialStats['taux_execution'] }}%">

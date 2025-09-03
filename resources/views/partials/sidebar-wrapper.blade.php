@@ -189,14 +189,45 @@
                             <p>Activités</p>
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a href="{{ route('suivis.index') }}"
-                            class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-eye-fill"></i>
-                            <p>Suivis</p>
+                        <a href="{{ route('activites.index') }}"
+                            class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                            <p>Programmes d'activités</p>
                         </a>
                     </li>
+
                 </ul>
+                @can('manageParametre')
+                <li class="nav-item {{ Route::is('structures*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-gear-fill"></i>
+                        <p>
+                            Rapports
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        {{-- @can('manageObjectifStrategique') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('structures.index') }}"
+                                class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-house-gear"></i>
+                                <p>Rapport d'activités</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('suivis.index') }}"
+                                class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-eye-fill"></i>
+                                <p>Suivis</p>
+                            </a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </li>
+            @endcan
             <li class="nav-item">
                 <a href="{{ route('admin.statistique') }}"
                     class="nav-link {{ Route::is('admin.statistique') ? 'active' : '' }}">
