@@ -43,4 +43,8 @@ class Activite extends Model
     {
         return $this->belongsToMany(Periode::class, 'activite_periode')->withPivot('annee');
     }
+    public function indicateursProgrammes()
+    {
+        return $this->hasMany(IndicateurProgramme::class, 'activites_id', 'id');
+    }
 }

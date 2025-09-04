@@ -59,7 +59,7 @@ class ActiviteController extends Controller implements HasMiddleware
             }
             $activite->periodes()->attach($periodesData);
         }
-        if ($request->objectif) {
+        if ($request->activite) {
             return redirect()->back()
                 ->with('success', 'Objectif spécifique créé avec succès.');
         }

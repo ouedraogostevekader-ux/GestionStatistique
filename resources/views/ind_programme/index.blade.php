@@ -1,11 +1,15 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Indicateur')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Les indicateurs</h1>
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Liste des indicateurs<span
+                                class="btn btn-success">({{ $indicateurs->count() }})</span>
+                        </li>
+                    </ol>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right" href="{{ route('indicateurs-programmes.create') }}">
