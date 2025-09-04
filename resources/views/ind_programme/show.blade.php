@@ -86,8 +86,12 @@
 
         @if ($indicateur->suivis->count() > 0)
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Suivis associés</h3>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">Suivis associés</h3>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#addSuiviModal">
+                        <i class="fas fa-plus"></i> Evaluer de nouveau
+                    </button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -120,5 +124,49 @@
                 </div>
             </div>
         @endif
+
+        <!-- Modal Ajouter suivi -->
+        <div class="modal fade" id="addSuiviModal" tabindex="-1" role="dialog" aria-labelledby="addSuiviModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <form action="{{ route('suivis.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="indicateur_programme_id" value="{{ $indicateur->id }}">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addSuiviModalLabel">Ajouter un suivi</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Résultat atteint *</label>
+                                <input type="number" step="0.01" class="form-control" name="resultat_atteint" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Coût effectif </label>
+                                <input type="number" step="0.01" class="form-control" name="cout_effectif">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Période </label>
+                                <input type="text" class="form-control" name="periode">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Observation</label>
+                                <textarea class="form-control" name="observation" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
