@@ -34,7 +34,8 @@ class User extends Authenticatable
         'nom',
         'prenom',
         'fonction',
-        'structure_id'
+        'structure_id',
+        'is_active'
 
     ];
 

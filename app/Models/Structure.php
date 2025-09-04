@@ -51,6 +51,11 @@ class Structure extends Model
         return "{$eventName}";
     }
 
+    public function programmesBudgetaires()
+    {
+        return $this->belongsToMany(ProgrammeBudgetaire::class, 'programme_budgetaire_structure');
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

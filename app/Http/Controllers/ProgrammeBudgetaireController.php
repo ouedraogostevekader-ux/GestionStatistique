@@ -5,23 +5,29 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProgrammeBudgetaire;
-use App\Models\Structure;
-use App\Models\User;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ProgrammeBudgetaireController extends Controller
+class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
+            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
+            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
+            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+        ];
+    }
+
     /**
-     * Afficher la liste des programmes
+     * Afficher la liste
      */
     public function index()
     {
-        // Charger les programmes avec structures + responsable actif
-        $programmes = ProgrammeBudgetaire::with([
-            'structures',
-            'responsables' => function ($q) {
-                $q->wherePivotNull('date_fin'); // uniquement responsables actifs
-            }
-        ])->paginate(10);
+        $programmes = ProgrammeBudgetaire::paginate(10);
 
         return view('programmebudgetaire.index', compact('programmes'));
     }
@@ -61,10 +67,8 @@ class ProgrammeBudgetaireController extends Controller
     {
         $validated = $request->validate([
             'libelle' => 'required|string|max:255',
-            'numero_programme' => 'required|string|max:255|unique:programmes_budgetaires,numero_programme',
-            'responsable_id' => 'required|exists:users,id',
-            'structures' => 'nullable|array',
-            'structures.*' => 'exists:structures,id',
+            'code' => 'required|string|max:100|unique:programmebudgetaire',
+
         ]);
 
         DB::transaction(function () use ($validated) {
@@ -109,7 +113,11 @@ class ProgrammeBudgetaireController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([ 'libelle' => 'required|string|max:255', 'numero_programme' => 'required|string|max:255', 'responsable_id' => 'required|exists:users,id', 'structures' => 'nullable|array', 'structures.*' => 'exists:structures,id', ]);
+        $request->validate([
+            'libelle' => 'required|string|max:255',
+            'code' => 'required|string|max:100|unique:programmebudgetaire,code,' . $ProgrammeBudgetaire->id,
+
+        ]);
 
         DB::transaction(function () use ($validated, $id) {
             $programmeBudgetaire = ProgrammeBudgetaire::with('responsables')->findOrFail($id);

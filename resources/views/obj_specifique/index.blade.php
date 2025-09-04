@@ -30,44 +30,51 @@
         <div class="card">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="example1">
+                    <table class="table table-striped table-bordered" id="example2">
                         <thead>
                             <tr>
                                 <th>Libellé</th>
                                 <th>Action</th>
-                                <th>Action</th>
+                                <th>Objectif stratégique</th>
+                                <th>Nb activités</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($objectifs as $objectif)
+                            @foreach ($objectifsSpecifiques as $objectif)
                                 <tr>
                                     <td>{{ $objectif->libelle }}</td>
-                                    <td> </td>
                                     <td>
-
+                                        @if ($objectif->action)
+                                            {{ $objectif->action->libelle }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($objectif->action && $objectif->action->objectifStrategique)
+                                            {{ $objectif->action->objectifStrategique->libelle }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td>{{ $objectif->activites->count() }}</td>
+                                    <td>
                                         <div class='btn-group'>
-                                            {{-- @can('objectifs-specifiques-list') --}}
                                             <a href="{{ route('objectifs-specifiques.show', $objectif->id) }}"
                                                 class="btn btn-info btn-xs" title="Voir">
                                                 <i class="bi bi-eye-fill"></i>
                                             </a>
-                                            {{-- @endcan --}}
-
-                                            {{-- @can('objectifs-specifiques-edit') --}}
                                             <a href="{{ route('objectifs-specifiques.edit', $objectif->id) }}"
                                                 class="btn btn-primary btn-xs" title="Modifier">
                                                 <i class="bi bi-pencil-fill"></i>
                                             </a>
-                                            {{-- @endcan --}}
-
-                                            {{-- @can('objectifs-specifiques-delete') --}}
                                             <button type="button" class="btn btn-outline-danger delete-btn"
                                                 title="Supprimer"
                                                 data-url="{{ route('objectifs-specifiques.destroy', $objectif->id) }}"
                                                 data-message="L'objectif spécifique <strong>{{ $objectif->libelle }}</strong> sera supprimé. Continuer ?">
                                                 <i class="bi bi-trash-fill"></i>
                                             </button>
-                                            {{-- @endcan --}}
                                         </div>
                                     </td>
                                 </tr>

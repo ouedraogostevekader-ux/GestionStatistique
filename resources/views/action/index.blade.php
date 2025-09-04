@@ -30,7 +30,7 @@
         <div class="card">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="example1">
+                    <table class="table table-striped table-bordered" id="example2">
                         <thead>
                             <tr>
                                 <th>Libellé</th>
@@ -42,8 +42,7 @@
                             @foreach ($actions as $action)
                                 <tr>
                                     <td>{{ $action->libelle }}</td>
-                                    <td></td>
-                                    {{-- <td>{{ $action->objectif_strategique->libelle }}</td> --}}
+                                    <td>{{ $action->objectifStrategique->libelle }}</td>
                                     <td>
 
                                         <div class='btn-group'>

@@ -7,13 +7,13 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb mb-2">
                         <li class="breadcrumb-item active">Liste des activités<span
-                                class="btn btn-info">({{ $activites->count() }})</span>
+                                class="btn btn-success">({{ $activites->count() }})</span>
                         </li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
-                        <a class="btn btn-primary" href="{{ route('activites.create') }}">
+                        <a class="btn btn-primary" id="btnAjouter" href="{{ route('activites.create') }}">
                             <i class="bi bi-plus"></i> Ajouter
                         </a>
                     </div>

@@ -1,0 +1,78 @@
+.sidebar-brand {
+    background: #006233;
+}
+
+.sidebar-wrapper {
+    background: #019e48;
+}
+
+.sidebar-wrapper P {
+    color: #fff;
+}
+
+footer.bg.mt-2.py-3.bg-blue-500 {
+    background: #006233;
+}
+
+/* Entete */
+
+nav.app-header.navbar.navbar-expand.bg-body {
+    background: #efaa2a !important;
+}
+
+.custom-navbar {
+    background: linear-gradient(to right, #006233 70%, #d71920 90%);
+    /* rouge & vert */
+    border-bottom: 4px solid #FFD700;
+    /* bande jaune */
+}
+
+.custom-navbar .nav-link {
+    color: white !important;
+}
+
+.custom-navbar .nav-link:hover {
+    color: #FFD700 !important;
+    /* survol en jaune */
+}
+
+#btnAjouter {
+    background: #019e48;
+}
+
+#btnAjouter:hover {
+    background: #FFD700;
+}
+
+#btnAjouter:active {
+    background: #d71920;
+}
+
+a.nav-link.active {
+    border: 0.2px solid #ede199;
+    /* background: #f1ead0 !important; */
+    color: white !important;
+}
+
+.nav-treeview a.nav-link.active {
+    border: 0.3px solid #dabe1c;
+    /* background: #f1ead0 !important; */
+    color: white !important;
+}
+
+button.btn.btn-secondary.buttons-html5 {
+    background: unset;
+}
+
+.sidebar-wrapper .nav-item {
+    max-width: 100%;
+    margin: 5px;
+}
+
+/* LOGIN */
+div#logo-login {
+    text-align: center;
+    margin-left: 25%;
+}
+
+/* FIN */
