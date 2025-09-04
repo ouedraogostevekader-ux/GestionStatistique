@@ -26,7 +26,7 @@
             <!-- Profil utilisateur -->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                    @php $url = Auth::user()->photo ? 'storage/'.Auth::user()->photo : 'dist/assets/img/user2-160x160.jpg'; @endphp
+                    @php $url = Auth::user()->photo ? 'storage/'.Auth::user()->photo : 'dist/assets/img/img_mid.jpg'; @endphp
                     <img src="{{ asset($url) }}" class="user-image rounded-circle shadow me-2" alt="User Image"
                         width="35" height="35" />
                     <span class="fw-bold text-white">{{ Auth::user()->nom }}</span>

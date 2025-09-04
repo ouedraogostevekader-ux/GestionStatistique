@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Action;
+use App\Models\Activite;
+use App\Models\ObjectifSpecifique;
+use App\Models\ObjectifsStrategique;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProgrammeBudgetaire;
 use App\Models\Structure;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 
 class ProgrammeBudgetaireController extends Controller
@@ -87,7 +92,7 @@ class ProgrammeBudgetaireController extends Controller
         });
 
         return redirect()->route('programmebudgetaire.index')
-                         ->with('success', 'Programme budgétaire créé avec succès.');
+            ->with('success', 'Programme budgétaire créé avec succès.');
     }
 
     /**
@@ -116,7 +121,7 @@ class ProgrammeBudgetaireController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([ 'libelle' => 'required|string|max:255', 'numero_programme' => 'required|string|max:255', 'responsable_id' => 'required|exists:users,id', 'structures' => 'nullable|array', 'structures.*' => 'exists:structures,id', ]);
+        $validated = $request->validate(['libelle' => 'required|string|max:255', 'numero_programme' => 'required|string|max:255', 'responsable_id' => 'required|exists:users,id', 'structures' => 'nullable|array', 'structures.*' => 'exists:structures,id',]);
 
         DB::transaction(function () use ($validated, $id) {
             $programmeBudgetaire = ProgrammeBudgetaire::with('responsables')->findOrFail($id);
@@ -154,19 +159,124 @@ class ProgrammeBudgetaireController extends Controller
         });
 
         return redirect()->route('programmebudgetaire.index')
-                         ->with('success', 'Programme budgétaire mis à jour avec succès.');
+            ->with('success', 'Programme budgétaire mis à jour avec succès.');
     }
 
     /**
      * Supprimer un programme
      */
-public function destroy($id)
-{
+    public function destroy($id)
+    {
 
-      $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
-      $programmeBudgetaire->delete();
-      return redirect()->route('programmebudgetaire.index')
-                       ->with('success', 'Programme budgétaire supprimé avec succès.');
-}
+        $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
+        $programmeBudgetaire->delete();
+        return redirect()->route('programmebudgetaire.index')
+            ->with('success', 'Programme budgétaire supprimé avec succès.');
+    }
+
+    // Afficher le formulaire de duplication
+    public function createDuplicate()
+    {
+        $programmes = ProgrammeBudgetaire::with(['objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes'])
+            ->where('isActive', true)
+            ->get();
+
+        return view('programmebudgetaire.duplicate', compact('programmes'));
+    }
+
+    // Traiter la duplication
+    public function storeDuplicate(Request $request)
+    {
+        $request->validate([
+            'programme_source_id' => 'required|exists:programmes_budgetaires,id',
+            'nouveau_libelle' => 'required|string|max:255',
+            'nouveau_numero' => 'required|string|max:50',
+            'annee' => 'required|integer|min:2000|max:2100',
+            'dupliquer_activites' => 'sometimes|boolean'
+        ]);
+
+        try {
+            // Récupérer le programme source
+            $programmeSource = ProgrammeBudgetaire::with([
+                'objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes'
+            ])->findOrFail($request->programme_source_id);
+
+            // Créer le nouveau programme
+            $nouveauProgramme = ProgrammeBudgetaire::create([
+                'id' => Str::ulid(),
+                'libelle' => $request->nouveau_libelle,
+                'numero_programme' => $request->nouveau_numero,
+                'annee' => $request->annee,
+                'isActive' => true,
+                'programme_activite_id' => $programmeSource->programme_activite_id
+            ]);
+
+            // Dupliquer la hiérarchie
+            $this->dupliquerHierarchie($programmeSource, $nouveauProgramme, $request->annee, $request->dupliquer_activites);
+
+            return redirect()->route('programmebudgetaire.index')
+                ->with('success', 'Programme budgétaire dupliqué avec succès !');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la duplication: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    private function dupliquerHierarchie($programmeSource, $nouveauProgramme, $annee, $dupliquerActivites)
+    {
+        foreach ($programmeSource->objectifsStrategiques as $osSource) {
+            // Dupliquer objectif stratégique
+            $nouvelOS = ObjectifsStrategique::create([
+                'id' => Str::ulid(),
+                'libelle' => $osSource->libelle,
+                'annee' => $annee,
+                'programme_budgetaire_id' => $nouveauProgramme->id
+            ]);
+
+            foreach ($osSource->actions as $actionSource) {
+                // Dupliquer action
+                $nouvelleAction = Action::create([
+                    'id' => Str::ulid(),
+                    'libelle' => $actionSource->libelle,
+                    'annee' => $annee,
+                    'objectif_strategique_id' => $nouvelOS->id
+                ]);
+
+                foreach ($actionSource->objectifsSpecifiques as $osSpecSource) {
+                    // Dupliquer objectif spécifique
+                    $nouvelOSSpec = ObjectifSpecifique::create([
+                        'id' => Str::ulid(),
+                        'libelle' => $osSpecSource->libelle,
+                        'annee' => $annee,
+                        'action_id' => $nouvelleAction->id
+                    ]);
+
+                    // Dupliquer les activités si demandé
+                    if ($dupliquerActivites) {
+                        foreach ($osSpecSource->activites as $activiteSource) {
+                            $nouvelleActivite = Activite::create([
+                                'id' => Str::ulid(),
+                                'libelle' => $activiteSource->libelle,
+                                'cout_previsionnel' => $activiteSource->cout_previsionnel,
+                                'annee' => $annee,
+                                'objectif_specifique_id' => $nouvelOSSpec->id
+                            ]);
+
+                            // Dupliquer les périodes associées
+                            if ($activiteSource->periodes->count() > 0) {
+                                $periodesData = [];
+                                foreach ($activiteSource->periodes as $periode) {
+                                    $periodesData[$periode->id] = ['annee' => $annee];
+                                }
+                                $nouvelleActivite->periodes()->attach($periodesData);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

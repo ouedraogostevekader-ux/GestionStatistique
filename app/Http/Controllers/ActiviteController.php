@@ -59,7 +59,10 @@ class ActiviteController extends Controller implements HasMiddleware
             }
             $activite->periodes()->attach($periodesData);
         }
-
+        if ($request->activite) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
         return redirect()->route('activites.index')->with('success', "L'activité " . $activite->libelle . " a été enregistrée.");
     }
 
