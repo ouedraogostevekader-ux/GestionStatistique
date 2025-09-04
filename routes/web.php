@@ -11,11 +11,14 @@ use App\Http\Controllers\StatistiquesController;
 use App\Http\Controllers\StructureController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
 });
 
+Route::get('/user/{id}/confirm-compte/', [UserController::class, 'edit'])->name('edit.compte');
+Route::patch('/user/{id}/confirm-compte/enregistre', [UserController::class, 'update'])->name('update.compte');
 /* Route::get('/dashboard', function () {
     return view('layouts.admin');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -30,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwdstore'])->name('users.changepwdstore');
 
     //Logs, Utilisateurs, Roles et Permissions
-    Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::resource('users', App\Http\Controllers\UserController::class)->except(['update', 'edit']);
     Route::patch('/users/{id}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
     Route::patch('/users/{id}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
 
@@ -76,6 +79,12 @@ Route::middleware('auth')->group(function () {
 
         // Validation d'un fichier CSV (AJAX)
         Route::post('/validate', [ImportController::class, 'validateCsv'])->name('validate');
+        // imports
+        Route::resource('imports', ImportController::class);
+        Route::post('imports/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
+        Route::post('imports/structure', [ImportController::class, 'importStructures'])->name('import.structures');
+        Route::post('imports/objectifs-stra', [ImportController::class, 'importObjectifsStrategiques'])->name('import.objectifs-strategiques');
+        Route::post('imports/objectif-spec', [ImportController::class, 'downloadTemplate'])->name('import.objectifs-specifiques');
     });
 
     // Activites
