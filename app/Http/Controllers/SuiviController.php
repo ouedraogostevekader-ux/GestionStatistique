@@ -21,10 +21,10 @@ class SuiviController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
-            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
-            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
-            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+            new Middleware('permission:suivi-list', only: ['index', 'show']),
+            new Middleware('permission:suivi-create', only: ['create', 'store']),
+            new Middleware('permission:suivi-edit', only: ['edit', 'update']),
+            new Middleware('permission:suivi-delete', only: ['destroy']),
         ];
     }
 
@@ -51,20 +51,26 @@ class SuiviController extends Controller implements HasMiddleware
         return view('suivis.create', compact('indicateurProgrammes'));
     }
 
+    public function createByMIndicateur($id)
+    {
+        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        return view('suivis.modal-content', ['indicateur_programme_id' => $id,'periodes'=>$periodes]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreSuiviRequest $request)
     {
         //
-        Suivi::create($request->validated());
-
+        $suivi =Suivi::create($request->validated());
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Suivi créé avec succès!'
             ]);
         }
+        
         return redirect()->route('suivis.index')->with('success', 'Suivi créé avec succès');
     }
 
@@ -88,10 +94,9 @@ class SuiviController extends Controller implements HasMiddleware
     public function edit($id)
     {
         //
-        //$indicateurProgrammes = IndicateurProgramme::all();
-        $indicateurProgrammes = DB::table('indicateurs_programmes')->get();
         $suivi = Suivi::findOrFail($id);
-        return view('suivis.edit', compact('suivi', 'indicateurProgrammes'));
+        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        return view('suivis.modal-content-edit', ['suivi' => $suivi,'periodes'=>$periodes]);
     }
 
     /**

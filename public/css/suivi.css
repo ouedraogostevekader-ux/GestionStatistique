@@ -116,6 +116,11 @@
     margin-top: 0.5rem;
 }
 
+.voirvisible{
+    visibility: visible;
+}
+
+
 @media (max-width: 768px) {
     .table-responsive {
         border-radius: 10px;
