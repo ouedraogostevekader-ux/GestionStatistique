@@ -73,7 +73,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $activite->libelle }}</td>
-                                    <td>{{ $activite->periode }}</td>
+                                    <td>{{ $activite->periodes[0]->libelle }}</td>
                                     <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
                                     <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
                                     <td>{{ $activite->created_at->format('d/m/Y, H:i') }}</td>

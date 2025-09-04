@@ -10,10 +10,27 @@
     </div>
 
     <div class="mb-3">
-        <label for="periode" class="form-label">Période</label>
-        <input type="text" name="periode" id="periode" class="form-control @error('periode') is-invalid @enderror"
-            value="{{ old('periode', $activite->periode ?? '') }}" required>
-        @error('periode')
+        <label for="periodes" class="form-label">Périodes</label>
+        <select name="periodes[]" id="periodes" class="form-select @error('periodes') is-invalid @enderror" multiple
+            required>
+            <option value="">-- Sélectionner une ou plusieurs périodes --</option>
+            @foreach ($periodes as $periode)
+                <option value="{{ $periode->id }}"
+                    {{ in_array($periode->id, old('periodes', $activitePeriodes ?? [])) ? 'selected' : '' }}>
+                    {{ $periode->libelle }}
+                </option>
+            @endforeach
+        </select>
+        @error('periodes')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-3">
+        <label for="annee" class="form-label">Année</label>
+        <input type="number" name="annee" id="annee" class="form-control @error('annee') is-invalid @enderror"
+            value="{{ old('annee', $annee ?? date('Y')) }}" required min="2000" max="2100">
+        @error('annee')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>

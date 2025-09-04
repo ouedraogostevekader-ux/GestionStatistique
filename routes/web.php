@@ -55,13 +55,26 @@ Route::middleware('auth')->group(function () {
         Route::get('structures/search', [StructureController::class, 'search'])->name('structures.search');
         Route::get('structures/filter/type', [StructureController::class, 'filterByType'])->name('structures.filter.type');
 
-        // imports
-        Route::resource('imports', ImportController::class);
-        Route::post('imports/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
-        Route::post('imports/structure', [ImportController::class, 'importStructures'])->name('import.structures');
-        Route::post('imports/objectifs-stra', [ImportController::class, 'importObjectifsStrategiques'])->name('import.objectifs-strategiques');
-        Route::post('imports/objectif-spec', [ImportController::class, 'downloadTemplate'])->name('import.objectifs-specifiques');
+    });
+    // Routes pour l'importation CSV
+    Route::prefix('import')->name('imports.')->group(function () {
+        // Page principale d'importation
+        Route::get('/', [ImportController::class, 'index'])->name('index');
 
+        // Importation des structures
+        Route::post('/structures', [ImportController::class, 'importStructures'])->name('structures');
+
+        // Importation des objectifs stratégiques
+        Route::post('/objectifs-strategiques', [ImportController::class, 'importObjectifsStrategiques'])->name('objectifs-strategiques');
+
+        // Importation des objectifs spécifiques
+        Route::post('/objectifs-specifiques', [ImportController::class, 'importObjectifsSpecifiques'])->name('objectifs-specifiques');
+
+        // Téléchargement des modèles CSV
+        Route::get('/template/{type}', [ImportController::class, 'downloadTemplate'])->name('template');
+
+        // Validation d'un fichier CSV (AJAX)
+        Route::post('/validate', [ImportController::class, 'validateCsv'])->name('validate');
     });
 
     // Activites
