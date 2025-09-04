@@ -10,8 +10,8 @@ return new class extends Migration {
         // Structures
         Schema::create('structures', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
-            $table->string('nom');
-            $table->string('sigle');
+            $table->string('nom')->unique();
+            $table->string('sigle')->unique();
             $table->string('type_structure');
             $table->softDeletes();
             $table->timestamps();

@@ -62,7 +62,7 @@
             @endcan
 
             @can('manageParametre')
-                <li class="nav-item {{ Route::is('structures*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ Route::is('structures*') || Route::is('imports*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-gear-fill"></i>
                         <p>
@@ -75,8 +75,15 @@
                         <li class="nav-item">
                             <a href="{{ route('structures.index') }}"
                                 class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-house-gear"></i>
+                                <i class="nav-icon bi bi-building"></i>
                                 <p>Structures</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('imports.index') }}"
+                                class="nav-link {{ Route::is('imports*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <p>Imports</p>
                             </a>
                         </li>
                         {{-- @endcan --}}
@@ -178,7 +185,7 @@
             @endcan
             <li class="nav-item">
                 <a href="{{ route('admin.statistique') }}"
-                    class="nav-link {{ Route::is('admin.statistique') ? 'active' : '' }}">
+                    class="nav-link {{ Request::is('*statistique*') ? 'active' : '' }}">
                     <i class="nav-icon bi bi-bar-chart-fill"></i>
                     <p>Statistiques</p>
                 </a>

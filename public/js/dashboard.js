@@ -164,7 +164,7 @@ function initCoutsProgrammesChart(data) {
     const colors = generateColors(labels.length);
 
     coutsProgrammesChart = new Chart(ctx, {
-        type: "horizontalBar",
+        type: "bar",
         data: {
             labels: labels,
             datasets: [

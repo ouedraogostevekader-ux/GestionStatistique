@@ -224,7 +224,7 @@ class DashboardController extends Controller
             return [
                 'type' => 'warning',
                 'title' => 'Budget presque épuisé',
-                'message' => 'Le taux d\'exécution budgétaire atteint ' . $financialStats['taux_execution'] . '%',
+                'message' => 'Le taux d\'exécution budgétaire atteint : ' . $financialStats['taux_execution'] . '%',
                 'icon' => 'bi-exclamation-triangle'
             ];
         }
