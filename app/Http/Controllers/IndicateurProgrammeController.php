@@ -46,7 +46,10 @@ class IndicateurProgrammeController extends Controller
         ]);
 
         $indicateur = IndicateurProgramme::create($validatedData);
-
+        if ($request->indicateur) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
         return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur created successfully.');
     }
 

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-4">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
+            <div class="col-md-12">
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Liste des Programmes Budgétaires</h5>
@@ -26,8 +26,9 @@
                                     <tr>
                                         <th>Libellé</th>
                                         <th>Numéro programme</th>
-                                        <th>Programme activité</th>
+                                        {{-- <th>Programme activité</th> --}}
                                         <th>Responsable Budgétaire</th>
+                                        <th>Etat</th>
                                         <th class="text-end">Actions</th>
                                     </tr>
                                 </thead>
@@ -36,7 +37,7 @@
                                         <tr>
                                             <td>{{ $programme->libelle }}</td>
                                             <td>{{ $programme->numero_programme }}</td>
-                                            <td>{{ $programme->structure_id }}</td>
+                                            {{-- <td>{{ $programme->structure_id }}</td> --}}
                                             <td>
                                                 @php
                                                     $responsableActif = $programme->responsables()->get()->last();
@@ -54,7 +55,10 @@
                                                 @endif
                                             </td>
 
-
+                                            <td
+                                                class="badge bg-{{ $programme->isActive ? 'success' : 'secondary' }} text-white">
+                                                {{ $programme->isActive ? 'Ouvert' : 'Vérouillé' }}
+                                            </td>
                                             <td class="text-end">
                                                 <div class="btn-group">
                                                     <a href="{{ route('programmebudgetaire.show', $programme->id) }}"
@@ -63,8 +67,13 @@
                                                     </a>
 
                                                     <a href="{{ route('programmebudgetaire.edit', $programme->id) }}"
-                                                        class="btn btn-primary btn-xs" title="Modifier">
+                                                        class="btn btn-warning btn-xs" title="Modifier">
                                                         <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+                                                    <a href="{{ route('programmebudgetaire.os', $programme->id) }}"
+                                                        class="btn btn-success btn-xs"
+                                                        title="Voir les objectifs stratégiques">
+                                                        <i class="bi bi-bullseye"></i>
                                                     </a>
 
                                                     <button type="button" class="btn btn-outline-danger delete-btn"

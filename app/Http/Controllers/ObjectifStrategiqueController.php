@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 class ObjectifStrategiqueController extends Controller implements HasMiddleware
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public static function middleware(): array
     {
@@ -70,5 +72,13 @@ class ObjectifStrategiqueController extends Controller implements HasMiddleware
     {
         ObjectifsStrategique::destroy($id);
         return redirect()->route('objectifStrategiques.index')->with('success', 'Objectif Strategique supprimé avec succès');
+    }
+
+    /* Get Objectifs stratégiques by programme budgétaires ID */
+    public function osByPB($id)
+    {
+        $objectifStrategiques = ObjectifsStrategique::where('programme_budgetaire_id', $id)->get();
+        $programme = ProgrammeBudgetaire::findOrFail($id);
+        return view('objectifStrategiques.indexbypb', compact('objectifStrategiques', 'programme'));
     }
 }
