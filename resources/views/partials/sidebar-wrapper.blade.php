@@ -91,9 +91,9 @@
                 </li>
             @endcan
             <li
-                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
+                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('programme-activites*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
                 <a href="#"
-                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
+                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('programme-activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
                     <i class="nav-icon bi bi-folder-fill"></i>
                     <p>
                         Programmation
@@ -148,7 +148,7 @@
 
                     <li class="nav-item">
                         <a href="{{ route('programme-activites.index') }}"
-                            class="nav-link {{ Request::is('programmes-activites*') ? 'active' : '' }}">
+                            class="nav-link {{ Request::is('programme-activites*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-journal"></i>
                             <p>Programmes d'activités</p>
                         </a>
