@@ -11,7 +11,7 @@ class UpdateSuiviRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,11 @@ class UpdateSuiviRequest extends FormRequest
     {
         return [
             //
+            'resultat_atteint' => 'required|numeric|min:0',
+            'cout_effectif'=>'nullable|numeric|min:0',
+            'observations'=>'nullable|string',
+            'periode'=>'required|string',
+            'indicateur_programme_id'=>'required|string|exists:indicateurs_programmes,id',
         ];
     }
 }

@@ -32,24 +32,28 @@
                             <td>{{ $indicateur->objectifStrategique->libelle ?? "" }}</td>
                             <td>{{ $indicateur->activite->libelle ?? "" }}</td>
                            
-                            <td>
-                                <button class="btn expand-btn" type="button" data-bs-toggle="collapse" data-bs-target="#ind{{ $key }}">
-                                    <i class="bi bi-eye-fill me-1"></i>
+                            <td class="text-center">
+                                <button class="btn btn-outline-primary btn-sm expand-btn" type="button" data-bs-toggle="collapse" data-bs-target="#ind{{ $key }}" aria-expanded="false">
+                                    <i class="bi bi-eye-fill me-1"></i><span class="badge bg-secondary ms-1">{{ $indicateur->suivis->count() }}</span>
                                 </button>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="8" class="p-0">
-                                <div class="collapse collapse-content" id="ind{{ $key }}">
+                                <div class="collapse voirvisible" id="ind{{ $key }}">
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            Liste des suivis <span class="btn btn-info">({{ $indicateur->suivis->count() }})</span>
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-chart-line me-2"></i>
+                                                Évolutions de l'indicateur
+                                                <span class="badge bg-primary ms-2">{{ $indicateur->suivis->count() }}</span>
+                                            </h6>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="d-flex justify-content-end">
-                                                
-                                                <button class="btn btn-primary btn-sm" onclick="openCreateModal('{{ $indicateur->id }}')">
-                                                    + Ajouter
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suiviModal"
+                                                    data-url="{{ route('suivis.createM', $indicateur->id) }}">
+                                                    <i class="bi bi-plus"></i> Nouvelle evolution
                                                 </button>
                                             </div>
                                         </div>
@@ -74,8 +78,10 @@
                                                     <td>{{ $suivi->periode }}</td>
                                                     <td class="text-danger">{{$suivi->observations}}</td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-outline-primary me-2" 
-                                                                onclick="openEditModal('{{ $suivi->id }}')">
+                                                       
+                                                        <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal"
+                                                            data-bs-target="#suiviModal" title="Modifier"
+                                                            data-url="{{ route('suivis.edit', $suivi->id) }}">
                                                             <i class="bi bi-pencil-fill"></i>
                                                         </button>
                                                         
@@ -106,87 +112,11 @@
     </div>
 </div>
 
-<!-- Create Modal -->
-<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" data-backdrop="false" aria-hidden="true" data-bs-backdrop="false" data-bs-keyboard="true">
-    <div class="modal-dialog">
+<!-- Modal -->
+<div class="modal fade" id="suiviModal" tabindex="-1" aria-labelledby="suiviModalLabel" aria-hidden="true" data-bs-backdrop="false">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Ajouter un suivi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="createForm">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" id="create_indicateur_id" name="indicateur_id">
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Résultat atteint *</label>
-                        <input type="number" step="0.01" class="form-control" name="resultat_atteint" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Coût effectif </label>
-                        <input type="number" step="0.01" class="form-control" name="cout_effectif" >
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Période </label>
-                        <input type="text" class="form-control" name="periode" >
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Observation</label>
-                        <textarea class="form-control" name="observation" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true" aria-labelledby="editModalLabel" data-backdrop="false" data-bs-backdrop="true" data-bs-keyboard="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modifier le suivi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="editForm">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <input type="hidden" id="edit_suivi_id">
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Résultat atteint *</label>
-                        <input type="number" step="0.01" class="form-control" id="edit_resultat_atteint" name="resultat_atteint" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Coût effectif </label>
-                        <input type="number" step="0.01" class="form-control" id="edit_cout_effectif" name="cout_effectif" >
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Période </label>
-                        <input type="text" class="form-control" id="edit_periode" name="periode" >
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Observation</label>
-                        <textarea class="form-control" id="edit_observation" name="observation" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
-                </div>
-            </form>
+            <!-- Le contenu sera chargé dynamiquement ici via AJAX -->
         </div>
     </div>
 </div>

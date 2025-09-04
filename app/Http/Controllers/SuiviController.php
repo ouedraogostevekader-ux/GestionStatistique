@@ -37,20 +37,25 @@ class SuiviController extends Controller
         return view('suivis.create', compact('indicateurProgrammes'));
     }
 
+    public function createByMIndicateur($id)
+    {
+        return view('suivis.modal-content', ['indicateur_programme_id' => $id]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreSuiviRequest $request)
     {
         //
-        Suivi::create($request->validated());
-
+        $suivi =Suivi::create($request->validated());
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Suivi créé avec succès!'
             ]);
         }
+        
         return redirect()->route('suivis.index')->with('success', 'Suivi créé avec succès');
     }
 
@@ -74,10 +79,8 @@ class SuiviController extends Controller
     public function edit($id)
     {
         //
-        //$indicateurProgrammes = IndicateurProgramme::all();
-        $indicateurProgrammes = DB::table('indicateurs_programmes')->get();
         $suivi = Suivi::findOrFail($id);
-        return view('suivis.edit', compact('suivi', 'indicateurProgrammes'));
+        return view('suivis.modal-content-edit', ['suivi' => $suivi]);
     }
 
     /**

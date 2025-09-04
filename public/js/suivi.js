@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         collapse.addEventListener('show.bs.collapse', function() {
             // collapse.collapse('toggle');
-            console.log(target);
             btn.innerHTML = '<i class="bi bi-eye-slash-fill me-1"></i>';
         });
         
@@ -44,128 +43,152 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
 });
-// Ouvrir le modal de création
-function openCreateModal(indicateurId) {
-    document.getElementById('create_indicateur_id').value = indicateurId;
-    document.getElementById('createForm').reset();
-    new bootstrap.Modal(document.getElementById('createModal'), {
-        keyboard: false
-    }).show();
-}
-
-// Ouvrir le modal d'édition
-async function openEditModal(suiviId) {
-    try {
-        const response = await fetch(`/suivis/${suiviId}`);
-        const suivi = await response.json();
-        
-        document.getElementById('edit_suivi_id').value = suivi.id;
-        document.getElementById('edit_resultat_atteint').value = suivi.resultat_atteint;
-        document.getElementById('edit_cout_effectif').value = suivi.cout_effectif;
-        document.getElementById('edit_periode').value = suivi.periode;
-        document.getElementById('edit_observation').value = suivi.observation || '';
-        
-        new bootstrap.Modal(document.getElementById('editModal')).show();
-    } catch (error) {
-        Swal.fire({
-            title: "Erreur !",
-            text: "Erreur lors du chargement des données.",
-            icon: "error",
-        });
-        //alert('Erreur lors du chargement des données');
-    }
-}
 
 
-// Gestion du formulaire de création
-document.getElementById('createForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    console.log(...formData);
-    try {
-        const response = await fetch('/suivis', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}",
-            },
-            body: formData
-        });
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("suiviModal");
+    const modalContent = modal.querySelector(".modal-content");
 
-        const result = await response.json();
-        
-        if (result.success) {
-            bootstrap.Modal.getInstance(document.getElementById('createModal')).hide();
-            Swal.fire({
-                title: "Création !",
-                text: "L'élément a été cré avec succès.",
-                icon: "success",
-                timer: 2000,
+    modal.addEventListener("show.bs.modal", async function (event) {
+        const button = event.relatedTarget;
+        const url = button.getAttribute("data-url");
+
+        // Afficher un loader
+        modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h5 class="modal-title">Chargement...</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement en cours...</span>
+                    </div>
+                    <p class="mt-2">Chargement du formulaire...</p>
+                </div>
+            `;
+
+        try {
+            // Récupérer le contenu via AJAX
+            const response = await fetch(url, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
             });
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        } else {
-            Swal.fire({
-                title: "Erreur !",
-                text: "Une erreur est survenue lors de la creation.",
-                icon: "error",
-            });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Erreur ${response.status}: ${response.statusText}`
+                );
+            }
+
+            const html = await response.text();
+
+            // Injecter le contenu dans le modal
+            modalContent.innerHTML = html;
+
+            // Gérer la soumission du formulaire via AJAX
+            const form = modalContent.querySelector("form");
+            if (form) {
+                form.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    // Afficher un loader pendant la soumission
+                    const submitButton = form.querySelector(
+                        'button[type="submit"]'
+                    );
+                    const originalButtonText = submitButton.innerHTML;
+                    submitButton.innerHTML = `
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Enregistrement...
+                        `;
+                    submitButton.disabled = true;
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: form.method,
+                            body: formData,
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest",
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            },
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            // Fermer le modal et recharger la page
+                            const modalInstance =
+                                bootstrap.Modal.getInstance(modal);
+                            modalInstance.hide();
+
+                            // Afficher un message de succès
+                            Swal.fire({
+                                title: "Opération réussie !",
+                                text: "Evolution de l'indicateur enregistrée avec succès",
+                                icon: "success",
+                            });
+
+                            // Recharger la page après un délai
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            // Afficher les erreurs de validation
+                            let errorHtml =
+                                '<div class="alert alert-danger mt-3"><ul>';
+                            console.log(result);
+                            if (result.message !== undefined) {
+                                errorHtml += `<li>${result.message}</li>`;
+                            }
+                            for (const field in result.errors) {
+                                result.errors[field].forEach((error) => {
+                                    errorHtml += `<li>${error}</li>`;
+                                });
+                            }
+                            errorHtml += "</ul></div>";
+
+                            // Insérer les erreurs au-dessus du formulaire
+                            form.insertAdjacentHTML("afterbegin", errorHtml);
+
+                            // Réactiver le bouton
+                            submitButton.innerHTML = originalButtonText;
+                            submitButton.disabled = false;
+                        }
+                    } catch (error) {
+                        //console.error('Erreur:', error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oups...",
+                            text: "Une erreur est survenue lors de la soumission du formulaire.",
+                        });
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                    }
+                });
+            }
+        } catch (error) {
+            //console.error('Erreur de chargement:', error);
+            modalContent.innerHTML = `
+                    <div class="modal-header">
+                        <h5 class="modal-title">Erreur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger">
+                            <p><strong>Impossible de charger le contenu</strong></p>
+                            <p class="mb-0">${error.message}</p>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                `;
         }
-    } catch (error) {
-        console.error('Erreur:', error);
-        Swal.fire({
-            title: "Erreur !",
-            text: "Une erreur est survenue lors de la requête.",
-            icon: "error",
-        });
-    }
-});
+    });
 
-// Gestion du formulaire d'édition
-document.getElementById('editForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const suiviId = document.getElementById('edit_suivi_id').value;
-    const formData = new FormData(this);
-    
-    try {
-        const response = await fetch(`/suivis/${suiviId}`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'X-HTTP-Method-Override': 'PUT'
-            },
-            body: formData
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-            bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-            Swal.fire({
-                title: "Modifié !",
-                text: "L'élément a été modifié avec succès.",
-                icon: "success",
-                timer: 2000,
-            });
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        } else {
-            Swal.fire({
-                title: "Erreur !",
-                text: "Une erreur est survenue lors de la modification.",
-                icon: "error",
-            });
-            //alert('Erreur lors de la modification');
-        }
-    } catch (error) {
-        Swal.fire({
-            title: "Erreur !",
-            text: "Une erreur est survenue pendant la requête.",
-            icon: "error",
-        });
-        //alert('Erreur lors de la modification');
-    }
+    // Réinitialiser le modal quand il se ferme
+    modal.addEventListener("hidden.bs.modal", function () {
+        modalContent.innerHTML = "";
+    });
 });
