@@ -105,12 +105,12 @@
                         </p>
 
                         <div class="mb-3">
-                            <a href="{{ route('import.template', 'structures') }}" class="btn btn-outline-primary btn-sm">
+                            <a href="{{ route('imports.template', 'structures') }}" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-download"></i> Télécharger le modèle
                             </a>
                         </div>
 
-                        <form action="{{ route('import.structures') }}" method="POST" enctype="multipart/form-data"
+                        <form action="{{ route('imports.structures') }}" method="POST" enctype="multipart/form-data"
                             class="import-form" id="structuresForm">
                             @csrf
                             <div class="mb-3">
@@ -147,13 +147,13 @@
                         </p>
 
                         <div class="mb-3">
-                            <a href="{{ route('import.template', 'objectifs-strategiques') }}"
+                            <a href="{{ route('imports.template', 'objectifs-strategiques') }}"
                                 class="btn btn-outline-success btn-sm">
                                 <i class="bi bi-download"></i> Télécharger le modèle
                             </a>
                         </div>
 
-                        <form action="{{ route('import.objectifs-strategiques') }}" method="POST"
+                        <form action="{{ route('imports.objectifs-strategiques') }}" method="POST"
                             enctype="multipart/form-data" class="import-form" id="objectifsStrategiquesForm">
                             @csrf
                             <div class="mb-3">
@@ -191,13 +191,13 @@
                         </p>
 
                         <div class="mb-3">
-                            <a href="{{ route('import.template', 'objectifs-specifiques') }}"
+                            <a href="{{ route('imports.template', 'objectifs-specifiques') }}"
                                 class="btn btn-outline-warning btn-sm">
                                 <i class="bi bi-download"></i> Télécharger le modèle
                             </a>
                         </div>
 
-                        <form action="{{ route('import.objectifs-specifiques') }}" method="POST"
+                        <form action="{{ route('imports.objectifs-specifiques') }}" method="POST"
                             enctype="multipart/form-data" class="import-form" id="objectifsSpecifiquesForm">
                             @csrf
                             <div class="mb-3">

@@ -186,21 +186,31 @@ class DataSeeder extends Seeder
 
         // 8. Activités
         $activites = [];
-        $periodes = ['T1', 'T2', 'T3', 'T4'];
+        $periodes = DB::table('periodes')->pluck('id')->toArray(); // récupérer les id des périodes existantes
 
         for ($i = 0; $i < 150; $i++) {
             $activiteId = (string) Str::ulid();
             $activites[] = $activiteId;
 
+            // Insertion dans la table activites
             DB::table('activites')->insert([
                 'id' => $activiteId,
                 'libelle' => 'Activité : ' . $faker->sentence(5),
                 'cout_previsionnel' => $faker->randomFloat(2, 10000, 1000000),
-                'periode' => $faker->randomElement($periodes),
                 'objectif_specifique_id' => $faker->randomElement($objectifsSpecifiques),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Attacher entre 1 et 4 périodes aléatoires à cette activité
+            $periodesChoisies = $faker->randomElements($periodes, rand(1, count($periodes)));
+
+            foreach ($periodesChoisies as $periodeId) {
+                DB::table('activite_periode')->insert([
+                    'activite_id' => $activiteId,
+                    'periode_id' => $periodeId,
+                ]);
+            }
         }
 
         // 9. Indicateurs programmes
