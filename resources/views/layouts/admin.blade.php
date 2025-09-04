@@ -100,6 +100,7 @@
             <!--begin::App Content-->
 
             @yield('content')
+            @yield('styles')
 
             <!--end::App Content-->
         </main>

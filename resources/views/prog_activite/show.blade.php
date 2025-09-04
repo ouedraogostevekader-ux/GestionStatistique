@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Programme ' . $programme->numero_programme)
+{{-- @section('title', 'Programme ' . $programme->numero_programme) --}}
 
 @section('content')
     <div class="container-fluid">
@@ -25,10 +25,10 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="btn-group w-100">
-                    <a href="{{ route('programmes.tableau', $programme->id) }}" class="btn btn-success">
+                    <a href="{{ route('programme-activites.tableau', $programme->id) }}" class="btn btn-success">
                         <i class="fas fa-table"></i> Vue Tableau
                     </a>
-                    <a href="{{ route('programmes.suivi', $programme->id) }}" class="btn btn-warning">
+                    <a href="{{ route('programme-activites.suivi', $programme->id) }}" class="btn btn-warning">
                         <i class="fas fa-chart-line"></i> Suivi Performance
                     </a>
                     <button class="btn btn-info" onclick="window.print()">

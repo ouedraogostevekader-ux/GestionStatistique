@@ -20,15 +20,18 @@
                                                 Programme {{ $programme->numero_programme }} : {{ $programme->libelle }}
                                             </h4>
                                             <div class="btn-group">
-                                                <a href="#" class="btn btn-light btn-sm">
+                                                {{-- <a href="{{ route('programme-activites.show', $programme->id) }}"
+                                                    class="btn btn-light btn-sm">
                                                     <i class="fas fa-eye"></i> Détails
+                                                </a> --}}
+                                                <a href="{{ route('programme-activites.tableau', $programme->id) }}"
+                                                    class="btn btn-success btn-sm">
+                                                    <i class="fas fa-table"></i> Détails
                                                 </a>
-                                                <a href="#" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-table"></i> Tableau
-                                                </a>
-                                                <a href="#" class="btn btn-warning btn-sm">
+                                                {{-- <a href="{{ route('programme-activites.suivi', $programme->id) }}"
+                                                    class="btn btn-warning btn-sm">
                                                     <i class="fas fa-chart-line"></i> Suivi
-                                                </a>
+                                                </a> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -79,7 +82,7 @@
                                                 <div class="info-box bg-danger">
                                                     <span class="info-box-icon"><i class="fas fa-money-bill"></i></span>
                                                     <div class="info-box-content">
-                                                        <span class="info-box-text">Budget Total</span>
+                                                        <span class="info-box-text">Coût prévisionnel total</span>
                                                         <span class="info-box-number">
                                                             {{ number_format(
                                                                 $programme->objectifsStrategiques->sum(function ($obj) {
@@ -89,6 +92,9 @@
                                                                         });
                                                                     });
                                                                 }),
+                                                                0,
+                                                                ',',
+                                                                ' ',
                                                             ) }}
                                                             FCFA
                                                         </span>

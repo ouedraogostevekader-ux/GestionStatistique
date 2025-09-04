@@ -87,6 +87,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
     Route::resource('programme-activites', App\Http\Controllers\ProgrammeActiviteController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
+    Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
+    Route::get('programme-activites/{id}/suivi', [App\Http\Controllers\ProgrammeActiviteController::class, 'suiviTableau'])->name('programme-activites.suivi');
 });
 
 
