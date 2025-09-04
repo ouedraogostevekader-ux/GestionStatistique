@@ -9,9 +9,11 @@
                 </div>
                 <div class="col-sm-6">
                     @can('user-create')
-                        <a class="btn btn-primary float-right" href="{{ route('users.create') }}">
-                            Ajouter
-                        </a>
+                        <div class="d-flex justify-content-end">
+                            <a class="btn btn-primary float-right" href="{{ route('users.create') }}">
+                                Ajouter
+                            </a>
+                        </div>
                     @endcan
                 </div>
             </div>
@@ -47,12 +49,7 @@
                 }, 5000);
             </script>
         @endsection
-        {{-- @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif --}}
+
     </div>
     <div class="clearfix"></div>
 

@@ -15,15 +15,6 @@
 
     <div class="content px-3">
         <div class="card">
-            {{-- @if ($errors->any())
-            <div class="alert alert-danger">
-                @foreach ($errors->all() as $error)
-                <ul>
-                    <li>{{$error}}</li>
-                </ul>
-                @endforeach
-            </div>
-            @endif --}}
             <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                 @csrf
 

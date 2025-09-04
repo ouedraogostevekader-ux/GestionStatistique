@@ -33,7 +33,7 @@
                                     {{-- @endcan --}}
 
                                     {{-- @can('role-delete') --}}
-                                    <button type="button" class="btn btn-danger delete-btn" title="Supprimer"
+                                    <button type="button" class="btn btn-outline-danger delete-btn" title="Supprimer"
                                         data-url="{{ route('roles.destroy', $data->ulid) }}"
                                         data-message="<strong>{{ $data->name }}</strong> sera supprimé. Continuer ?">
                                         <i class="bi bi-trash-fill"></i>

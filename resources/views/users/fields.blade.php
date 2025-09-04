@@ -67,7 +67,7 @@
     @enderror
 </div>
 
-<!-- Password Field -->
+{{-- <!-- Password Field -->
 <div class="form-group col-sm-6">
     <label for="password" class="form-label">Mot de passe</label>
     <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror"
@@ -84,7 +84,7 @@
     @error('confirm-password')
         <div class="alert alert-danger">{{ $message }}</div>
     @enderror
-</div>
+</div> --}}
 
 <!-- Roles Field -->
 <div class="form-group col-sm-6">
