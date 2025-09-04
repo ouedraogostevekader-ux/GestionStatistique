@@ -21,7 +21,7 @@ nav.app-header.navbar.navbar-expand.bg-body {
 }
 
 .custom-navbar {
-    background: linear-gradient(to right, #d71920 50%, #006233 50%);
+    background: linear-gradient(to right, #006233 70%, #d71920 90%);
     /* rouge & vert */
     border-bottom: 4px solid #FFD700;
     /* bande jaune */

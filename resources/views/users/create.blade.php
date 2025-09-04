@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>
-                    Ajouter User
+                        Ajouter User
                     </h1>
                 </div>
             </div>
@@ -15,7 +15,7 @@
 
     <div class="content px-3">
         <div class="card">
-            @if($errors->any())
+            {{-- @if ($errors->any())
             <div class="alert alert-danger">
                 @foreach ($errors->all() as $error)
                 <ul>
@@ -23,22 +23,22 @@
                 </ul>
                 @endforeach
             </div>
-            @endif
+            @endif --}}
             <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                 @csrf
 
-            <div class="card-body">
+                <div class="card-body">
 
-                <div class="row">
-                    @include('users.fields')
+                    <div class="row">
+                        @include('users.fields')
+                    </div>
+
                 </div>
 
-            </div>
-
-            <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-                <a href="{{ route('users.index') }}" class="btn btn-default"> Annuler </a>
-            </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <a href="{{ route('users.index') }}" class="btn btn-default"> Annuler </a>
+                </div>
 
             </form>
 

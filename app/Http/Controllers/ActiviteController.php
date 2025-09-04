@@ -7,9 +7,21 @@ use App\Http\Requests\UpdateActiviteRequest;
 use App\Models\Activite;
 use App\Repositories\ActiviteRepository;
 use DB;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ActiviteController extends Controller
+class ActiviteController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:activite-list', only: ['index', 'show']),
+            new Middleware('permission:activite-create', only: ['create', 'store']),
+            new Middleware('permission:activite-edit', only: ['edit', 'update']),
+            new Middleware('permission:activite-delete', only: ['destroy']),
+        ];
+    }
     protected $activiteRepository;
 
     public function __construct(ActiviteRepository $activiteRepository)
@@ -34,7 +46,7 @@ class ActiviteController extends Controller
     public function store(StoreActiviteRequest $request)
     {
         $activite = $this->activiteRepository->create($request->validated());
-        return redirect()->route('activites.index')->with('success', "L'activité " . $activite->libelle . "a été enregistrée.", );
+        return redirect()->route('activites.index')->with('success', "L'activité " . $activite->libelle . "a été enregistrée.",);
     }
 
     /* Create Activite */

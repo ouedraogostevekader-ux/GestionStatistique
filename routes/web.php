@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StatistiquesController;
 use App\Http\Controllers\StructureController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
@@ -26,7 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::get('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwd'])->name('users.changepwd');
     Route::patch('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwdstore'])->name('users.changepwdstore');
 
+    //Logs, Utilisateurs, Roles et Permissions
     Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::patch('/users/{id}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
+    Route::patch('/users/{id}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
+
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::get('logs', [App\Http\Controllers\LogController::class, 'index'])->name('logs.index');
@@ -40,13 +46,21 @@ Route::middleware('auth')->group(function () {
         // Page principale du tableau de bord
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/statistiques', [DashboardController::class, 'statistique'])->name('admin.statistique');
+        Route::get('/sstatistiques', [StatistiquesController::class, 'index'])->name('admin.statistique');
+        Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques.index');
         // Routes CRUD complètes pour les structures
         Route::resource('structures', StructureController::class);
 
         // Routes supplémentaires pour les fonctionnalités avancées
         Route::get('structures/search', [StructureController::class, 'search'])->name('structures.search');
         Route::get('structures/filter/type', [StructureController::class, 'filterByType'])->name('structures.filter.type');
+
+        // imports
+        Route::resource('imports', ImportController::class);
+        Route::post('imports/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
+        Route::post('imports/structure', [ImportController::class, 'importStructures'])->name('import.structures');
+        Route::post('imports/objectifs-stra', [ImportController::class, 'importObjectifsStrategiques'])->name('import.objectifs-strategiques');
+        Route::post('imports/objectif-spec', [ImportController::class, 'downloadTemplate'])->name('import.objectifs-specifiques');
 
     });
 

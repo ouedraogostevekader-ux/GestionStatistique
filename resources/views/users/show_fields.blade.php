@@ -47,3 +47,26 @@
         @endif
     </div>
 </div>
+<div class="col-sm-6">
+    @if ($user->is_active)
+        <!-- Bouton désactiver -->
+        <form action="{{ route('users.deactivate', $user->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="btn btn-warning btn-sm"
+                onclick="return confirm('Voulez-vous vraiment désactiver ce compte ?')">
+                Désactiver
+            </button>
+        </form>
+    @else
+        <!-- Bouton activer -->
+        <form action="{{ route('users.activate', $user->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="btn btn-success btn-sm"
+                onclick="return confirm('Voulez-vous vraiment réactiver ce compte ?')">
+                Activer
+            </button>
+        </form>
+    @endif
+</div>

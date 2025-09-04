@@ -9,11 +9,25 @@ use App\Models\IndicateurProgramme;
 use App\Models\ObjectifSpecifique;
 use App\Models\ObjectifsStrategique;
 use App\Models\Suivi;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class SuiviController extends Controller
+class SuiviController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
+            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
+            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
+            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -35,21 +35,29 @@ class ProgrammesActivite extends Model
         'date_generation' => 'datetime',
     ];
 
-    public function programmeBudgetaires()
+    public function programmesBudgetaires()
     {
-        //return $this->hasMany(ProgrammeBudgetaire::class);
+        return $this->hasMany(ProgrammeBudgetaire::class);
+    }
+
+    public function rapportsActivites()
+    {
+        return $this->hasMany(RapportActivite::class);
     }
 
     public function getDescriptionForEvent(string $eventName): string
     {
-        if ($eventName == 'created')
-        { return 'Creation';}
+        if ($eventName == 'created') {
+            return 'Creation';
+        }
 
-        if ($eventName == 'updated')
-        {return 'Modification';}
+        if ($eventName == 'updated') {
+            return 'Modification';
+        }
 
-        if ($eventName == 'deleted')
-        {return 'Suppression';}
+        if ($eventName == 'deleted') {
+            return 'Suppression';
+        }
 
         return "{$eventName}";
     }

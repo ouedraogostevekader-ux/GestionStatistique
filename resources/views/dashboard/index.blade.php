@@ -116,7 +116,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-primary">Budget prévisionnel</h5>
+                        <h5 class="card-title text-primary">Coût prévisionnel</h5>
                         <h3 class="text-primary">{{ number_format($financialStats['budget_prevu'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
@@ -125,7 +125,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-success">Budget exécuté</h5>
+                        <h5 class="card-title text-success">Coût effectif</h5>
                         <h3 class="text-success">{{ number_format($financialStats['budget_execute'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
@@ -134,16 +134,30 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-warning">Budget restant</h5>
+                        <h5 class="card-title text-warning">Taux d'éxecution physique</h5>
+                        <h3 class="text-warning">{{ $performanceIndicators['moyenne_resultats'] }} %
+                        </h3>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-warning"
+                                style="width: {{ $performanceIndicators['moyenne_resultats'] }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning">coût restant</h5>
                         <h3 class="text-warning">{{ number_format($financialStats['budget_restant'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-info">Taux d'exécution</h5>
+                        <h5 class="card-title text-info">Taux d'exécution financière</h5>
                         <h3 class="text-info">{{ $financialStats['taux_execution'] }}%</h3>
                         <div class="progress mt-2">
                             <div class="progress-bar bg-info" style="width: {{ $financialStats['taux_execution'] }}%">
@@ -223,7 +237,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Répartition budgétaire par programme</h3>
+                        <h3 class="card-title">Répartition coût par programme</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="coutsProgrammesChart" width="400" height="150"></canvas>
@@ -337,14 +351,21 @@
     </section>
 
     <!-- Scripts pour les graphiques -->
-    <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Script dashboard -->
     <script>
-        // Données pour les graphiques
-        const chartData = @json($chartData);
+        const chartData = @json($chartData ?? []);
 
-        // Initialiser les graphiques au chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
-            initDashboardCharts(chartData);
+            // Attendre un peu pour s'assurer que Chart.js est chargé
+            setTimeout(() => {
+                if (typeof Chart !== 'undefined') {
+                    initDashboardCharts(chartData);
+                } else {
+                    console.error('Chart.js non disponible');
+                }
+            }, 100);
         });
     </script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
 @endsection
