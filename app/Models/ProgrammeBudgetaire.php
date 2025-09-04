@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
+
 
 
 class ProgrammeBudgetaire extends Model
@@ -53,17 +53,17 @@ class ProgrammeBudgetaire extends Model
     {
         return $this->belongsTo(ProgrammesActivite::class, 'programme_activite_id');
     }
-    public function structures()
+      public function structures()
     {
-        return $this->belongsToMany(Structure::class, 'programme_budgetaire_structure');
+        return $this->belongsToMany(Structure::class, 'programme_budgetaire_structure', 'programme_budgetaire_id', 'structure_id');
     }
-
+   
     public function responsables()
-    {
-        return $this->belongsToMany(User::class, 'responsables')
-            ->withPivot('date_debut', 'date_fin')
-            ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(User::class, 'responsables' )->withPivot('date_debut', 'date_fin');
+}   
+
+
 
     public function activites()
     {
@@ -91,15 +91,7 @@ class ProgrammeBudgetaire extends Model
         );
     }
 
-    public function structures()
-    {
-        return $this->belongsToMany(Structure::class, 'programme_budgetaire_structure', 'programme_budgetaire_id', 'structure_id');
-    }
-   
-    public function responsables()
-{
-    return $this->belongsToMany(User::class, 'responsables' )->withPivot('date_debut', 'date_fin');
-}       
+    
 
 
 }

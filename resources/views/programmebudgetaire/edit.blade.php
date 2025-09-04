@@ -17,18 +17,20 @@
         <label for="numero_programme" class="form-label">Numéro programme</label>
         <input type="text" name="numero_programme" value="{{ $programmeBudgetaire->numero_programme }}" class="form-control" required>
     </div>
+<div class="border rounded p-2" style="max-height: 300px; overflow-y: auto;">
+    @foreach($structures as $structure)
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                   name="structures[]" value="{{ $structure->id }}"
+                   id="structure_{{ $structure->id }}"
+                   {{ $programmeBudgetaire->structures->contains($structure->id) ? 'checked' : '' }}>
+            <label class="form-check-label" for="structure_{{ $structure->id }}">
+                {{ $structure->nom }}
+            </label>
+        </div>
+    @endforeach
+</div>
 
-    <div class="mb-3">
-        <label for="structures" class="form-label">Structures concernées</label>
-        <select name="structures[]" id="structures" class="form-select" multiple required>
-            @foreach($structures as $structure)
-                <option value="{{ $structure->id }}"
-                    @if($programmeBudgetaire->structures->contains($structure->id)) selected @endif>
-                    {{ $structure->nom }}
-                </option>
-            @endforeach
-        </select>
-    </div>
      <div class="mb-3">
     <label for="responsable_id" class="form-label fw-bold">Responsable du programme</label>
     <select name="responsable_id" id="responsable_id" class="form-select" required>

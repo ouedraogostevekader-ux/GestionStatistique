@@ -5,29 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProgrammeBudgetaire;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
+use App\Models\Structure;
+use App\Models\User;
 
-class ProgrammeBudgetaireController extends Controller implements HasMiddleware
+
+class ProgrammeBudgetaireController extends Controller
 {
-    public function __construct() {}
-
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
-            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
-            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
-            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
-        ];
-    }
-
     /**
-     * Afficher la liste
+     * Afficher la liste des programmes
      */
     public function index()
     {
-        $programmes = ProgrammeBudgetaire::paginate(10);
+        // Charger les programmes avec structures + responsable actif
+        $programmes = ProgrammeBudgetaire::with([
+            'structures',
+            'responsables' => function ($q) {
+                $q->wherePivotNull('date_fin'); // uniquement responsables actifs
+            }
+        ])->paginate(10);
 
         return view('programmebudgetaire.index', compact('programmes'));
     }
@@ -67,8 +62,10 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     {
         $validated = $request->validate([
             'libelle' => 'required|string|max:255',
-            'code' => 'required|string|max:100|unique:programmebudgetaire',
-
+            'numero_programme' => 'required|string|max:255|unique:programmes_budgetaires,numero_programme',
+            'responsable_id' => 'required|exists:users,id',
+            'structures' => 'nullable|array',
+            'structures.*' => 'exists:structures,id',
         ]);
 
         DB::transaction(function () use ($validated) {
@@ -96,16 +93,22 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     /**
      * Afficher le formulaire d’édition
      */
+
+    /**
+     * Afficher le formulaire d’édition
+     */
     public function edit($id)
     {
         $programmeBudgetaire = ProgrammeBudgetaire::with(['structures', 'responsables'])->findOrFail($id);
         $structures = Structure::orderBy('nom')->get();
         $users = User::orderBy('name')->get();
 
+
         // Responsable actif actuel
         $responsableActif = $programmeBudgetaire->responsables->firstWhere('pivot.date_fin', null);
 
         return view('programmebudgetaire.edit', compact('programmeBudgetaire', 'structures', 'users', 'responsableActif'));
+
     }
 
     /**
@@ -113,11 +116,7 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'libelle' => 'required|string|max:255',
-            'code' => 'required|string|max:100|unique:programmebudgetaire,code,' . $ProgrammeBudgetaire->id,
-
-        ]);
+        $validated = $request->validate([ 'libelle' => 'required|string|max:255', 'numero_programme' => 'required|string|max:255', 'responsable_id' => 'required|exists:users,id', 'structures' => 'nullable|array', 'structures.*' => 'exists:structures,id', ]);
 
         DB::transaction(function () use ($validated, $id) {
             $programmeBudgetaire = ProgrammeBudgetaire::with('responsables')->findOrFail($id);
@@ -161,18 +160,13 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     /**
      * Supprimer un programme
      */
-    public function destroy($id)
-    {
-        $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
+public function destroy($id)
+{
 
-        DB::transaction(function () use ($programmeBudgetaire) {
-            // Détacher les relations pivots avant suppression (si pas en cascade en BDD)
-            $programmeBudgetaire->structures()->detach();
-            $programmeBudgetaire->responsables()->detach();
-            $programmeBudgetaire->delete();
-        });
+      $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
+      $programmeBudgetaire->delete();
+      return redirect()->route('programmebudgetaire.index')
+                       ->with('success', 'Programme budgétaire supprimé avec succès.');
+}
 
-        return redirect()->route('programmebudgetaire.index')
-                         ->with('success', 'Programme budgétaire supprimé avec succès.');
-    }
 }
