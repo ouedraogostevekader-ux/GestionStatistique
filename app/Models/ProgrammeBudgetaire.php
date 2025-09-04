@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 
@@ -44,28 +43,12 @@ class ProgrammeBudgetaire extends Model
 
     public function activites()
     {
-        return $this->hasManyDeep(
-            Activite::class,
-            [
-                ObjectifsStrategique::class,
-                Action::class,
-                ObjectifSpecifique::class,
-            ],
-            // clés étrangères sur chaque modèle intermédiaire
-            [
-                'programme_budgetaire_id',   // objectifs_strategiques → programme_budgetaires
-                'objectif_strategique_id',   // actions → objectifs_strategiques
-                'action_id',                 // objectifs_specifiques → actions
-                'objectif_specifique_id',    // activites → objectifs_specifiques
-            ],
-            // clés locales correspondantes
-            [
-                'id', // programme_budgetaires.id
-                'id', // objectifs_strategiques.id
-                'id', // actions.id
-                'id', // objectifs_specifiques.id
-            ]
-        );
+        return $this->hasMany(Activite::class, 'objectif_specifique_id')
+            ->join('objectifs_specifiques', 'activites.objectif_specifique_id', '=', 'objectifs_specifiques.id')
+            ->join('actions', 'objectifs_specifiques.action_id', '=', 'actions.id')
+            ->join('objectifs_strategiques', 'actions.objectif_strategique_id', '=', 'objectifs_strategiques.id')
+            ->where('objectifs_strategiques.programme_budgetaire_id', $this->id)
+            ->select('activites.*');
     }
 
 }

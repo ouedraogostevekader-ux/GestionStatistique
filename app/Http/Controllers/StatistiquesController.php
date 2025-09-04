@@ -365,16 +365,20 @@ class StatistiquesController extends Controller
         $budgetProgrammes = ProgrammeBudgetaire::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->where('id', $programmeBudgetaireId);
         })
-            ->withSum([
+            ->with([
                 'activites' => function ($q) use ($trimestre, $annee) {
                     if ($trimestre && $annee) {
                         $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
                         $q->whereBetween('activites.created_at', [$dateRange['start'], $dateRange['end']]);
                     }
                 }
-            ], 'cout_previsionnel')
-            ->take(10)
-            ->get();
+            ])
+            ->get()
+            ->map(function ($programme) {
+                $programme->cout_previsionnel_sum = $programme->activites->sum('cout_previsionnel');
+                return $programme;
+            })
+            ->take(10);
 
         return [
             'evolution_activites' => $evolutionActivites,

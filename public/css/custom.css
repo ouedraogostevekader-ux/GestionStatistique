@@ -36,7 +36,8 @@ nav.app-header.navbar.navbar-expand.bg-body {
     /* survol en jaune */
 }
 
-#btnAjouter {
+#btnAjouter,
+.btn-primary {
     background: #019e48;
 }
 
