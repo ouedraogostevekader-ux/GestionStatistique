@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 
@@ -20,18 +21,23 @@ class ProgrammeBudgetaire extends Model
     protected $fillable = [
         'libelle',
         'numero_programme',
+        'annee',
+        'isActive',
         'programme_activite_id',
     ];
     public function getDescriptionForEvent(string $eventName): string
     {
-        if ($eventName == 'created')
-        { return 'Creation';}
+        if ($eventName == 'created') {
+            return 'Creation';
+        }
 
-        if ($eventName == 'updated')
-        {return 'Modification';}
+        if ($eventName == 'updated') {
+            return 'Modification';
+        }
 
-        if ($eventName == 'deleted')
-        {return 'Suppression';}
+        if ($eventName == 'deleted') {
+            return 'Suppression';
+        }
 
         return "{$eventName}";
     }
@@ -53,15 +59,15 @@ class ProgrammeBudgetaire extends Model
     {
         return $this->belongsTo(ProgrammesActivite::class, 'programme_activite_id');
     }
-      public function structures()
+    public function structures()
     {
         return $this->belongsToMany(Structure::class, 'programme_budgetaire_structure', 'programme_budgetaire_id', 'structure_id');
     }
-   
+
     public function responsables()
-{
-    return $this->belongsToMany(User::class, 'responsables' )->withPivot('date_debut', 'date_fin');
-}   
+    {
+        return $this->belongsToMany(User::class, 'responsables')->withPivot('date_debut', 'date_fin');
+    }
 
 
 
@@ -75,7 +81,7 @@ class ProgrammeBudgetaire extends Model
             ->select('activites.*');
     }
 
-    
+
 
 
 }
