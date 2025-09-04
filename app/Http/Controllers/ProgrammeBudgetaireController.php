@@ -2,117 +2,169 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProgrammeBudgetaire;
 use App\Models\Structure;
-use App\Http\Controllers\StructureController;
+use App\Models\User;
 
 class ProgrammeBudgetaireController extends Controller
-{    /**
-     * Afficher la liste
+{
+    /**
+     * Afficher la liste des programmes
      */
     public function index()
     {
-        $programmes = ProgrammeBudgetaire::paginate(10);
+        // Charger les programmes avec structures + responsable actif
+        $programmes = ProgrammeBudgetaire::with([
+            'structures',
+            'responsables' => function ($q) {
+                $q->wherePivotNull('date_fin'); // uniquement responsables actifs
+            }
+        ])->paginate(10);
+
         return view('programmebudgetaire.index', compact('programmes'));
     }
 
-
- /**
-     * Afficher un programme budgétaire
+    /**
+     * Afficher les détails d’un programme
      */
     public function show($id)
     {
-        $ProgrammeBudgetaire = ProgrammeBudgetaire::with('structures')->findOrFail($id);
-        return view('programmebudgetaire.show', compact('ProgrammeBudgetaire'));
+        $programmeBudgetaire = ProgrammeBudgetaire::with([
+            'structures',
+            'responsables' => function ($q) {
+                $q->wherePivotNull('date_fin');
+            }
+        ])->findOrFail($id);
+
+        $responsableActif = $programmeBudgetaire->responsables->last();
+
+        return view('programmebudgetaire.show', compact('programmeBudgetaire', 'responsableActif'));
     }
 
-        /**
+    /**
      * Afficher le formulaire de création
      */
     public function create()
     {
+        $structures = Structure::orderBy('nom')->get();
+        $users = User::orderBy('name')->get();
 
-        $structures = DB::table('structures')->get();
-
-        return view('programmebudgetaire.create', compact('structures'));
+        return view('programmebudgetaire.create', compact('structures', 'users'));
     }
 
-public function store(Request $request)
-{
-    //dd($request);
+    /**
+     * Enregistrer un nouveau programme
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'libelle' => 'required|string|max:255',
+            'numero_programme' => 'required|string|max:255|unique:programmes_budgetaires,numero_programme',
+            'responsable_id' => 'required|exists:users,id',
+            'structures' => 'nullable|array',
+            'structures.*' => 'exists:structures,id',
+        ]);
 
-    $validated = $request->validate([
-        'libelle' => 'required|string|max:255',
-        'numero_programme' => 'required|string|max:255',
-        //'structures' => 'nullable|array',
-        //'structures.*' => 'exists:structures,id'
-    ]);
+        DB::transaction(function () use ($validated) {
+            $programmeBudgetaire = ProgrammeBudgetaire::create([
+                'libelle' => $validated['libelle'],
+                'numero_programme' => $validated['numero_programme'],
+            ]);
 
-    
+            // Affecter le responsable actif
+            $programmeBudgetaire->responsables()->attach($validated['responsable_id'], [
+                'date_debut' => now(),
+                'date_fin' => null,
+            ]);
 
-    // Création du programme budgétaire
-    $programmeBudgetaire = ProgrammeBudgetaire::create([
-        'libelle' => $validated['libelle'],
-        'numero_programme' => $validated['numero_programme'],
-    ]);
+            // Associer les structures
+            if (!empty($validated['structures'])) {
+                $programmeBudgetaire->structures()->sync($validated['structures']);
+            }
+        });
 
-    // Attachement des structures sélectionnées (si présentes)
-    if (!empty($validated['structures'])) {
-        $programmeBudgetaire->structures()->sync($validated['structures']);
+        return redirect()->route('programmebudgetaire.index')
+                         ->with('success', 'Programme budgétaire créé avec succès.');
     }
-
-    return redirect()->route('programmebudgetaire.index')
-                     ->with('success', 'Programme budgétaire créé avec succès.');
-}
-
 
     /**
      * Afficher le formulaire d’édition
      */
     public function edit($id)
     {
-     $ProgrammeBudgetaire = ProgrammeBudgetaire::with('structures')->findOrFail($id);
-     $structures = DB::table('structures')->get();
-        return view('programmebudgetaire.edit', compact('ProgrammeBudgetaire', 'structures'));
+        $programmeBudgetaire = ProgrammeBudgetaire::with(['structures', 'responsables'])->findOrFail($id);
+        $structures = Structure::orderBy('nom')->get();
+        $users = User::orderBy('name')->get();
+
+        // Responsable actif actuel
+        $responsableActif = $programmeBudgetaire->responsables->firstWhere('pivot.date_fin', null);
+
+        return view('programmebudgetaire.edit', compact('programmeBudgetaire', 'structures', 'users', 'responsableActif'));
     }
-
-public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'libelle' => 'required|string|max:255',
-        'numero_programme' => 'required|string|max:255',
-        'structures' => 'nullable|array',
-        'structures.*' => 'exists:structures,id'
-    ]);
-
-    $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
-
-    $programmeBudgetaire->update([
-        'libelle' => $validated['libelle'],
-        'numero_programme' => $validated['numero_programme'],
-    ]);
-
-    // Mise à jour des structures associées
-    if (!empty($validated['structures'])) {
-        $programmeBudgetaire->structures()->sync($validated['structures']);
-    } else {
-        $programmeBudgetaire->structures()->detach(); // Si aucune structure sélectionnée
-    }
-
-    return redirect()->route('programmebudgetaire.index')
-                     ->with('success', 'Programme budgétaire mis à jour avec succès.');
-}
 
     /**
-     * Supprimer un programme budgétaire
+     * Mettre à jour un programme existant
+     */
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([ 'libelle' => 'required|string|max:255', 'numero_programme' => 'required|string|max:255', 'responsable_id' => 'required|exists:users,id', 'structures' => 'nullable|array', 'structures.*' => 'exists:structures,id', ]);
+
+        DB::transaction(function () use ($validated, $id) {
+            $programmeBudgetaire = ProgrammeBudgetaire::with('responsables')->findOrFail($id);
+
+            $responsableActif = $programmeBudgetaire->responsables->firstWhere('pivot.date_fin', null);
+
+            // Si le responsable change
+            if (!$responsableActif || $responsableActif->id !== $validated['responsable_id']) {
+                // Clôturer l’ancien responsable actif
+                if ($responsableActif) {
+                    $programmeBudgetaire->responsables()->updateExistingPivot($responsableActif->id, [
+                        'date_fin' => now()
+                    ]);
+                }
+
+                // Affecter le nouveau responsable
+                $programmeBudgetaire->responsables()->attach($validated['responsable_id'], [
+                    'date_debut' => now(),
+                    'date_fin' => null,
+                ]);
+            }
+
+            // Mettre à jour les champs principaux
+            $programmeBudgetaire->update([
+                'libelle' => $validated['libelle'],
+                'numero_programme' => $validated['numero_programme'],
+            ]);
+
+            // Mettre à jour les structures
+            if (!empty($validated['structures'])) {
+                $programmeBudgetaire->structures()->sync($validated['structures']);
+            } else {
+                $programmeBudgetaire->structures()->detach();
+            }
+        });
+
+        return redirect()->route('programmebudgetaire.index')
+                         ->with('success', 'Programme budgétaire mis à jour avec succès.');
+    }
+
+    /**
+     * Supprimer un programme
      */
     public function destroy($id)
     {
-      ProgrammeBudgetaire::destroy($id);
+        $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
+
+        DB::transaction(function () use ($programmeBudgetaire) {
+            // Détacher les relations pivots avant suppression (si pas en cascade en BDD)
+            $programmeBudgetaire->structures()->detach();
+            $programmeBudgetaire->responsables()->detach();
+            $programmeBudgetaire->delete();
+        });
 
         return redirect()->route('programmebudgetaire.index')
-            ->with('success', 'Programme budgétaire supprimé avec succès.');
+                         ->with('success', 'Programme budgétaire supprimé avec succès.');
     }
 }

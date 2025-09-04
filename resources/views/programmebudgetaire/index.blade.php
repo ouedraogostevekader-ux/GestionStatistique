@@ -34,6 +34,23 @@
                                     <td>{{ $programme->libelle }}</td>
                                     <td>{{ $programme->numero_programme }}</td>
                                     <td>{{$programme->structure_id}}</td>
+             <td>
+    @php
+        $responsableActif = $programme->responsables()->get()->last();
+    @endphp
+
+    @if($responsableActif)
+        {{ $responsableActif->name }}
+        <br>
+        <small class="text-muted">
+            Depuis le {{ \Carbon\Carbon::parse($responsableActif->pivot->date_debut)->format('d/m/Y') }}
+        </small>
+    @else
+        <span class="text-muted">Aucun responsable assigné</span>
+    @endif
+</td>
+
+
                               <td class="text-end">
     <div class="d-flex justify-content-end gap-2">
         <a href="{{ route('programmebudgetaire.show', $programme->id) }}" 

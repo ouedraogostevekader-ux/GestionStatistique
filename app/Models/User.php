@@ -92,4 +92,10 @@ class User extends Authenticatable
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+    public function programmesBudgetaires()
+{
+    return $this->belongsToMany(ProgrammeBudgetaire::class, 'responsables')->withPivot('date_debut', 'date_fin');
+       
+}
+
 }

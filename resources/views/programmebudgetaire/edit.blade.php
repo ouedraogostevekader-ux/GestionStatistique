@@ -4,18 +4,18 @@
 <div class="container">
     <h2>Modifier un Programme Budgétaire</h2>
 
- <form action="{{ route('programmebudgetaire.update', $ProgrammeBudgetaire->id) }}" method="POST">
+ <form action="{{ route('programmebudgetaire.update', $programmeBudgetaire->id) }}" method="POST">
     @csrf
     @method('PATCH')
 
     <div class="mb-3">
         <label for="libelle" class="form-label">Libellé</label>
-        <input type="text" name="libelle" value="{{ $ProgrammeBudgetaire->libelle }}" class="form-control" required>
+        <input type="text" name="libelle" value="{{ $programmeBudgetaire->libelle }}" class="form-control" required>
     </div>
 
     <div class="mb-3">
         <label for="numero_programme" class="form-label">Numéro programme</label>
-        <input type="text" name="numero_programme" value="{{ $ProgrammeBudgetaire->numero_programme }}" class="form-control" required>
+        <input type="text" name="numero_programme" value="{{ $programmeBudgetaire->numero_programme }}" class="form-control" required>
     </div>
 
     <div class="mb-3">
@@ -23,12 +23,28 @@
         <select name="structures[]" id="structures" class="form-select" multiple required>
             @foreach($structures as $structure)
                 <option value="{{ $structure->id }}"
-                    @if($ProgrammeBudgetaire->structures->contains($structure->id)) selected @endif>
+                    @if($programmeBudgetaire->structures->contains($structure->id)) selected @endif>
                     {{ $structure->nom }}
                 </option>
             @endforeach
         </select>
     </div>
+     <div class="mb-3">
+    <label for="responsable_id" class="form-label fw-bold">Responsable du programme</label>
+    <select name="responsable_id" id="responsable_id" class="form-select" required>
+        @php
+            $responsableActif = $programmeBudgetaire->responsables->firstWhere('pivot.date_fin', null);
+        @endphp
+
+        @foreach($users as $user)
+            <option value="{{ $user->id }}"
+                @if($responsableActif && $responsableActif->id === $user->id) selected @endif>
+                {{ $user->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
 
     <div class="d-flex justify-content-between">
         <a href="{{ route('programmebudgetaire.index') }}" class="btn btn-outline-secondary">Annuler</a>

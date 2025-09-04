@@ -54,4 +54,11 @@ class ProgrammeBudgetaire extends Model
     {
         return $this->belongsToMany(Structure::class, 'programme_budgetaire_structure', 'programme_budgetaire_id', 'structure_id');
     }
+   
+    public function responsables()
+{
+    return $this->belongsToMany(User::class, 'responsables' )->withPivot('date_debut', 'date_fin');
+}       
+
+
 }
