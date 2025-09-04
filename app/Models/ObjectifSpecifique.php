@@ -34,4 +34,8 @@ class ObjectifSpecifique extends Model
     {
         return $this->hasMany(IndicateurProgramme::class);
     }
+    public function indicateurs()
+    {
+        return $this->hasMany(IndicateurProgramme::class, 'objectif_specifique_id', 'id');
+    }
 }

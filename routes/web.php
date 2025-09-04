@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
         // Page principale du tableau de bord
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/sstatistiques', [StatistiquesController::class, 'index'])->name('admin.statistique');
+        Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('admin.statistique');
         Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques.index');
         // Routes CRUD complètes pour les structures
         Route::resource('structures', StructureController::class);
@@ -54,7 +54,6 @@ Route::middleware('auth')->group(function () {
         // Routes supplémentaires pour les fonctionnalités avancées
         Route::get('structures/search', [StructureController::class, 'search'])->name('structures.search');
         Route::get('structures/filter/type', [StructureController::class, 'filterByType'])->name('structures.filter.type');
-
     });
     // Routes pour l'importation CSV
     Route::prefix('import')->name('imports.')->group(function () {
@@ -86,6 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('actions', App\Http\Controllers\ActionController::class);
     Route::resource('objectifs-specifiques', App\Http\Controllers\ObjectifSpecifiqueController::class);
     Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
+    Route::resource('programme-activites', App\Http\Controllers\ProgrammeActiviteController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
 });
 

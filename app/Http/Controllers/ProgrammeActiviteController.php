@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProgrammesActivite;
+use App\Models\ProgrammeBudgetaire;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -25,9 +26,30 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        //Liste des programmes d'activités paginées
-        $programmeActivites = ProgrammesActivite::all();
-        return view('programme_activites.index', compact('programmeActivites'));
+        $programmes = ProgrammeBudgetaire::with([
+            'objectifsStrategiques' => function ($query) {
+                $query->with([
+                    'actions' => function ($query) {
+                        $query->with([
+                            'objectifsSpecifiques' => function ($query) {
+                                $query->with([
+                                    'activites' => function ($query) {
+                                        $query->with(['indicateurs', 'periodes']);
+                                    },
+                                    'indicateurs'
+                                ]);
+                            }
+                        ]);
+                    },
+                    'indicateurs'
+                ]);
+            },
+            'programmeActivite',
+            'structures'
+        ])->get();
+
+
+        return view('prog_activite.index', compact('programmes'));
     }
 
     /**
