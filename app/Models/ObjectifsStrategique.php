@@ -17,6 +17,7 @@ class ObjectifsStrategique extends Model
     public $incrementing = false;
     protected $fillable = [
         'libelle',
+        'annee',
         'programme_budgetaire_id',
     ];
 

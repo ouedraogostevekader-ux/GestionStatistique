@@ -33,31 +33,47 @@
                                 <tr>
                                     <td>{{ $programme->libelle }}</td>
                                     <td>{{ $programme->numero_programme }}</td>
-                                    <td>{{ $programme->programme_activite_id }}</td>
-                                    <td>{{ $programme->code }} </td>
+                                    <td>{{$programme->structure_id}}</td>
+             <td>
+    @php
+        $responsableActif = $programme->responsables()->get()->last();
+    @endphp
+
+    @if($responsableActif)
+        {{ $responsableActif->name }}
+        <br>
+        <small class="text-muted">
+            Depuis le {{ \Carbon\Carbon::parse($responsableActif->pivot->date_debut)->format('d/m/Y') }}
+        </small>
+    @else
+        <span class="text-muted">Aucun responsable assigné</span>
+    @endif
+</td>
+
+
                               <td class="text-end">
-    <div class="d-flex justify-content-end gap-2">
+    <div class="btn-group">
         <a href="{{ route('programmebudgetaire.show', $programme->id) }}" 
-           class="btn btn-outline-info btn-sm" 
+           class="btn btn-info btn-xs" 
            title="Voir">
             <i class="bi bi-eye-fill"></i>
         </a>
 
         <a href="{{ route('programmebudgetaire.edit', $programme->id) }}" 
-           class="btn btn-outline-warning btn-sm" 
+           class="btn btn-primary btn-xs" 
            title="Modifier">
             <i class="bi bi-pencil-fill"></i>
         </a>
+       
+  <button type="button"
+        class="btn btn-outline-danger delete-btn"
+        title="Supprimer"
+        data-url="{{ route('programmebudgetaire.destroy', $programme->id) }}"
+        data-message="Le programme <strong>{{ $programme->libelle }}</strong> sera supprimé. Continuer ?">
+    <i class="bi bi-trash-fill"></i>
+</button>
 
-        <form action="{{ route('programmebudgetaire.destroy', $programme->id) }}" method="POST">
-            @csrf @method('DELETE')
-            <button type="submit" 
-                    class="btn btn-outline-danger btn-sm" 
-                    onclick="return confirm('Confirmer la suppression ?')" 
-                    title="Supprimer">
-                <i class="bi bi-trash-fill"></i>
-            </button>
-        </form>
+       
     </div>
 </td>
 
