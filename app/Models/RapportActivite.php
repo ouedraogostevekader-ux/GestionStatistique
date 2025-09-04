@@ -9,13 +9,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class RapportActivite extends Authenticatable
 {
 
-    use HasFactory, SoftDeletes, HasUlids;
-    protected $keyType = 'string';
-    public $incrementing = false;
+    use HasFactory, SoftDeletes, HasUlids, LogsActivity;
+
+    protected $table = 'rapports_activites';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -48,6 +50,11 @@ class RapportActivite extends Authenticatable
         return $this->belongsTo(Structure::class);
     }
 
+    public function programmeActivite()
+    {
+        return $this->belongsTo(ProgrammesActivite::class, 'programme_activite_id');
+    }
+
     //Methode pour les logs
     public function getDescriptionForEvent(string $eventName): string
     {
@@ -74,10 +81,6 @@ class RapportActivite extends Authenticatable
     public function rapportsActivites()
     {
         return $this->hasMany(RapportActivite::class);
-    }
-    public function programmeActivite()
-    {
-        return $this->belongsTo(ProgrammesActivite::class);
     }
 
     public function getActivitylogOptions(): LogOptions

@@ -21,10 +21,10 @@ class SuiviController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
-            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
-            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
-            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+            new Middleware('permission:suivi-list', only: ['index', 'show']),
+            new Middleware('permission:suivi-create', only: ['create', 'store']),
+            new Middleware('permission:suivi-edit', only: ['edit', 'update']),
+            new Middleware('permission:suivi-delete', only: ['destroy']),
         ];
     }
 
@@ -53,7 +53,8 @@ class SuiviController extends Controller implements HasMiddleware
 
     public function createByMIndicateur($id)
     {
-        return view('suivis.modal-content', ['indicateur_programme_id' => $id]);
+        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        return view('suivis.modal-content', ['indicateur_programme_id' => $id,'periodes'=>$periodes]);
     }
 
     /**
@@ -94,7 +95,8 @@ class SuiviController extends Controller implements HasMiddleware
     {
         //
         $suivi = Suivi::findOrFail($id);
-        return view('suivis.modal-content-edit', ['suivi' => $suivi]);
+        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        return view('suivis.modal-content-edit', ['suivi' => $suivi,'periodes'=>$periodes]);
     }
 
     /**

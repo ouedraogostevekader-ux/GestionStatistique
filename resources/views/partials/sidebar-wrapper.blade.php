@@ -167,7 +167,7 @@
                     <ul class="nav nav-treeview">
                         {{-- @can('manageObjectifStrategique') --}}
                         <li class="nav-item">
-                            <a href="" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
+                            <a href="{{route('rapportActivites.index')}}" class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-journal-text"></i>
                                 <p>Rapport d'activités</p>
                             </a>

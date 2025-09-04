@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 class ProgrammeBudgetaire extends Model
 {
     use HasFactory, SoftDeletes, HasUlids;
-    use HasRelationships;
+    //use HasRelationships;
 
     protected $table = 'programmes_budgetaires';
 

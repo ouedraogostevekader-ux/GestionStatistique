@@ -20,7 +20,11 @@
 
         <div class="mb-3">
             <label class="form-label">Période </label>
-            <input type="text" class="form-control" name="periode" >
+            <select class="form-select" name="periode">
+                @foreach ($periodes as $key=>$periode)
+                    <option value="{{$key}}">{{$periode}}</option>
+                @endforeach
+            </select>
         </div>
 
         <div class="mb-3">

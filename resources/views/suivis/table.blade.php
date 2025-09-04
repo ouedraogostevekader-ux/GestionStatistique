@@ -51,10 +51,12 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="d-flex justify-content-end">
-                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suiviModal"
-                                                    data-url="{{ route('suivis.createM', $indicateur->id) }}">
-                                                    <i class="bi bi-plus"></i> Nouvelle evolution
-                                                </button>
+                                                @can('suivi-create')
+                                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suiviModal"
+                                                        data-url="{{ route('suivis.createM', $indicateur->id) }}">
+                                                        <i class="bi bi-plus"></i> Nouvelle evolution
+                                                    </button>
+                                                @endcan
                                             </div>
                                         </div>
                                     </div>
@@ -78,18 +80,21 @@
                                                     <td>{{ $suivi->periode }}</td>
                                                     <td class="text-danger">{{$suivi->observations}}</td>
                                                     <td>
-                                                       
+                                                       @can('suivi-edit')
                                                         <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal"
                                                             data-bs-target="#suiviModal" title="Modifier"
                                                             data-url="{{ route('suivis.edit', $suivi->id) }}">
                                                             <i class="bi bi-pencil-fill"></i>
                                                         </button>
+                                                        @endcan
                                                         
+                                                        @can('suivi-delete')
                                                         <button type="button" class="btn btn-outline-danger delete-btn" title="Supprimer"
                                                             data-url="{{ route('suivis.destroy', $suivi->id) }}"
                                                             data-message="<strong>{{ $suivi->resultat_atteint }} - {{ $suivi->cout_effectif }} - {{ $suivi->periode }} </strong> sera supprimé. Continuer ?">
                                                             <i class="bi bi-trash-fill"></i>
                                                         </button>
+                                                        @endcan
                                                     </td>
                                                 </tr>
                                                 @endforeach

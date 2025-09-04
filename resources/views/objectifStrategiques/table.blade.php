@@ -20,27 +20,27 @@
                                 @csrf
                                 @method('DELETE')
                                 <div class='btn-group'>
-                                    {{-- @can('objectifStrategique-list') --}}
+                                    @can('objectifStrategique-list')
                                     <a href="{{ route('objectifStrategiques.show', $data->id) }}" class="btn btn-info btn-xs"
                                         title="Voir">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    {{-- @endcan --}}
+                                    @endcan
 
-                                    {{-- @can('objectifStrategique-edit') --}}
+                                    @can('objectifStrategique-edit')
                                     <a href="{{ route('objectifStrategiques.edit', $data->id) }}" class="btn btn-primary btn-xs"
                                         title="Modifier">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    {{-- @endcan --}}
+                                    @endcan
 
-                                    {{-- @can('objectifStrategique-delete') --}}
+                                    @can('objectifStrategique-delete')
                                     <button type="button" class="btn btn-danger delete-btn" title="Supprimer"
                                         data-url="{{ route('objectifStrategiques.destroy', $data->id) }}"
                                         data-message="<strong>{{ $data->libelle }}</strong> sera supprimé. Continuer ?">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
-                                    {{-- @endcan --}}
+                                    @endcan
                                 </div>
                             </form>
 

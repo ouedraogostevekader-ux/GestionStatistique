@@ -22,7 +22,11 @@
 
         <div class="mb-3">
             <label class="form-label">Période </label>
-            <input type="text" class="form-control" value="{{$suivi->periode}}" name="periode" >
+            <select class="form-select" name="periode">
+                @foreach ($periodes as $key=>$periode)
+                    <option value="{{$key}}" {{$suivi->periode == $key ? 'selected' : ''}}>{{$periode}}</option>
+                @endforeach
+            </select>
         </div>
 
         <div class="mb-3">
