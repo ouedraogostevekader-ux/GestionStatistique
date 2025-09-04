@@ -80,6 +80,10 @@ Route::middleware('auth')->group(function () {
     // Activites
     Route::resource('activites', ActiviteController::class);
     Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
+        ->name('programmes-budgetaires.create-duplicate');
+    Route::post('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'storeDuplicate'])
+        ->name('programmes-budgetaires.store-duplicate');
     route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
     Route::get('suivis/create/{id}', [App\Http\Controllers\SuiviController::class, 'createByMIndicateur'])->name('suivis.createM');
     route::resource('suivis', App\Http\Controllers\SuiviController::class);
