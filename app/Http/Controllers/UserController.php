@@ -22,7 +22,8 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB as DB;
 
-use Spatie\Permission\Models\Role as ModelsRole;
+
+  
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -53,6 +54,8 @@ class UserController extends Controller implements HasMiddleware
         $user = null;
         return view('users.create', compact('roles', 'userRole', 'user', 'structures'));
     }
+
+
 
     /**
      * Store a newly created User in storage.
@@ -97,6 +100,8 @@ class UserController extends Controller implements HasMiddleware
 
         return redirect()->route('users.index')->with('success', 'User créé avec succès');
     }
+
+
 
     /**
      * Display the specified User.
@@ -330,4 +335,6 @@ class UserController extends Controller implements HasMiddleware
             // return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email'], 500);
         }
     }
+
+
 }

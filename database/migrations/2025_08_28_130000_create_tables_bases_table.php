@@ -22,7 +22,7 @@ return new class extends Migration {
         Schema::create('programmes_activites', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->string('libelle');
-            $table->string('annee');
+            $table->year('annee')->default(date('Y'));
             $table->string('file')->nullable();
             $table->dateTime('date_generation');
             $table->softDeletes();
@@ -34,6 +34,8 @@ return new class extends Migration {
             $table->ulid('id')->primary()->unique();
             $table->string('libelle');
             $table->string('numero_programme');
+            $table->year('annee')->default(date('Y'));
+            $table->boolean('isActive')->default(true);
             $table->foreignUlid('programme_activite_id')->nullable()->constrained('programmes_activites')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
@@ -43,6 +45,7 @@ return new class extends Migration {
         Schema::create('objectifs_strategiques', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->string('libelle');
+            $table->year('annee')->default(date('Y'));
             $table->foreignUlid('programme_budgetaire_id')->constrained('programmes_budgetaires')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
@@ -75,6 +78,7 @@ return new class extends Migration {
         Schema::create('actions', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->string('libelle');
+            $table->year('annee')->default(date('Y'));
             $table->foreignUlid('objectif_strategique_id')->constrained('objectifs_strategiques')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
@@ -84,6 +88,7 @@ return new class extends Migration {
         Schema::create('objectifs_specifiques', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->string('libelle');
+            $table->year('annee')->default(date('Y'));
             $table->foreignUlid('action_id')->constrained('actions')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
@@ -93,9 +98,16 @@ return new class extends Migration {
         Schema::create('activites', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->decimal('cout_previsionnel', 15, 2);
-            $table->string('periode');
             $table->string('libelle');
+            $table->year('annee')->default(date('Y'));
             $table->foreignUlid('objectif_specifique_id')->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        Schema::create('periodes', function (Blueprint $table) {
+            $table->ulid('id')->primary()->unique();
+            $table->string('libelle')->unique(); // Ex: "T1", "T2", "T3", "T4"
             $table->softDeletes();
             $table->timestamps();
         });
@@ -107,6 +119,7 @@ return new class extends Migration {
             $table->string('unite_mesure');
             $table->string('valeur_ref');
             $table->string('valeur_cible');
+            $table->year('annee')->default(date('Y'));
             $table->foreignUlid('objectif_specifique_id')->nullable()->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignUlid('objectif_strategique_id')->nullable()->constrained('objectifs_strategiques')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignUlid('activites_id')->nullable()->constrained('activites')->restrictOnDelete()->cascadeOnUpdate();
@@ -133,6 +146,12 @@ return new class extends Migration {
             $table->foreignUlid('structure_id')->constrained('structures')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignUlid('programme_budgetaire_id')->constrained('programmes_budgetaires')->restrictOnDelete()->cascadeOnUpdate();
             $table->primary(['structure_id', 'programme_budgetaire_id']);
+        });
+        Schema::create('activite_periode', function (Blueprint $table) {
+            $table->foreignUlid('activite_id')->constrained('activites')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('periode_id')->constrained('periodes')->restrictOnDelete()->cascadeOnUpdate();
+            $table->year('annee')->default(date('Y'));
+            $table->primary(['activite_id', 'periode_id']); // clé composite
         });
 
         Schema::create('responsables', function (Blueprint $table) {

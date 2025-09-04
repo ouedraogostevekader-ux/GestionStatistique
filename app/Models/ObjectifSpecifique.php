@@ -16,6 +16,7 @@ class ObjectifSpecifique extends Model
 
     protected $fillable = [
         'libelle',
+        'annee',
         'action_id',
     ];
 

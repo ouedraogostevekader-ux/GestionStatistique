@@ -36,7 +36,8 @@ nav.app-header.navbar.navbar-expand.bg-body {
     /* survol en jaune */
 }
 
-#btnAjouter {
+#btnAjouter,
+.btn-primary {
     background: #019e48;
 }
 
@@ -76,3 +77,36 @@ div#logo-login {
 }
 
 /* FIN */
+
+/* Activite */
+select[multiple] {
+    height: 150px;
+}
+
+select[multiple] option {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+select[multiple] option:checked {
+    background-color: #007bff;
+    color: white;
+}
+
+.list-group-item {
+    border-left: none;
+    border-right: none;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.badge {
+    font-size: 0.85em;
+    padding: 0.5em 0.75em;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
