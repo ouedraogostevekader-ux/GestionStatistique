@@ -47,6 +47,8 @@ class Activite extends Model
     public function indicateurs()
     {
         return $this->hasMany(IndicateurProgramme::class, 'activites_id');
+    }
+
     public function indicateursProgrammes()
     {
         return $this->hasMany(IndicateurProgramme::class, 'activites_id', 'id');
