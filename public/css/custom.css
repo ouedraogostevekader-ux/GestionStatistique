@@ -36,6 +36,8 @@ nav.app-header.navbar.navbar-expand.bg-body {
     /* survol en jaune */
 }
 
+/* Styles butons */
+
 #btnAjouter,
 .btn-primary {
     background: #019e48;
@@ -49,11 +51,46 @@ nav.app-header.navbar.navbar-expand.bg-body {
     background: #d71920;
 }
 
+#btnEditer {
+    background: #FFD700;
+}
+
+#btnEditer:hover {
+    background: #d71920;
+}
+
+#btnEditer:active {
+    background: #019e48;
+}
+
+a.btn.btn-info.btn-sm,
+a.btn.btn-info.btn-xs {
+    background: #5c6b3e3b;
+    color: #da0606ab;
+    border: 1px solid #036234;
+}
+
 a.nav-link.active {
     border: 0.2px solid #ede199;
     /* background: #f1ead0 !important; */
     color: white !important;
 }
+
+button.btn.btn-primary,
+a.btn.btn-primary,
+button.btn.btn-primary.btn-sm {
+    background: green;
+    border: 1px solid red;
+}
+
+button.btn.btn-primary,
+
+button.btn.btn-primary.btn-sm:hover {
+    background: red;
+    border: 1px solid yellow;
+}
+
+/* Fin bouton */
 
 .nav-treeview a.nav-link.active {
     border: 0.3px solid #dabe1c;

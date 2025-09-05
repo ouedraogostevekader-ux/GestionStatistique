@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreActiviteRequest;
 use App\Http\Requests\UpdateActiviteRequest;
 use App\Models\Activite;
+use App\Models\ObjectifSpecifique;
 use App\Models\Periode;
 use App\Repositories\ActiviteRepository;
 use DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 
 class ActiviteController extends Controller implements HasMiddleware
 {
@@ -32,15 +34,37 @@ class ActiviteController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $objectifs = DB::select("SELECT * from objectifs_specifiques");
-        $activites = $this->activiteRepository->all();
+        // dd(Auth::user()->structure->programmesBudgetaires[0]->objectifsStrategiques);
+        if (Auth::user()->isAdmin()) {
+            $objectifs = DB::select("SELECT * from objectifs_specifiques");
+            $activites = $this->activiteRepository->all();
+        } else {
+            // Via la table pivot structure_programme_budgetaire
+            $objectifs = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+
+            $activites = Activite::whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+        }
         return view('activites.index', compact('activites', 'objectifs'));
     }
 
     /* Create Activite */
     public function create()
     {
-        $objectifs = DB::select("SELECT * from objectifs_specifiques");
+        if (Auth::user()->isAdmin()) {
+            $objectifs = DB::select("SELECT * from objectifs_specifiques");
+        } else {
+            // Via la table pivot structure_programme_budgetaire
+            $objectifs = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+        }
         $periodes = Periode::all();
         return view('activites.create', compact('objectifs', 'periodes'));
     }
@@ -68,7 +92,15 @@ class ActiviteController extends Controller implements HasMiddleware
 
     public function edit($ulid)
     {
-        $objectifs = DB::select("SELECT * from objectifs_specifiques");
+        if (Auth::user()->isAdmin()) {
+            $objectifs = DB::select("SELECT * from objectifs_specifiques");
+        } else {
+            // Via la table pivot structure_programme_budgetaire
+            $objectifs = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+        }
         $periodes = Periode::all();
         $activite = Activite::with('periodes')->findOrFail($ulid);
 

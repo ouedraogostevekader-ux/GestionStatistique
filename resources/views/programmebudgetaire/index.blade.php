@@ -1,8 +1,28 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Programme budgétaire')
 @section('content')
-    <div class="container py-4">
+    <div class="container py-2">
         <div class="row justify-content-center">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Liste des programmes budgétaires <span
+                                class="btn btn-success">({{ $programmes->count() }})</span>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-sm-6">
+                    <div class="mt-2 d-flex justify-content-end">
+                        <a class="btn btn-primary" id="btnAjouter" href="{{ route('programmebudgetaire.create') }}">
+                            <i class="bi bi-plus"></i> Ajouter
+                        </a>
+                        <a href="{{ route('programmes-budgetaires.create-duplicate') }}" id="btnEditer"
+                            class="btn btn-warning text-white m-1">
+                            <i class="bi bi-copy"></i> Crééer à partir d'un autre programme
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12">
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -10,9 +30,7 @@
                         <a href="{{ route('programmebudgetaire.create') }}" class="btn btn-light btn-sm">
                             + Nouveau
                         </a>
-                        <a href="{{ route('programmes-budgetaires.create-duplicate') }}" class="btn btn-warning text-white">
-                            <i class="bi bi-copy"></i> Crééer à partir d'un autre programme
-                        </a>
+
                     </div>
 
                     <div class="card-body">
