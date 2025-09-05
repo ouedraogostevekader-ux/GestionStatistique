@@ -32,6 +32,42 @@
                         </a>
 
                     </div>
+                    <form method="GET" action="{{ route('programmebudgetaire.index') }}" class="mb-3 row g-2">
+    <div class="col-md-3">
+        <label for="annee" class="form-label">Année</label>
+        <input type="number" name="annee" id="annee" class="form-control" 
+               value="{{ request('annee') }}" placeholder="Ex: 2025">
+    </div>
+    <div class="col-md-3">
+        <label for="structure_id" class="form-label">Structure</label>
+        <select name="structure_id" id="structure_id" class="form-select">
+            <option value="">Toutes</option>
+            @foreach($structures as $structure)
+                <option value="{{ $structure->id }}" 
+                        {{ request('structure_id') == $structure->id ? 'selected' : '' }}>
+                    {{ $structure->nom }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="responsable_id" class="form-label">Responsable</label>
+        <select name="responsable_id" id="responsable_id" class="form-select">
+            <option value="">Tous</option>
+            @foreach($users as $user)
+                <option value="{{ $user->id }}" 
+                        {{ request('responsable_id') == $user->id ? 'selected' : '' }}>
+                    {{ $user->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+        <a href="{{ route('programmebudgetaire.index') }}" class="btn btn-secondary">Réinitialiser</a>
+    </div>
+</form>
+
                     <div class="card-body">
                         @if (session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>
