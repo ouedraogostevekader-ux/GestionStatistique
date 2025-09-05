@@ -54,6 +54,11 @@ class RapportActivite extends Authenticatable
         return $this->belongsTo(Structure::class);
     }
 
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class, 'periode_rapport', 'id');
+    }
+
     public function programmeActivite()
     {
         return $this->belongsTo(ProgrammesActivite::class, 'programme_activite_id');

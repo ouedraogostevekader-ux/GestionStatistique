@@ -77,7 +77,7 @@
                                                 <tr>
                                                     <td>{{ $suivi->resultat_atteint }}</td>
                                                     <td>{{ $suivi->cout_effectif }}</td>
-                                                    <td>{{ $suivi->periode }}</td>
+                                                    <td>{{ $suivi->periode->libelle ?? "Indisponible" }}</td>
                                                     <td class="text-danger">{{$suivi->observations}}</td>
                                                     <td>
                                                        @can('suivi-edit')
