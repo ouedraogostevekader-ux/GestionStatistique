@@ -30,10 +30,10 @@ class ProgrammeBudgetaireController extends Controller
             'responsables' => function ($q) {
                 $q->wherePivotNull('date_fin'); // uniquement responsables actifs
             }
-            
+
         ])->paginate(10);
-        
-    $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
+
+        $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
 
         return view('programmebudgetaire.index', compact('programmes', 'locked'));
     }
@@ -44,14 +44,14 @@ class ProgrammeBudgetaireController extends Controller
     public function show($id)
     {
 
-    
+
         $programmeBudgetaire = ProgrammeBudgetaire::with([
             'structures',
             'responsables' => function ($q) {
                 $q->wherePivotNull('date_fin');
             }
         ])->findOrFail($id);
-       
+
 
 
         $responsableActif = $programmeBudgetaire->responsables->last();
@@ -66,7 +66,8 @@ class ProgrammeBudgetaireController extends Controller
     {
         $structures = Structure::orderBy('nom')->get();
         $users = User::orderBy('name')->get();
-        
+
+
 
         return view('programmebudgetaire.create', compact('structures', 'users'));
     }
@@ -82,7 +83,7 @@ class ProgrammeBudgetaireController extends Controller
             'responsable_id' => 'required|exists:users,id',
             'structures' => 'nullable|array',
             'structures.*' => 'exists:structures,id',
-            
+
         ]);
 
         DB::transaction(function () use ($validated) {
@@ -104,8 +105,8 @@ class ProgrammeBudgetaireController extends Controller
             }
         });
 
-        return redirect()->route('programmebudgetaire.index')
-            ->with('success', 'Programme budgétaire créé avec succès.');
+        return redirect()->route('programmebudgetaire.index');
+
     }
 
     /**
@@ -171,8 +172,8 @@ class ProgrammeBudgetaireController extends Controller
             }
         });
 
-        return redirect()->route('programmebudgetaire.index')
-            ->with('success', 'Programme budgétaire mis à jour avec succès.');
+        return redirect()->route('programmebudgetaire.index');
+           
     }
 
     /**
@@ -181,14 +182,14 @@ class ProgrammeBudgetaireController extends Controller
     public function destroy($id)
     {
 
-      $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
-      $programmeBudgetaire->delete();
-      return redirect()->route('programmebudgetaire.index')
-                       ->with('success', 'Programme budgétaire supprimé avec succès.');
-                       if (!$programmeBudgetaire->isActive) {
-    return redirect()->route('programmebudgetaire.index')
-                     ->withErrors(['error' => 'Ce programme est verrouillé et ne peut pas être supprimé.']);
-}
+        $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
+        $programmeBudgetaire->delete();
+        return redirect()->route('programmebudgetaire.index');
+
+        if (!$programmeBudgetaire->isActive) {
+            return redirect()->route('programmebudgetaire.index')
+                ->withErrors(['error' => 'Ce programme est verrouillé et ne peut pas être supprimé.']);
+        }
     }
 
     // Afficher le formulaire de duplication
@@ -296,31 +297,30 @@ class ProgrammeBudgetaireController extends Controller
         }
     }
 
-// public function toggleGlobalEditable()
+    // public function toggleGlobalEditable()
 // {
-   
-//     // Vérifie l'état actuel
+
+    //     // Vérifie l'état actuel
 //     $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
 
-//     // Inverse tous les programmes
+    //     // Inverse tous les programmes
 //     ProgrammeBudgetaire::query()->update(['isActive' => $locked ? true : false]);
 
-//     return redirect()->route('programmebudgetaire.index')
+    //     return redirect()->route('programmebudgetaire.index')
 //                      ->with('success', $locked ? 'Tous les programmes sont activés.' : 'Toutes les modifications sont désactivées.');
 // }
 
-public function toggleEditable($id)
-{
-    $programme = ProgrammeBudgetaire::findOrFail($id);
+    public function toggleEditable($id)
+    {
+        $programme = ProgrammeBudgetaire::findOrFail($id);
 
-    $programme->isActive = !$programme->isActive;
-    $programme->save();
+        $programme->isActive = !$programme->isActive;
+        $programme->save();
 
-    return redirect()->route('programmebudgetaire.index')
-                     ->with('success', $programme->isActive ? 
-                        "Le programme {$programme->libelle} est déverrouillé." : 
-                        "Le programme {$programme->libelle} est verrouillé.");
-}
+        return redirect()->route('programmebudgetaire.index');
+
+
+    }
 
 
 

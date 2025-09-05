@@ -92,7 +92,6 @@ Route::middleware('auth')->group(function () {
     // Routes index (toujours accessible)
     Route::get('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'index'])
         ->name('programmebudgetaire.index');
-    // Create doit venir avant show !
     Route::get('/programmebudgetaire/create', [ProgrammeBudgetaireController::class, 'create'])
         ->name('programmebudgetaire.create');
     // Toggle individuel (toujours accessible)

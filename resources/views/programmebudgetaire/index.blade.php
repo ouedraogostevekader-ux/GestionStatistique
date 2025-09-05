@@ -19,6 +19,11 @@
                             <div class="alert alert-success">{{ session('success') }}</div>
                         @endif
 
+                    <div class="card-body">
+                        @if (session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
@@ -32,18 +37,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($programmes as $programme)
+                                    @foreach ($programmes as $programme)
                                         <tr>
                                             <td>{{ $programme->libelle }}</td>
                                             <td>{{ $programme->numero_programme }}</td>
-
-                                            <td>{{$programme->structure_id}}</td>
+                                            {{-- <td>{{ $programme->structure_id }}</td> --}}
                                             <td>
                                                 @php
                                                     $responsableActif = $programme->responsables()->get()->last();
                                                 @endphp
 
-                                                @if($responsableActif)
+                                                @if ($responsableActif)
                                                     {{ $responsableActif->name }}
                                                     <br>
                                                     <small class="text-muted">
@@ -54,19 +58,62 @@
                                                     <span class="text-muted">Aucun responsable assigné</span>
                                                 @endif
                                             </td>
-
-                                            <td
-                                                class="badge bg-{{ $programme->isActive ? 'success' : 'secondary' }} text-white">
-                                                {{ $programme->isActive ? 'Ouvert' : 'Vérouillé' }}
+                                            <td>
+                                                @if ($programme->isActive)
+                                                    <span class="badge bg-success">Ouvert</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Verrouillé</span>
+                                                @endif
                                             </td>
+
+
                                             <td class="text-end">
+
                                                 <div class="btn-group">
+
+                                                    <!-- Voir toujours accessible -->
                                                     <a href="{{ route('programmebudgetaire.show', $programme->id) }}"
                                                         class="btn btn-info btn-xs" title="Voir">
                                                         <i class="bi bi-eye-fill"></i>
                                                     </a>
 
-                                                 
+                                                    <!-- Edit -->
+                                                    <a href="{{ $programme->isActive ? route('programmebudgetaire.edit', $programme->id) : '#' }}"
+                                                        class="btn btn-primary btn-xs {{ !$programme->isActive ? 'locked-program' : '' }}"
+                                                        title="{{ $programme->isActive ? 'Modifier' : 'Programme verrouillé' }}"
+                                                        data-message="Ce programme est verrouillé et ne peut pas être modifié.">
+                                                        <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+
+                                                    <!-- Delete -->
+                                                    <button type="button"
+                                                        class="btn btn-outline-danger {{ !$programme->isActive ? 'locked-program' : 'delete-btn' }}"
+                                                        title="{{ $programme->isActive ? 'Supprimer' : 'Programme verrouillé' }}"
+                                                        data-url="{{ $programme->isActive ? route('programmebudgetaire.destroy', $programme->id) : '' }}"
+                                                        data-message="Ce programme est verrouillé et ne peut pas être supprimé.">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
+
+                                                 <!-- Toggle isActive -->
+<button type="button" 
+        class="btn btn-outline-warning toggle-program-btn"
+        data-id="{{ $programme->id }}"
+        data-libelle="{{ $programme->libelle }}"
+        data-active="{{ $programme->isActive }}"
+        title="{{ $programme->isActive ? 'Verrouiller ce programme' : 'Déverrouiller ce programme' }}">
+    <i class="fas {{ $programme->isActive ? 'bi-unlock' : 'bi-lock' }}"></i>
+</button>
+
+
+                                                    <form id="toggle-form-{{ $programme->id }}"
+                                                        action="{{ route('programmebudgetaire.toggleEditable', $programme->id) }}"
+                                                        method="POST" class="d-none">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                    </form>
+                                                </div>
+
+
                                             </td>
 
 
@@ -84,4 +131,22 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="lockModal" tabindex="-1" aria-labelledby="lockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" id="lockModalMessage">
+        <!-- Message dynamique -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
