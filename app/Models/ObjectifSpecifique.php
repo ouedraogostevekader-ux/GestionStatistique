@@ -16,6 +16,7 @@ class ObjectifSpecifique extends Model
 
     protected $fillable = [
         'libelle',
+        'annee',
         'action_id',
     ];
 
@@ -31,6 +32,10 @@ class ObjectifSpecifique extends Model
     }
 
     public function indicateursProgrammes()
+    {
+        return $this->hasMany(IndicateurProgramme::class, 'objectif_specifique_id', 'id');
+    }
+    public function indicateurs()
     {
         return $this->hasMany(IndicateurProgramme::class, 'objectif_specifique_id', 'id');
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\ObjectifStrategiqueController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -10,11 +11,14 @@ use App\Http\Controllers\StatistiquesController;
 use App\Http\Controllers\StructureController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
-});
+})->name('acceuil');
 
+Route::get('/user/{id}/confirm-compte/', [UserController::class, 'edit_perso'])->name('edit.compte');
+Route::patch('/user/{id}/confirm-compte/enregistre', [UserController::class, 'update_perso'])->name('update.compte');
 /* Route::get('/dashboard', function () {
     return view('layouts.admin');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -29,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwdstore'])->name('users.changepwdstore');
 
     //Logs, Utilisateurs, Roles et Permissions
-    Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::resource('users', App\Http\Controllers\UserController::class); //->except(['update', 'edit']);
     Route::patch('/users/{id}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
     Route::patch('/users/{id}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
 
@@ -46,7 +50,7 @@ Route::middleware('auth')->group(function () {
         // Page principale du tableau de bord
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/sstatistiques', [StatistiquesController::class, 'index'])->name('admin.statistique');
+        Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('admin.statistique');
         Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques.index');
         // Routes CRUD complètes pour les structures
         Route::resource('structures', StructureController::class);
@@ -54,28 +58,79 @@ Route::middleware('auth')->group(function () {
         // Routes supplémentaires pour les fonctionnalités avancées
         Route::get('structures/search', [StructureController::class, 'search'])->name('structures.search');
         Route::get('structures/filter/type', [StructureController::class, 'filterByType'])->name('structures.filter.type');
+    });
+    // Routes pour l'importation CSV
+    Route::prefix('import')->name('imports.')->group(function () {
+        // Page principale d'importation
+        Route::get('/', [ImportController::class, 'index'])->name('index');
 
+        // Importation des structures
+        Route::post('/structures', [ImportController::class, 'importStructures'])->name('structures');
+
+        // Importation des objectifs stratégiques
+        Route::post('/objectifs-strategiques', [ImportController::class, 'importObjectifsStrategiques'])->name('objectifs-strategiques');
+
+        // Importation des objectifs spécifiques
+        Route::post('/objectifs-specifiques', [ImportController::class, 'importObjectifsSpecifiques'])->name('objectifs-specifiques');
+
+        // Téléchargement des modèles CSV
+        Route::get('/template/{type}', [ImportController::class, 'downloadTemplate'])->name('template');
+
+        // Validation d'un fichier CSV (AJAX)
+        Route::post('/validate', [ImportController::class, 'validateCsv'])->name('validate');
         // imports
         Route::resource('imports', ImportController::class);
         Route::post('imports/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
         Route::post('imports/structure', [ImportController::class, 'importStructures'])->name('import.structures');
         Route::post('imports/objectifs-stra', [ImportController::class, 'importObjectifsStrategiques'])->name('import.objectifs-strategiques');
         Route::post('imports/objectif-spec', [ImportController::class, 'downloadTemplate'])->name('import.objectifs-specifiques');
-
     });
 
     // Activites
     Route::resource('activites', ActiviteController::class);
-    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
+    // Routes index (toujours accessible)
+    Route::get('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'index'])
+        ->name('programmebudgetaire.index');
+    Route::get('/programmebudgetaire/create', [ProgrammeBudgetaireController::class, 'create'])
+        ->name('programmebudgetaire.create');
+    // Toggle individuel (toujours accessible)
+    Route::patch('/programmebudgetaire/{id}/toggle', [ProgrammeBudgetaireController::class, 'toggleEditable'])
+        ->name('programmebudgetaire.toggleEditable');
+    // Routes CRUD (édition et suppression protégées par le middleware)
+    Route::group(['middleware' => ['check.programme.active']], function () {
+    Route::get('/programmebudgetaire/{id}/edit', [ProgrammeBudgetaireController::class, 'edit'])->name('programmebudgetaire.edit');
+    Route::patch('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'update'])->name('programmebudgetaire.update');
+    Route::delete('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'destroy'])->name('programmebudgetaire.destroy');
+    });
+    Route::get('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'show'])
+        ->name('programmebudgetaire.show');
+    Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
+        ->name('programmebudgetaire.store');    
+Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    //Dupication programme budgétaires
+    Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
+        ->name('programmes-budgetaires.create-duplicate');
+    Route::post('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'storeDuplicate'])
+        ->name('programmes-budgetaires.store-duplicate');
+    // OS routes
+    route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
+    route::get('objectifStrategiques/pb/{id}', [ObjectifStrategiqueController::class, 'osByPB'])->name('programmebudgetaire.os');
+
     Route::get('suivis/create/{id}', [App\Http\Controllers\SuiviController::class, 'createByMIndicateur'])->name('suivis.createM');
     route::resource('suivis', App\Http\Controllers\SuiviController::class);
     Route::resource('actions', App\Http\Controllers\ActionController::class);
+
     Route::resource('objectifs-specifiques', App\Http\Controllers\ObjectifSpecifiqueController::class);
+    route::get('objectifSpecifiqiques/os/{id}', [ObjectifStrategiqueController::class, 'osByPB'])->name('os.specifiques');
+
     Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
 
     Route::post('rapportActivites/visualiser', [App\Http\Controllers\RapportActiviteController::class, 'visualiser'])->name('rapportActivites.visualiser');
+    Route::resource('programme-activites', App\Http\Controllers\ProgrammeActiviteController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
+    Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
+    Route::get('programme-activites/{id}/suivi', [App\Http\Controllers\ProgrammeActiviteController::class, 'suiviTableau'])->name('programme-activites.suivi');
 });
 
 

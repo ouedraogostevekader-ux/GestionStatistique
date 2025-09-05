@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             StructureSeeder::class,
+            PeriodeSeeder::class,
             DataSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ObjectifSpecifique;
 use App\Models\Action;
+use App\Models\Periode;
 use Illuminate\Http\Request;
 
 class ObjectifSpecifiqueController extends Controller
@@ -37,7 +38,6 @@ class ObjectifSpecifiqueController extends Controller
         ]);
 
         $objectif = ObjectifSpecifique::create($validatedData);
-
         return redirect()->route('objectifs-specifiques.index')
             ->with('success', 'Objectif spécifique créé avec succès.');
     }
@@ -49,7 +49,8 @@ class ObjectifSpecifiqueController extends Controller
     {
         $objectifSpecifique = ObjectifSpecifique::findOrFail($id);
         $objectifSpecifique->load(['action.objectifStrategique', 'activites', 'indicateursProgrammes']);
-        return view('obj_specifique.show', compact('objectifSpecifique'));
+        $periodes = Periode::all();
+        return view('obj_specifique.show', compact('objectifSpecifique', 'periodes'));
     }
 
     /**

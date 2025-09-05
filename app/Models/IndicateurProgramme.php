@@ -17,6 +17,7 @@ class IndicateurProgramme extends Model
         'libelle',
         'unite_mesure',
         'valeur_ref',
+        'annee',
         'valeur_cible',
         'objectif_specifique_id',
         'objectif_strategique_id',

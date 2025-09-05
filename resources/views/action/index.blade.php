@@ -8,7 +8,7 @@
                     <h1>Les actions</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-primary float-right" href="{{ route('actions.create') }}">
+                    <a id="btnAjouter" class="btn btn-primary float-right" href="{{ route('actions.create') }}">
                         Ajouter
                     </a>
                 </div>

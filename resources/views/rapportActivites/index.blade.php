@@ -24,7 +24,7 @@
                         
                         <button class="btn btn-secondary ms-2" data-bs-toggle="modal" data-bs-target="#rapportActiviteVisualiserModal"
                             data-url="{{ route('rapportActivites.visualiser') }}">
-                            <i class="bi bi-plus"></i> Visualiser
+                            <i class="bi bi-eye"></i> Visualiser
                         </button>
                         @endcan
                     </div>

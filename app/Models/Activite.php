@@ -17,7 +17,6 @@ class Activite extends Model
 
     protected $fillable = [
         'cout_previsionnel',
-        'periode',
         'libelle',
         'objectif_specifique_id',
     ];
@@ -40,10 +39,16 @@ class Activite extends Model
     {
         return $this->belongsTo(ObjectifSpecifique::class);
     }
+    public function periodes()
+    {
+        return $this->belongsToMany(Periode::class, 'activite_periode')->withPivot('annee');
+    }
 
-    /**
-     * Relation avec IndicateurProgramme
-     */
+    public function indicateurs()
+    {
+        return $this->hasMany(IndicateurProgramme::class, 'activites_id');
+    }
+
     public function indicateursProgrammes()
     {
         return $this->hasMany(IndicateurProgramme::class, 'activites_id', 'id');

@@ -17,6 +17,7 @@ class ObjectifsStrategique extends Model
     public $incrementing = false;
     protected $fillable = [
         'libelle',
+        'annee',
         'programme_budgetaire_id',
     ];
 
@@ -28,6 +29,11 @@ class ObjectifsStrategique extends Model
     public function actions()
     {
         return $this->hasMany(Action::class, 'objectif_strategique_id', 'id');
+    }
+    
+    public function indicateursProgrammes()
+    {
+        return $this->hasMany(IndicateurProgramme::class, 'objectif_strategique_id', 'id');
     }
 
     public function indicateurs()

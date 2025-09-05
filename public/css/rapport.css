@@ -1,12 +1,10 @@
-body {
-    font-family: DejaVu Sans, sans-serif;
-    font-size: 8px;
-    margin: 10px;
-}
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    font-family: DejaVu Sans, sans-serif;
+    font-size: 8px;
 }
 th, td {
     border: 1px solid #000;

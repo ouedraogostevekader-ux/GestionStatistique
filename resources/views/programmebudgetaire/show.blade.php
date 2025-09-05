@@ -12,14 +12,33 @@
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <strong>Libellé :</strong> {{ $ProgrammeBudgetaire->libelle }}
+                            <strong>Libellé :</strong> {{ $programmeBudgetaire->libelle }}
                         </li>
                         <li class="list-group-item">
-                            <strong>Code :</strong> {{ $ProgrammeBudgetaire->numero_programme }}
+                            <strong>Code :</strong> {{ $programmeBudgetaire->numero_programme }}
                         </li>
                         <li class="list-group-item">
-                            <strong>Activités :</strong> {{ $ProgrammeBudgetaire->programme_activite_id }}
+                            <strong>Structure</strong> {{($programmeBudgetaire->structures->isEmpty()) ? 'Aucune structure associée' : ''}}
+                            @foreach($programmeBudgetaire->structures as $structure)
+                                <span class="badge bg-secondary">{{ $structure->nom }}</span>
+                            @endforeach
                         </li>
+                       
+
+<li class="list-group-item">
+    <strong>Responsable actuel :</strong>
+    @if($responsableActif)
+        {{ $responsableActif->name }}
+        <br>
+        <small class="text-muted">
+            Depuis le {{ \Carbon\Carbon::parse($responsableActif->pivot->date_debut)->format('d/m/Y') }}
+        </small>
+    @else
+        <span class="text-muted">Aucun responsable assigné</span>
+    @endif
+</li>
+
+
                     </ul>
 
                     <div class="mt-4 text-end">

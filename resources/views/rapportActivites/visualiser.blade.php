@@ -6,9 +6,7 @@
     <div class="container px-2">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>
-                    Rapports d'activités
-                </h1>    
+                  
             </div>
             <div class="col-sm-6">
                 <div class="mt-3 d-flex justify-content-end">
@@ -50,7 +48,7 @@
 </section>
 <section class="content px-3">
     <div class="card">
-        <h3>Rapport d'activités de {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
+        <h3 class="text-center">Rapport d'activités de {{$periode}} {{$annee}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
         <table>
             <thead>
                 <tr>

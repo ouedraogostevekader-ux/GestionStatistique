@@ -166,49 +166,67 @@ class StatistiquesController extends Controller
 
     private function getAdvancementStats($programmeBudgetaireId = null, $trimestre = null, $annee = null)
     {
-        $currentDate = Carbon::now();
+        $currentYear = Carbon::now()->year;
+        $annee = $annee ?? $currentYear;
 
-        // Activités en cours (période contient l'année courante)
+        // Activités en cours (avec période pour l'année courante)
         $activitesEnCours = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->where('periode', 'LIKE', '%' . $currentDate->year . '%')
-            ->when($trimestre, function ($q) use ($trimestre) {
-                return $q->where('periode', 'LIKE', '%T' . $trimestre . '%');
-            })->count();
+        })
+            ->whereHas('periodes', function ($q) use ($currentYear, $trimestre) {
+                $q->where('annee', $currentYear);
+                if ($trimestre) {
+                    //  $q->whereHas('periode', function ($subQ) use ($trimestre) {
+                    $q->where('libelle', 'T' . $trimestre);
+                    // });
+                }
+            })
+            ->count();
 
         // Activités terminées (avec suivis complets)
         $activitesTerminees = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) {
-            $q->whereNotNull('resultat_atteint')->where('resultat_atteint', '>=', 100);
-        })->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
-            $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
-            return $q->whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
-        })->count();
+        })
+            ->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) {
+                $q->whereNotNull('resultat_atteint')->where('resultat_atteint', '>=', 100);
+            })
+            ->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
+                return $q->whereHas('periodes', function ($subQ) use ($trimestre, $annee) {
+                    $subQ->where('annee', $annee) // Champ 'annee' de la table pivot
+                        ->where('libelle', 'T' . $trimestre); // Champ 'libelle' de la table periodes
+                });
+            })
+            ->count();
 
         // Activités non commencées (sans suivis)
         $activitesNonCommencees = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->whereDoesntHave('objectifSpecifique.indicateursProgrammes.suivis')
+        })
+            ->whereDoesntHave('objectifSpecifique.indicateursProgrammes.suivis')
             ->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
-                $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
-                return $q->whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
-            })->count();
+                return $q->whereHas('periodes', function ($subQ) use ($trimestre, $annee) {
+                    $subQ->where('annee', $annee)->where('libelle', 'T' . $trimestre);
+
+                });
+            })
+            ->count();
 
         // Activités en retard
         $activitesEnRetard = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) {
-            $q->where('resultat_atteint', '<', 50);
-        })->count();
+        })
+            ->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) {
+                $q->where('resultat_atteint', '<', 50);
+            })
+            ->count();
 
         $totalActivites = $activitesEnCours + $activitesTerminees + $activitesNonCommencees;
 
@@ -281,8 +299,12 @@ class StatistiquesController extends Controller
                 return $q->whereHas('indicateurProgramme.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                     $subQ->where('id', $programmeBudgetaireId);
                 });
-            })->where('periode', 'LIKE', '%' . $periode . '%')
-                ->whereNotNull('resultat_atteint')->avg('resultat_atteint');
+            })
+                ->whereHas('indicateurProgramme.activite.periodes', function ($q) use ($periode) {
+                    $q->where('libelle', $periode);
+                })
+                ->whereNotNull('resultat_atteint')
+                ->avg('resultat_atteint');
 
             $performanceParTrimestre["T$t"] = round($suivisTrimestre ?: 0, 1);
         }
@@ -339,16 +361,20 @@ class StatistiquesController extends Controller
         $budgetProgrammes = ProgrammeBudgetaire::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->where('id', $programmeBudgetaireId);
         })
-            ->withSum([
+            ->with([
                 'activites' => function ($q) use ($trimestre, $annee) {
                     if ($trimestre && $annee) {
                         $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
                         $q->whereBetween('activites.created_at', [$dateRange['start'], $dateRange['end']]);
                     }
                 }
-            ], 'cout_previsionnel')
-            ->take(10)
-            ->get();
+            ])
+            ->get()
+            ->map(function ($programme) {
+                $programme->cout_previsionnel_sum = $programme->activites->sum('cout_previsionnel');
+                return $programme;
+            })
+            ->take(10);
 
         return [
             'evolution_activites' => $evolutionActivites,

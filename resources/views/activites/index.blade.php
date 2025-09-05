@@ -64,6 +64,7 @@
                                 <th>Période</th>
                                 <th>Coût prévisionnel</th>
                                 <th>Objectif spécifique</th>
+                                <th>Indicateurs</th>
                                 <th>Date création</th>
                                 <th>Action</th>
                             </tr>
@@ -73,10 +74,11 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $activite->libelle }}</td>
-                                    <td>{{ $activite->periode }}</td>
+                                    <td>{{ $activite->periodes[0]->libelle }}</td>
                                     <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
                                     <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
-                                    <td>{{ $activite->created_at->format('d/m/Y, H:i') }}</td>
+                                    <td>{{ $activite->indicateursProgrammes->count() }}</td>
+                                    <td>{{ $activite->updated_at->format('d/m/Y, H:i') }}</td>
                                     <td>
                                         <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
                                             class="d-inline">
@@ -88,7 +90,7 @@
                                                         class="bi bi-eye-fill"></i></a>
 
                                                 <a href="{{ route('activites.edit', $activite->id) }}"
-                                                    class="btn btn-primary btn-xs" title="Modifier"><i
+                                                    class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
                                                         class="bi bi-pencil-fill"></i></a>
 
                                                 <button type="submit" class="btn btn-danger btn-xs"
@@ -102,16 +104,6 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>No</th>
-                                <th>Libellé</th>
-                                <th>Période</th>
-                                <th>Coût prévisionnel</th>
-                                <th>Objectif spécifique</th>
-                                <th>Action</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>

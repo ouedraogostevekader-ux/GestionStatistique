@@ -14,10 +14,12 @@ class UpdateActiviteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cout_previsionnel' => 'sometimes|numeric|min:0',
-            'periode' => 'sometimes|string|max:255',
-            'libelle' => 'sometimes|string|max:255',
-            'objectif_specifique_id' => 'sometimes|exists:objectifs_specifiques,id',
+            'libelle' => 'required|string|max:255',
+            'periodes' => 'sometimes|array',
+            'periodes.*' => 'exists:periodes,id',
+            'annee' => 'required|integer|min:2000|max:2100',
+            'cout_previsionnel' => 'required|numeric|min:0',
+            'objectif_specifique_id' => 'required|exists:objectifs_specifiques,id',
         ];
     }
 }

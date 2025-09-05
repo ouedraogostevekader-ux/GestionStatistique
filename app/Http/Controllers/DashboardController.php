@@ -110,10 +110,11 @@ class DashboardController extends Controller
     private function getChartData(): array
     {
         // Données pour graphique des activités par période
-        $activitesPeriode = Activite::selectRaw('periode, COUNT(*) as count')
-            ->groupBy('periode')
-            ->orderBy('periode')
-            ->get()
+        $activitesPeriode = \DB::table('activite_periode')
+            ->join('periodes', 'activite_periode.periode_id', '=', 'periodes.id')
+            ->select('periodes.libelle as periode', \DB::raw('COUNT(activite_periode.activite_id) as count'))
+            ->groupBy('periodes.libelle')
+            ->orderBy('periodes.libelle')
             ->pluck('count', 'periode')
             ->toArray();
 
@@ -181,8 +182,10 @@ class DashboardController extends Controller
             ->avg('resultat_atteint') ?? 0;
 
         // Nombre d'activités par période
-        $activitesEnCours = Activite::where('periode', 'LIKE', '%' . date('Y') . '%')->count();
-
+        $activitesEnCours = \DB::table('activite_periode')
+            ->join('periodes', 'activite_periode.periode_id', '=', 'periodes.id')
+            ->where('periodes.libelle', 'LIKE', '%' . date('Y') . '%')
+            ->count();
         return [
             'taux_suivi_indicateurs' => round($tauxSuivi, 2),
             'moyenne_resultats' => round($moyenneResultats, 2),

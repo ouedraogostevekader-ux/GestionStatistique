@@ -101,6 +101,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
         //try {
             $periode = $request->input('periode_rapport');
             $annee = $request->input('annee');
+            
 
             $data = ProgrammeBudgetaire::where('annee', $request->input('annee'))->get();
 
@@ -126,7 +127,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
             //         'message' => 'Rapport d\'activité créé avec succès!'
             //     ]);
             // }
-            return redirect()->route('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
+            return view('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
         // } catch (\Exception $e) {
         //     DB::rollBack();
         //     if ($request->ajax()) {

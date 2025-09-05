@@ -139,40 +139,8 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <form action="{{ route('activites.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="objectif_specifique_id" value="{{ $objectifSpecifique->id }}">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addActiviteModalLabel">Ajouter une activité</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="libelle_activite">Libellé <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="libelle_activite" name="libelle" required>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="periode">Période <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="periode" name="periode" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="cout_previsionnel">Coût prévisionnel (F CFA) <span
-                                                class="text-danger">*</span></label>
-                                        <input type="number" step="0.01" class="form-control" id="cout_previsionnel"
-                                            name="cout_previsionnel" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                        </div>
+                        <input type="hidden" name="objectif" value="{{ $objectifSpecifique->id }}">
+                        @include('activites.form')
                     </form>
                 </div>
             </div>
@@ -186,6 +154,7 @@
                     <form action="{{ route('indicateurs-programmes.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="objectif_specifique_id" value="{{ $objectifSpecifique->id }}">
+                        <input type="hidden" name="indicateur" value="{{ $objectifSpecifique->id }}">
                         <div class="modal-header">
                             <h5 class="modal-title" id="addIndicateurModalLabel">Ajouter un indicateur</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
