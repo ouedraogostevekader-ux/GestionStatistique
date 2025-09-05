@@ -28,12 +28,12 @@ class ObjectifSpecifique extends Model
 
     public function activites()
     {
-        return $this->hasMany(Activite::class);
+        return $this->hasMany(Activite::class, 'objectif_specifique_id', 'id');
     }
 
     public function indicateursProgrammes()
     {
-        return $this->hasMany(IndicateurProgramme::class);
+        return $this->hasMany(IndicateurProgramme::class, 'objectif_specifique_id', 'id');
     }
     public function indicateurs()
     {

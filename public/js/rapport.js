@@ -1,0 +1,222 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("rapportActiviteModal");
+    const modalContent = modal.querySelector(".modal-content");
+    console.log("modalContent");
+    modal.addEventListener("show.bs.modal", async function (event) {
+        const button = event.relatedTarget;
+        const url = button.getAttribute("data-url");
+
+        // Afficher un loader
+        modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h5 class="modal-title">Chargement...</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement en cours...</span>
+                    </div>
+                    <p class="mt-2">Chargement du formulaire...</p>
+                </div>
+            `;
+
+        try {
+            // Récupérer le contenu via AJAX
+            const response = await fetch(url, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Erreur ${response.status}: ${response.statusText}`
+                );
+            }
+
+            const html = await response.text();
+
+            // Injecter le contenu dans le modal
+            modalContent.innerHTML = html;
+
+            // Gérer la soumission du formulaire via AJAX
+            const form = modalContent.querySelector("form");
+            if (form) {
+                form.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    // Afficher un loader pendant la soumission
+                    const submitButton = form.querySelector(
+                        'button[type="submit"]'
+                    );
+                    const originalButtonText = submitButton.innerHTML;
+                    submitButton.innerHTML = `
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Enregistrement...
+                        `;
+                    submitButton.disabled = true;
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: form.method,
+                            body: formData,
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest",
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            },
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            // Fermer le modal et recharger la page
+                            const modalInstance =
+                                bootstrap.Modal.getInstance(modal);
+                            modalInstance.hide();
+
+                            // Afficher un message de succès
+                            Swal.fire({
+                                title: "Opération réussie !",
+                                text: "Rapport d'activités géneré avec succès",
+                                icon: "success",
+                            });
+
+                            // Recharger la page après un délai
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            // Afficher les erreurs de validation
+                            let errorHtml =
+                                '<div class="alert alert-danger mt-3"><ul>';
+                            console.log(result);
+                            if (result.message !== undefined) {
+                                errorHtml += `<li>${result.message}</li>`;
+                            }
+                            for (const field in result.errors) {
+                                result.errors[field].forEach((error) => {
+                                    errorHtml += `<li>${error}</li>`;
+                                });
+                            }
+                            errorHtml += "</ul></div>";
+
+                            // Insérer les erreurs au-dessus du formulaire
+                            form.insertAdjacentHTML("afterbegin", errorHtml);
+
+                            // Réactiver le bouton
+                            submitButton.innerHTML = originalButtonText;
+                            submitButton.disabled = false;
+                        }
+                    } catch (error) {
+                        //console.error('Erreur:', error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oups...",
+                            text: "Une erreur est survenue lors de la soumission du formulaire.",
+                        });
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                    }
+                });
+            }
+        } catch (error) {
+            //console.error('Erreur de chargement:', error);
+            modalContent.innerHTML = `
+                    <div class="modal-header">
+                        <h5 class="modal-title">Erreur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger">
+                            <p><strong>Impossible de charger le contenu</strong></p>
+                            <p class="mb-0">${error.message}</p>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                `;
+        }
+    });
+
+    // Réinitialiser le modal quand il se ferme
+    modal.addEventListener("hidden.bs.modal", function () {
+        modalContent.innerHTML = "";
+    });
+
+    // Récupérer le bouton de soumission du formulaire
+    const submit = document.getElementById("btnVisualiserRapport");
+    // Ajouter un écouteur d'événement pour le clic
+    submit.addEventListener("click", function () {
+        // soumettre le formulaire lier au bouton
+        const formV = document.getElementById("formVisualiserRapport");
+        formV.submit();
+    })
+
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    let table = new DataTable("#example1", {
+        paging: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        lengthMenu: [
+            [10, 40, 50, 100, 200, -1],
+            [10, 40, 50, 100, 200, "Tous"],
+        ],
+        pageLength: 10,
+        dom: "Bfrtip", // <-- ajoute la barre de boutons
+        buttons: [
+        ],
+        language: {
+            // url: "",
+            decimal: ",",
+            thousands: " ",
+            search: "Rechercher :",
+            lengthMenu: "Afficher _MENU_ enregistrements",
+            info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+            infoEmpty: "Aucune donnée disponible",
+            infoFiltered: "(filtré à partir de _MAX_ entrées totales)",
+            loadingRecords: "Chargement...",
+            zeroRecords: "Aucun enregistrement correspondant trouvé",
+            paginate: {
+                first: "Premier",
+                last: "Dernier",
+                next: "Suivant",
+                previous: "Précédent",
+            },
+        },
+    });
+
+    // 🔹 Filtre par Programme
+    document
+        .getElementById("filterProgramme")
+        .addEventListener("change", function () {
+            table
+                .column(2)
+                .search(this.value)
+                .draw();
+        });
+
+    // Filtre par Periode
+    document
+        .getElementById("filterPeriode")
+        .addEventListener("change", function () {
+            table
+                .column(3)
+                .search(this.value)
+                .draw();
+        });
+    
+    // Filtre par Année
+    document
+        .getElementById("filterAnnee")
+        .addEventListener("change", function () {
+            table
+                .column(4)
+                .search(this.value)
+                .draw();
+        });
+});
