@@ -38,6 +38,10 @@ class ObjectifSpecifiqueController extends Controller
         ]);
 
         $objectif = ObjectifSpecifique::create($validatedData);
+        if ($request->os) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
         return redirect()->route('objectifs-specifiques.index')
             ->with('success', 'Objectif spécifique créé avec succès.');
     }

@@ -17,8 +17,6 @@ use Illuminate\Support\Str;
 class ProgrammeBudgetaireController extends Controller
 {
 
-
-
     /**
      * Afficher la liste des programmes
      */
@@ -173,7 +171,7 @@ class ProgrammeBudgetaireController extends Controller
         });
 
         return redirect()->route('programmebudgetaire.index');
-           
+
     }
 
     /**

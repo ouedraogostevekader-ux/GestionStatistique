@@ -53,4 +53,11 @@ class Activite extends Model
     {
         return $this->hasMany(IndicateurProgramme::class, 'activites_id', 'id');
     }
+
+    /* Vérifier si une activité est modifiable */
+    public function activiteIsEdit()
+    {
+        // Vérifier si le programme budgétaire est actif
+        return $this->objectifSpecifique->action->objectifStrategique->programmeBudgetaire->isActive;
+    }
 }

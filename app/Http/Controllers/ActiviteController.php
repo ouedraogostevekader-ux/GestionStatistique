@@ -92,6 +92,11 @@ class ActiviteController extends Controller implements HasMiddleware
 
     public function edit($ulid)
     {
+        $activite = Activite::with('periodes')->findOrFail($ulid);
+
+        if (!$activite->activiteIsEdit()) {
+            return redirect()->back()->with('error', "Cette activité n\'est pas modifiable");
+        }
         if (Auth::user()->isAdmin()) {
             $objectifs = DB::select("SELECT * from objectifs_specifiques");
         } else {
@@ -102,7 +107,6 @@ class ActiviteController extends Controller implements HasMiddleware
                 ->get();
         }
         $periodes = Periode::all();
-        $activite = Activite::with('periodes')->findOrFail($ulid);
 
         // Récupérer les IDs des périodes associées et l'année
         $activitePeriodes = $activite->periodes->pluck('id')->toArray();
@@ -114,7 +118,9 @@ class ActiviteController extends Controller implements HasMiddleware
     public function update(UpdateActiviteRequest $request, Activite $activite)
     {
         $validated = $request->validated();
-
+        if (!$activite->activiteIsEdit()) {
+            return redirect()->back()->with('error', "Cette activité n\'est pas modifiable");
+        }
         // Mettre à jour l'activité
         $updated = $this->activiteRepository->update($activite, $validated);
 
@@ -135,6 +141,7 @@ class ActiviteController extends Controller implements HasMiddleware
     public function show($id)
     {
         $activite = Activite::findOrFail($id);
+        //  dd($activite->activiteIsEdit());
         return view('activites.show', compact('activite'));
     }
 

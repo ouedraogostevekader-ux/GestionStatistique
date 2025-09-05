@@ -38,7 +38,7 @@
 <div class="form-group col-sm-6">
     <label for="telephone" class="form-label">Telephone</label>
     <input type="text" name="telephone" id="telephone" class="form-control @error('telephone') is-invalid @enderror"
-        maxlength="255" value="{{ old('telephone', $user->telephone ?? null) }}" required>
+        maxlength="8" minlength="8" value="{{ old('telephone', $user->telephone ?? null) }}" required>
     @error('telephone')
         <div class="alert alert-danger">{{ $message }}</div>
     @enderror
