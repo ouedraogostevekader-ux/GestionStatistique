@@ -90,7 +90,7 @@
                                                         class="bi bi-eye-fill"></i></a>
 
                                                 <a href="{{ route('activites.edit', $activite->id) }}"
-                                                    class="btn btn-primary btn-xs" title="Modifier"><i
+                                                    class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
                                                         class="bi bi-pencil-fill"></i></a>
 
                                                 <button type="submit" class="btn btn-danger btn-xs"

@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
         // Page principale du tableau de bord
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/sstatistiques', [StatistiquesController::class, 'index'])->name('admin.statistique');
+        Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('admin.statistique');
         Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques.index');
         // Routes CRUD complètes pour les structures
         Route::resource('structures', StructureController::class);
@@ -88,7 +88,26 @@ Route::middleware('auth')->group(function () {
 
     // Activites
     Route::resource('activites', ActiviteController::class);
-    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
+    // Routes index (toujours accessible)
+    Route::get('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'index'])
+        ->name('programmebudgetaire.index');
+    Route::get('/programmebudgetaire/create', [ProgrammeBudgetaireController::class, 'create'])
+        ->name('programmebudgetaire.create');
+    // Toggle individuel (toujours accessible)
+    Route::patch('/programmebudgetaire/{id}/toggle', [ProgrammeBudgetaireController::class, 'toggleEditable'])
+        ->name('programmebudgetaire.toggleEditable');
+    // Routes CRUD (édition et suppression protégées par le middleware)
+    Route::group(['middleware' => ['check.programme.active']], function () {
+    Route::get('/programmebudgetaire/{id}/edit', [ProgrammeBudgetaireController::class, 'edit'])->name('programmebudgetaire.edit');
+    Route::patch('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'update'])->name('programmebudgetaire.update');
+    Route::delete('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'destroy'])->name('programmebudgetaire.destroy');
+    });
+    Route::get('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'show'])
+        ->name('programmebudgetaire.show');
+    Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
+        ->name('programmebudgetaire.store');    
+Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
         ->name('programmes-budgetaires.create-duplicate');
@@ -106,7 +125,10 @@ Route::middleware('auth')->group(function () {
     route::get('objectifSpecifiqiques/os/{id}', [ObjectifStrategiqueController::class, 'osByPB'])->name('os.specifiques');
 
     Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
+    Route::resource('programme-activites', App\Http\Controllers\ProgrammeActiviteController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
+    Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
+    Route::get('programme-activites/{id}/suivi', [App\Http\Controllers\ProgrammeActiviteController::class, 'suiviTableau'])->name('programme-activites.suivi');
 });
 
 

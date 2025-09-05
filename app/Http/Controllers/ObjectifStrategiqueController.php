@@ -8,6 +8,7 @@ use App\Models\ObjectifsStrategique;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Models\ProgrammeBudgetaire;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ObjectifStrategiqueController extends Controller implements HasMiddleware
@@ -29,8 +30,22 @@ class ObjectifStrategiqueController extends Controller implements HasMiddleware
     //
     public function index()
     {
-        $objectifStrategiques = ObjectifsStrategique::all();
-        $programmeBudgetaires = ProgrammeBudgetaire::all();
+        if (Auth::user()->isAdmin()) {
+            $objectifStrategiques = ObjectifsStrategique::all();
+            $programmeBudgetaires = ProgrammeBudgetaire::all();
+        } else {
+            // Via la table pivot structure_programme_budgetaire
+            $objectifStrategiques = ObjectifsStrategique::whereHas('programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+
+            $programmeBudgetaires = ProgrammeBudgetaire::whereHas('structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+        }
+
         return view('objectifStrategiques.index', compact('objectifStrategiques', 'programmeBudgetaires'));
     }
 
