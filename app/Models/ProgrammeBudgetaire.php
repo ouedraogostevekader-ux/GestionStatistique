@@ -80,8 +80,4 @@ class ProgrammeBudgetaire extends Model
             ->where('objectifs_strategiques.programme_budgetaire_id', $this->id)
             ->select('activites.*');
     }
-
-
-
-
 }
