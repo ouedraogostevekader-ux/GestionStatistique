@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class ObjectifStrategiqueController extends Controller implements HasMiddleware
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function middleware(): array
     {
@@ -66,6 +64,10 @@ class ObjectifStrategiqueController extends Controller implements HasMiddleware
     public function store(ObjectifStrategiqueRequest $request)
     {
         ObjectifsStrategique::create($request->validated());
+        if ($request->os) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
         return redirect()->route('objectifStrategiques.index')->with('success', 'Objectif Strategique créé avec succès');
     }
 

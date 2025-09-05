@@ -10,11 +10,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class RapportActivite extends Authenticatable
 {
 
     use HasFactory, SoftDeletes, HasUlids, LogsActivity;
+    use HasRoles;
+    use LogsActivity;
 
     protected $table = 'rapports_activites';
 
@@ -28,7 +31,9 @@ class RapportActivite extends Authenticatable
         'libelle',
         'periode_rapport',
         'date_rapport',
+        'annee',
         'file',
+        'file_pdf',
 
     ];
 
@@ -40,7 +45,6 @@ class RapportActivite extends Authenticatable
     protected function casts(): array
     {
         return [
-            'periode_rapport' => 'datetime',
             'date_rapport' => 'datetime',
         ];
     }
@@ -48,6 +52,11 @@ class RapportActivite extends Authenticatable
     public function structure()
     {
         return $this->belongsTo(Structure::class);
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class, 'periode_rapport', 'id');
     }
 
     public function programmeActivite()
@@ -87,7 +96,7 @@ class RapportActivite extends Authenticatable
     {
         return LogOptions::defaults()
             ->logFillable()
-            ->useLogName('User')
+            ->useLogName('Rapport Activite')
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }

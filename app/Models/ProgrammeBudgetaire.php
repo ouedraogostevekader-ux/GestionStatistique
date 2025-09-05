@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 
@@ -14,6 +16,8 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 class ProgrammeBudgetaire extends Model
 {
     use HasFactory, SoftDeletes, HasUlids;
+    use HasRoles;
+    use LogsActivity;
     //use HasRelationships;
 
     protected $table = 'programmes_budgetaires';

@@ -5,9 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Action;
 use App\Models\ObjectifsStrategique;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ActionController extends Controller
+class ActionController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:action-list', only: ['index', 'show']),
+            new Middleware('permission:action-create', only: ['create', 'store']),
+            new Middleware('permission:action-edit', only: ['edit', 'update']),
+            new Middleware('permission:action-delete', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */

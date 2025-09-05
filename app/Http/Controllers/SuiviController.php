@@ -8,11 +8,13 @@ use App\Models\Activite;
 use App\Models\IndicateurProgramme;
 use App\Models\ObjectifSpecifique;
 use App\Models\ObjectifsStrategique;
+use App\Models\Periode;
 use App\Models\Suivi;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SuiviController extends Controller implements HasMiddleware
 {
@@ -35,10 +37,35 @@ class SuiviController extends Controller implements HasMiddleware
     {
         //
         $suivis = Suivi::all();
-        $indicateurProgrammes = IndicateurProgramme::all();
-        $activites = Activite::all();
-        $objectifSpecifiques = ObjectifSpecifique::all();
-        $objectifStrategiques = ObjectifsStrategique::all();
+        $indicateurProgrammes = collect();
+        $activites = collect();
+        $objectifSpecifiques = collect();
+        $objectifStrategiques = collect();
+        // si l'utilisateur n'est pas admin, on filtre les indicateurs par la structure de l'utilisateur
+        if (!Auth::user()->hasRole('Super-Admin')) {
+            $objectifSpecifiques = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })->get();
+            $objectifStrategiques = ObjectifsStrategique::whereHas('programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })->get();
+            $activites = Activite::whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })->get();
+            // Récupérer les IDs des indicateurs liés aux objectifs spécifiques, objectifs stratégiques et activités
+            $indicateursSpe = $objectifSpecifiques->indicateurs;
+            $indicateursStrat = $objectifStrategiques->indicateurs;
+            $indicateursAct = $activites->indicateurs;
+            $indicateurProgrammes = $indicateursSpe->merge($indicateursStrat)->merge($indicateursAct);
+            
+        }else{
+            $indicateurProgrammes = IndicateurProgramme::all();
+            $activites = Activite::all();
+            $objectifSpecifiques = ObjectifSpecifique::all();
+            $objectifStrategiques = ObjectifsStrategique::all();
+        }
+        
+        
         return view('suivis.index', compact('suivis', 'indicateurProgrammes', 'activites', 'objectifSpecifiques', 'objectifStrategiques'));
     }
 
@@ -53,7 +80,7 @@ class SuiviController extends Controller implements HasMiddleware
 
     public function createByMIndicateur($id)
     {
-        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        $periodes = Periode::pluck('libelle', 'id');
         return view('suivis.modal-content', ['indicateur_programme_id' => $id,'periodes'=>$periodes]);
     }
 
@@ -95,7 +122,7 @@ class SuiviController extends Controller implements HasMiddleware
     {
         //
         $suivi = Suivi::findOrFail($id);
-        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        $periodes = Periode::pluck('libelle', 'id');
         return view('suivis.modal-content-edit', ['suivi' => $suivi,'periodes'=>$periodes]);
     }
 
