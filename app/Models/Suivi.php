@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Attribute;
+use Dom\Attr;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,6 +36,12 @@ class Suivi extends Model
     public function indicateurProgramme()
     {
         return $this->belongsTo(IndicateurProgramme::class, 'indicateur_programme_id');
+    }
+
+    // L'attribut 'periode' contient l'id de la période
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class, 'periode', 'id');
     }
 
     public function getDescriptionForEvent(string $eventName): string

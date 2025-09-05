@@ -166,5 +166,5 @@
     </div>
   </div>
 </div>
-
+<script src="{{ asset('dist/js/lock-programme.js') }}"></script>
 @endsection

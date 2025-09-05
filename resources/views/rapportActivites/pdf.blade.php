@@ -71,7 +71,7 @@
             @foreach($data as $programme)
                 <tr>
                     <td colspan="8" class="programme-title">
-                        {{$programme->libelle}}
+                        Programme {{$programme->numero_programme }} : {{$programme->libelle}}
                     </td>
                 </tr>
                 <!-- Objectif stratégique -->

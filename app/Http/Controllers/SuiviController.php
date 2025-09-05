@@ -8,6 +8,7 @@ use App\Models\Activite;
 use App\Models\IndicateurProgramme;
 use App\Models\ObjectifSpecifique;
 use App\Models\ObjectifsStrategique;
+use App\Models\Periode;
 use App\Models\Suivi;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -79,7 +80,7 @@ class SuiviController extends Controller implements HasMiddleware
 
     public function createByMIndicateur($id)
     {
-        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        $periodes = Periode::pluck('libelle', 'id');
         return view('suivis.modal-content', ['indicateur_programme_id' => $id,'periodes'=>$periodes]);
     }
 
@@ -121,7 +122,7 @@ class SuiviController extends Controller implements HasMiddleware
     {
         //
         $suivi = Suivi::findOrFail($id);
-        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        $periodes = Periode::pluck('libelle', 'id');
         return view('suivis.modal-content-edit', ['suivi' => $suivi,'periodes'=>$periodes]);
     }
 

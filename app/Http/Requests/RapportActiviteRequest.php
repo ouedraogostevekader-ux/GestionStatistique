@@ -23,11 +23,11 @@ class RapportActiviteRequest extends FormRequest
     {
         return [
             //
-            'programme_activite_id' => 'required|string',
+            //'programme_activite_id' => 'required|string',
             'libelle' => 'required|string',
             'periode_rapport' => 'required|string',
-            'date_rapport' => 'required|date',
-            'annee' => 'required|integer',
+            //'date_rapport' => 'required|date',
+            //'annee' => 'required|integer',
             'file' => 'nullable',
             'file_pdf' => 'nullable',
         ];

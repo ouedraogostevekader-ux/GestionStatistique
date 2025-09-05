@@ -11,6 +11,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RapportActiviteExport;
+use App\Models\Periode;
 use App\Models\ProgrammeBudgetaire;
 use App\Models\ProgrammesActivite;
 use PDF;
@@ -35,28 +36,48 @@ class RapportActiviteController extends Controller implements HasMiddleware
         $rapportActivites = RapportActivite::all();
         //$programmeActivites = ProgrammeActivite::all();
         $programmeActivites = DB::select("SELECT * from programmes_activites");
-        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        $periodes = Periode::pluck('libelle', 'id');
         return view('rapportActivites.index', compact('rapportActivites', 'programmeActivites', 'periodes'));
     }
 
     public function create()
     {
-        //$programmeActivites = ProgrammeActivite::all();
-        $programmeActivites = DB::select("SELECT * from programmes_activites");;
-        $periodes = ['T1'=>'T1', 'T2'=>'T2', 'T3'=>'T3', 'T4'=>'T4'];
+        $programmeActivites = ProgrammesActivite::all();
+        $periodes = Periode::pluck('libelle', 'id');
         return view('rapportActivites.create', compact('programmeActivites', 'periodes'));
     }
 
     public function store(RapportActiviteRequest $request)
     {
+        // Pour année en cours empecher nouvelle génération
         
-        //DB::beginTransaction();
-        //try {
+        DB::beginTransaction();
+        try {
         
-            $programmeActivite = ProgrammesActivite::findOrFail($request->programme_activite_id);
+            //$programmeActivite = ProgrammesActivite::findOrFail($request->programme_activite_id);
+            $programmeActivite = ProgrammesActivite::where('annee', now()->year)->latest()->first();
+            if (!$programmeActivite) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Aucun programme d\'activité trouvé pour l\'année en cours '.now()->year
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Aucun programme d\'activité trouvé pour l\'année en cours '.now()->year);
+            }
+            $rapport = RapportActivite::where('annee', now()->year)->count();
+            if ($rapport > 2) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Deux (02) rapports d\'activité pour l\'année en cours '.now()->year.' ont été déjà générés.'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Deux (02) rapports d\'activité pour l\'année en cours '.now()->year.' ont été déjà générés.');
+            }
             $periode = $request->input('periode_rapport');
-            $annee = $request->input('annee');
-            $date = $request->date('date_rapport');
+            $annee = now()->year;
+            $date = now();
             $data = $programmeActivite->programmesBudgetaires;
 
             // Generation du fichier excel
@@ -71,10 +92,13 @@ class RapportActiviteController extends Controller implements HasMiddleware
             $pdf->save(storage_path('app/public/rapports/'.$url_pdf.'.pdf'));
             
             $input = $request->validated();
+            $input['programme_activite_id'] = $programmeActivite->id;
+            $input['annee'] = $annee;
+            $input['date_rapport'] = $date;
             $input['file'] = $url_excel.'.xlsx';
             $input['file_pdf'] = $url_pdf.'.pdf';
             $rapport = RapportActivite::create($input);
-            //DB::commit();
+            DB::commit();
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
@@ -82,62 +106,26 @@ class RapportActiviteController extends Controller implements HasMiddleware
                 ]);
             }
             return redirect()->route('rapportActivites.index')->with('success', 'Rapport d\'activité créé avec succès');
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     if ($request->ajax()) {
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => 'Une erreur est survenue: '.$e->getMessage()
-        //         ]);
-        //     }
-        //     return redirect()->back()->with('error', 'Une erreur est survenue'.$e->getMessage());
-        // }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Une erreur est survenue: '.$e->getMessage()
+                ]);
+            }
+            return redirect()->back()->with('error', 'Une erreur est survenue'.$e->getMessage());
+        }
     }
 
     public function visualiser(Request $request)
     {
-        
-        //DB::beginTransaction();
-        //try {
-            $periode = $request->input('periode_rapport');
-            $annee = $request->input('annee');
-            
+        $periode = $request->input('periode_rapport');
+        $annee = $request->input('annee');
 
-            $data = ProgrammeBudgetaire::where('annee', $request->input('annee'))->get();
+        $data = ProgrammeBudgetaire::where('annee', $request->input('annee'))->get();
 
-            // Generation du fichier excel
-            // $excel = new RapportActiviteExport($data, $periode, $annee);
-            // $url_excel = (string) Str::uuid();
-            // Excel::store($excel, 'rapports/'.$url_excel.'.xlsx', 'public');
-
-            // Generation du fichier PDF
-            // $pdf = PDF::loadView('rapportActivites.pdf', compact('data', 'data', 'periode', 'annee'));
-            // $pdf->setPaper('a4', 'landscape');
-            // $url_pdf = (string) Str::uuid();
-            // $pdf->save(storage_path('app/public/rapports/'.$url_pdf.'.pdf'));
-            
-            // $input = $request->validated();
-            // $input['file'] = $url_excel.'.xlsx';
-            // $input['file_pdf'] = $url_pdf.'.pdf';
-            // $rapport = RapportActivite::create($input);
-            //DB::commit();
-            // if ($request->ajax()) {
-            //     return response()->json([
-            //         'success' => true,
-            //         'message' => 'Rapport d\'activité créé avec succès!'
-            //     ]);
-            // }
-            return view('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     if ($request->ajax()) {
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => 'Une erreur est survenue: '.$e->getMessage()
-        //         ]);
-        //     }
-        //     return redirect()->back()->with('error', 'Une erreur est survenue'.$e->getMessage());
-        // }
+        return view('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
     }
 
     public function destroy(Request $request, $id)

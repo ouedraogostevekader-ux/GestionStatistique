@@ -18,7 +18,7 @@
         @foreach($data as $programme)
             <tr>
                 <td colspan="8" style="text-align: center; font-weight: bold; background-color: #E8F5E8;">
-                    {{$programme->libelle}}
+                    Programme {{$programme->numero_programme }} : {{$programme->libelle}}
                 </td>
             </tr>
             <!-- Objectif stratégique -->
