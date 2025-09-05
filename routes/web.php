@@ -73,6 +73,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('actions', App\Http\Controllers\ActionController::class);
     Route::resource('objectifs-specifiques', App\Http\Controllers\ObjectifSpecifiqueController::class);
     Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
+
+    Route::post('rapportActivites/visualiser', [App\Http\Controllers\RapportActiviteController::class, 'visualiser'])->name('rapportActivites.visualiser');
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
 });
 

@@ -30,6 +30,11 @@ class ObjectifsStrategique extends Model
         return $this->hasMany(Action::class, 'objectif_strategique_id', 'id');
     }
 
+    public function indicateurs()
+    {
+        return $this->hasMany(IndicateurProgramme::class, 'objectif_strategique_id', 'id');
+    }
+
     public function getDescriptionForEvent(string $eventName): string
     {
         if ($eventName == 'created') {

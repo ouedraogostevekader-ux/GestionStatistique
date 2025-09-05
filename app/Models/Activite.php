@@ -40,4 +40,12 @@ class Activite extends Model
     {
         return $this->belongsTo(ObjectifSpecifique::class);
     }
+
+    /**
+     * Relation avec IndicateurProgramme
+     */
+    public function indicateursProgrammes()
+    {
+        return $this->hasMany(IndicateurProgramme::class, 'activites_id', 'id');
+    }
 }

@@ -1,0 +1,44 @@
+body {
+    font-family: DejaVu Sans, sans-serif;
+    font-size: 8px;
+    margin: 10px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    border: 1px solid #000;
+    padding: 4px;
+    text-align: left;
+    vertical-align: top;
+}
+th {
+    background-color: #7CB342;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+.programme-title {
+    background-color: #E8F5E8;
+    font-weight: bold;
+    text-align: center;
+}
+.objectif-strategique {
+    background-color: #F0F8FF;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
+.action-title {
+    background-color: #E8F5E8;
+    font-weight: bold;
+    text-align: center;
+}
+.center {
+    text-align: center;
+}
+.middle {
+    vertical-align: middle;
+}

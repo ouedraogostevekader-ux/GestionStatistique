@@ -13,9 +13,19 @@
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
                         @can('rapportActivite-create')
-                        <a class="btn btn-primary" href="{{ route('rapportActivites.create') }}">
+                        
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rapportActiviteModal"
+                            data-url="{{ route('rapportActivites.create') }}">
                             <i class="bi bi-plus"></i> Generer un rapport
-                        </a>
+                        </button>
+                        @endcan
+
+                        @can('rapportActivite-create')
+                        
+                        <button class="btn btn-secondary ms-2" data-bs-toggle="modal" data-bs-target="#rapportActiviteVisualiserModal"
+                            data-url="{{ route('rapportActivites.visualiser') }}">
+                            <i class="bi bi-plus"></i> Visualiser
+                        </button>
                         @endcan
                     </div>
                 </div>
@@ -43,6 +53,20 @@
                     </select>
                 </div>
 
+                {{-- Filtre selon l'annee --}}
+                <div>
+                    <label for="filterAnnee" class="form-label">Filtrer par annee :</label>
+                    @php
+                        $currentYear = date('Y');
+                    @endphp
+                    <select id="filterAnnee" class="form-select">
+                        <option value="">-- Toutes --</option>
+                        @for ($year = intval($currentYear - 10); $year <= $currentYear+1; $year++)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endfor
+                    </select>
+                </div>
+
             </div>
 
         </div>
@@ -61,5 +85,5 @@
             @include('rapportActivites.table')
         </div>
     </section>
-    {{-- <script src="{{ asset('js/suivi.js') }}"></script> --}}
+    <script src="{{ asset('js/rapport.js') }}"></script>
 @endsection

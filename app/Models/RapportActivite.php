@@ -28,7 +28,9 @@ class RapportActivite extends Authenticatable
         'libelle',
         'periode_rapport',
         'date_rapport',
+        'annee',
         'file',
+        'file_pdf',
 
     ];
 
@@ -40,7 +42,6 @@ class RapportActivite extends Authenticatable
     protected function casts(): array
     {
         return [
-            'periode_rapport' => 'datetime',
             'date_rapport' => 'datetime',
         ];
     }
@@ -87,7 +88,7 @@ class RapportActivite extends Authenticatable
     {
         return LogOptions::defaults()
             ->logFillable()
-            ->useLogName('User')
+            ->useLogName('Rapport Activite')
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
