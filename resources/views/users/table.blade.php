@@ -29,12 +29,12 @@
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
                                     @endcan
-                                    {{-- @can('user-edit')
+                                    @can('user-edit')
                                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-xs"
                                             title="Modifier">
                                             <i class="bi bi-pencil-fill"></i>
                                         </a>
-                                    @endcan --}}
+                                    @endcan
                                     @can('user-delete')
                                         <button class="btn btn-outline-danger delete-btn"
                                             data-url="{{ route('users.destroy', $user->id) }}"

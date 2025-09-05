@@ -8,7 +8,7 @@
                     <h1>Les objectifs spécifiques</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-primary float-right" href="{{ route('objectifs-specifiques.create') }}">
+                    <a id="btnAjouter" class="btn btn-primary float-right" href="{{ route('objectifs-specifiques.create') }}">
                         Ajouter
                     </a>
                 </div>

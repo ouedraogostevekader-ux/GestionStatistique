@@ -15,10 +15,10 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
-});
+})->name('acceuil');
 
-Route::get('/user/{id}/confirm-compte/', [UserController::class, 'edit'])->name('edit.compte');
-Route::patch('/user/{id}/confirm-compte/enregistre', [UserController::class, 'update'])->name('update.compte');
+Route::get('/user/{id}/confirm-compte/', [UserController::class, 'edit_perso'])->name('edit.compte');
+Route::patch('/user/{id}/confirm-compte/enregistre', [UserController::class, 'update_perso'])->name('update.compte');
 /* Route::get('/dashboard', function () {
     return view('layouts.admin');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwdstore'])->name('users.changepwdstore');
 
     //Logs, Utilisateurs, Roles et Permissions
-    Route::resource('users', App\Http\Controllers\UserController::class)->except(['update', 'edit']);
+    Route::resource('users', App\Http\Controllers\UserController::class); //->except(['update', 'edit']);
     Route::patch('/users/{id}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
     Route::patch('/users/{id}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
 
