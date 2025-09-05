@@ -13,6 +13,7 @@ use App\Models\Structure;
 use App\Models\User;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
@@ -36,37 +37,37 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     /**
      * Afficher la liste des programmes
      */
- public function index(Request $request)
-{
-    $query = ProgrammeBudgetaire::with(['structures', 'responsables']);
+    public function index(Request $request)
+    {
+        $query = ProgrammeBudgetaire::with(['structures', 'responsables']);
 
-    // Filtre par année
-    if ($request->filled('annee')) {
-        $query->whereYear('created_at', $request->annee);
+        // Filtre par année
+        if ($request->filled('annee')) {
+            $query->whereYear('created_at', $request->annee);
+        }
+
+        // Filtre par structure
+        if ($request->filled('structure_id')) {
+            $query->whereHas('structures', function ($q) use ($request) {
+                $q->where('id', $request->structure_id);
+            });
+        }
+
+        // Filtre par responsable actif
+        if ($request->filled('responsable_id')) {
+            $query->whereHas('responsables', function ($q) use ($request) {
+                $q->where('id', $request->responsable_id)
+                    ->whereNull('responsables.date_fin'); // ici la bonne syntaxe
+            });
+        }
+
+        $programmes = $query->paginate(10);
+
+        $structures = Structure::orderBy('nom')->get();
+        $users = User::orderBy('name')->get();
+
+        return view('programmebudgetaire.index', compact('programmes', 'structures', 'users'));
     }
-
-    // Filtre par structure
-    if ($request->filled('structure_id')) {
-        $query->whereHas('structures', function($q) use ($request) {
-            $q->where('id', $request->structure_id);
-        });
-    }
-
-    // Filtre par responsable actif
-    if ($request->filled('responsable_id')) {
-        $query->whereHas('responsables', function($q) use ($request) {
-            $q->where('id', $request->responsable_id)
-              ->whereNull('responsables.date_fin'); // ici la bonne syntaxe
-        });
-    }
-
-    $programmes = $query->paginate(10);
-
-    $structures = Structure::orderBy('nom')->get();
-    $users = User::orderBy('name')->get();
-
-    return view('programmebudgetaire.index', compact('programmes', 'structures', 'users'));
-}
 
 
     /**
@@ -97,8 +98,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     {
         $structures = Structure::orderBy('nom')->get();
         $users = User::orderBy('name')->get();
-
-
 
         return view('programmebudgetaire.create', compact('structures', 'users'));
     }
@@ -145,7 +144,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 
     public function edit($id)
     {
-
 
         $programmeBudgetaire = ProgrammeBudgetaire::with(['structures', 'responsables'])->findOrFail($id);
 
@@ -202,7 +200,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
         });
 
         return redirect()->route('programmebudgetaire.index');
-
     }
 
     /**
