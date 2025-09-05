@@ -156,8 +156,12 @@
     <!-- Script de modal de suppression -->
     <script src="{{ asset('dist/js/delete-modal.js') }}"></script>
     <script src="{{ asset('dist/js/logout.js') }}"></script>
+
+
+    
     @stack('page_scripts')
     <!--end::Script-->
+    
 </body>
 <!--end::Body-->
 

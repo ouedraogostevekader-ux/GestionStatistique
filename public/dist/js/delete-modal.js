@@ -1,4 +1,3 @@
-// public/js/delete-modal.js
 document.addEventListener("DOMContentLoaded", function () {
     const deleteModal = document.getElementById("deleteModal");
     const deleteForm = document.getElementById("deleteForm");
@@ -6,28 +5,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
     if (deleteModal) {
-        // Écouteur pour tous les boutons de suppression
+        /**
+         * Cas 1 : Suppression normale (programme actif)
+         */
         document.addEventListener("click", function (e) {
             if (e.target.matches(".delete-btn, .delete-btn *")) {
                 e.preventDefault();
 
-                // Trouver le bouton parent si on a cliqué sur une icône
                 const deleteBtn = e.target.closest(".delete-btn");
-
-                // Récupérer les données
                 const deleteUrl = deleteBtn.getAttribute("data-url");
-                const itemName =
-                    deleteBtn.getAttribute("data-item") || "cet élément";
                 const customMessage = deleteBtn.getAttribute("data-message");
 
-                // Configurer le modal
-                if (customMessage) {
-                    deleteMessage.innerHTML = customMessage;
-                } else {
-                    deleteMessage.innerHTML = `Êtes-vous sûr de vouloir supprimer "<strong>${itemName}</strong>" ?`;
-                }
-
+                // Message
+                deleteMessage.innerHTML = customMessage || "Êtes-vous sûr de vouloir supprimer cet élément ?";
                 deleteForm.action = deleteUrl;
+
+                // Bouton supprimer visible
+                confirmDeleteBtn.style.display = "inline-block";
 
                 // Afficher le modal
                 const modal = new bootstrap.Modal(deleteModal);
@@ -35,11 +29,34 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Gérer la soumission du formulaire
+        /**
+         * Cas 2 : Programme verrouillé (edit ou delete)
+         */
+        document.addEventListener("click", function (e) {
+            if (e.target.matches(".locked-program, .locked-program *")) {
+                e.preventDefault();
+
+                const lockedBtn = e.target.closest(".locked-program");
+                const message = lockedBtn.getAttribute("data-message");
+
+                // Message d’alerte
+                deleteMessage.innerHTML = message || "Ce programme est verrouillé et ne peut pas être modifié/supprimé.";
+
+                // On cache le bouton supprimer
+                confirmDeleteBtn.style.display = "none";
+
+                // Afficher le modal
+                const modal = new bootstrap.Modal(deleteModal);
+                modal.show();
+            }
+        });
+
+        /**
+         * Soumission de suppression AJAX
+         */
         deleteForm.addEventListener("submit", function (e) {
             e.preventDefault();
 
-            // Désactiver le bouton et afficher le loader
             const originalText = confirmDeleteBtn.innerHTML;
             confirmDeleteBtn.disabled = true;
             confirmDeleteBtn.innerHTML = `
@@ -47,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 Suppression...
             `;
 
-            // Créer et soumettre le formulaire
             const formData = new FormData(this);
 
             fetch(this.action, {
@@ -55,18 +71,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: formData,
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'input[name="_token"]'
-                    ).value,
+                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
                 },
             })
                 .then((response) => {
                     if (response.ok) {
-                        // Fermer le modal
                         const modal = bootstrap.Modal.getInstance(deleteModal);
                         modal.hide();
 
-                        // Afficher message de succès
                         if (typeof Swal !== "undefined") {
                             Swal.fire({
                                 title: "Supprimé !",
@@ -76,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             });
                         }
 
-                        // Recharger la page après un délai
                         setTimeout(() => {
                             window.location.reload();
                         }, 1500);
@@ -94,26 +105,24 @@ document.addEventListener("DOMContentLoaded", function () {
                             icon: "error",
                         });
                     } else {
-                        alert(
-                            "Une erreur est survenue lors de la suppression."
-                        );
+                        alert("Une erreur est survenue lors de la suppression.");
                     }
                 })
                 .finally(() => {
-                    // Réactiver le bouton
                     confirmDeleteBtn.disabled = false;
                     confirmDeleteBtn.innerHTML = originalText;
                 });
         });
 
-        // Réinitialiser le modal à la fermeture
+        /**
+         * Reset du modal
+         */
         deleteModal.addEventListener("hidden.bs.modal", function () {
-            deleteMessage.textContent =
-                "Êtes-vous sûr de vouloir supprimer cet élément ?";
+            deleteMessage.textContent = "Êtes-vous sûr de vouloir supprimer cet élément ?";
             deleteForm.action = "";
             confirmDeleteBtn.disabled = false;
-            confirmDeleteBtn.innerHTML =
-                '<i class="bi bi-trash"></i> Supprimer';
+            confirmDeleteBtn.innerHTML = '<i class="bi bi-trash"></i> Supprimer';
+            confirmDeleteBtn.style.display = "inline-block"; // On le réaffiche par défaut
         });
     }
 });
