@@ -44,9 +44,11 @@ class IndicateurProgrammeController extends Controller
             'objectif_strategique_id' => 'nullable|exists:objectifs_strategiques,id',
             'activites_id' => 'nullable|exists:activites,id',
         ]);
-
         $indicateur = IndicateurProgramme::create($validatedData);
-
+        if ($request->indicateur) {
+            return redirect()->back()
+                ->with('success', 'L\'Objet est créé avec succès.');
+        }
         return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur created successfully.');
     }
 

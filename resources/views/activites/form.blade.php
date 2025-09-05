@@ -44,23 +44,26 @@
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
-
-    <div class="mb-3">
-        <label for="objectif_specifique_id" class="form-label">Objectif spécifique</label>
-        <select name="objectif_specifique_id" id="objectif_specifique_id"
-            class="form-select @error('objectif_specifique_id') is-invalid @enderror" required>
-            <option value="">-- Sélectionner --</option>
-            @foreach ($objectifs as $obj)
-                <option value="{{ $obj->id }}"
-                    {{ old('objectif_specifique_id', $activite->objectif_specifique_id ?? '') == $obj->id ? 'selected' : '' }}>
-                    {{ $obj->libelle }}
-                </option>
-            @endforeach
-        </select>
-        @error('objectif_specifique_id')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
+    @if (!isset($objectifSpecifique))
+        <div class="mb-3">
+            <label for="objectif_specifique_id" class="form-label">Objectif spécifique</label>
+            <select name="objectif_specifique_id" id="objectif_specifique_id"
+                class="form-select @error('objectif_specifique_id') is-invalid @enderror" required>
+                <option value="">-- Sélectionner --</option>
+                @foreach ($objectifs as $obj)
+                    <option value="{{ $obj->id }}"
+                        {{ old('objectif_specifique_id', $activite->objectif_specifique_id ?? '') == $obj->id ? 'selected' : '' }}>
+                        {{ $obj->libelle }}
+                    </option>
+                @endforeach
+            </select>
+            @error('objectif_specifique_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    @else
+        <input type="hidden" name="objectif_specifique_id" value="{{ $objectifSpecifique->id }}">
+    @endif
 
     <button type="submit" class="btn btn-success">
         {{ isset($activite) ? 'Mettre à jour' : 'Enregistrer' }}

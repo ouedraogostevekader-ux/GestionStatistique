@@ -37,7 +37,10 @@ class ActionController extends Controller
         ]);
 
         $action = Action::create($validatedData);
-
+        if ($request->action) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
         return redirect()->route('actions.index')->with('success', 'Action created successfully.');
     }
 

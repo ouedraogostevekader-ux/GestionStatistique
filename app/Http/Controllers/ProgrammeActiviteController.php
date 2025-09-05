@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProgrammesActivite;
+use App\Models\ProgrammeBudgetaire;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -25,9 +26,30 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        //Liste des programmes d'activités paginées
-        $programmeActivites = ProgrammesActivite::all();
-        return view('programme_activites.index', compact('programmeActivites'));
+        $programmes = ProgrammeBudgetaire::with([
+            'objectifsStrategiques' => function ($query) {
+                $query->with([
+                    'actions' => function ($query) {
+                        $query->with([
+                            'objectifsSpecifiques' => function ($query) {
+                                $query->with([
+                                    'activites' => function ($query) {
+                                        $query->with(['indicateurs', 'periodes']);
+                                    },
+                                    'indicateurs'
+                                ]);
+                            }
+                        ]);
+                    },
+                    'indicateurs'
+                ]);
+            },
+            'programmeActivite',
+            'structures'
+        ])->get();
+
+
+        return view('prog_activite.index', compact('programmes'));
     }
 
     /**
@@ -49,9 +71,56 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $programme = ProgrammeBudgetaire::with([
+            'objectifsStrategiques.actions.objectifsSpecifiques.activites.indicateurs.suivis',
+            'objectifsStrategiques.actions.objectifsSpecifiques.indicateurs.suivis',
+            'objectifsStrategiques.indicateurs.suivis',
+            'objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes',
+            'programmeActivite',
+            'structures'
+        ])->findOrFail($id);
+
+        return view('prog_activite.show', compact('programme'));
+    }
+
+    public function tableau($id)
+    {
+        $programme = ProgrammeBudgetaire::with([
+            'objectifsStrategiques' => function ($query) {
+                $query->with([
+                    'indicateurs',
+                    'actions' => function ($query) {
+                        $query->with([
+                            'objectifsSpecifiques' => function ($query) {
+                                $query->with([
+                                    'indicateurs',
+                                    'activites' => function ($query) {
+                                        $query->with(['indicateurs', 'periodes']);
+                                    }
+                                ]);
+                            }
+                        ]);
+                    }
+                ]);
+            },
+            'programmeActivite'
+        ])->findOrFail($id);
+
+        return view('prog_activite.tableau', compact('programme'));
+    }
+
+    public function suiviTableau($id)
+    {
+        $programme = ProgrammeBudgetaire::with([
+            'objectifsStrategiques.indicateurs.suivis',
+            'objectifsStrategiques.actions.objectifsSpecifiques.indicateurs.suivis',
+            'objectifsStrategiques.actions.objectifsSpecifiques.activites.indicateurs.suivis',
+            'objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes'
+        ])->findOrFail($id);
+
+        return view('prog_activite.suivi', compact('programme'));
     }
 
     /**

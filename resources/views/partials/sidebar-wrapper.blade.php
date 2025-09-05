@@ -91,9 +91,9 @@
                 </li>
             @endcan
             <li
-                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
+                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('programme-activites*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
                 <a href="#"
-                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
+                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('programme-activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
                     <i class="nav-icon bi bi-folder-fill"></i>
                     <p>
                         Programmation
@@ -147,8 +147,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('activites.index') }}"
-                            class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
+                        <a href="{{ route('programme-activites.index') }}"
+                            class="nav-link {{ Request::is('programme-activites*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-journal"></i>
                             <p>Programmes d'activités</p>
                         </a>
@@ -167,7 +167,8 @@
                     <ul class="nav nav-treeview">
                         {{-- @can('manageObjectifStrategique') --}}
                         <li class="nav-item">
-                            <a href="{{route('rapportActivites.index')}}" class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                            <a href="{{ route('rapportActivites.index') }}"
+                                class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-journal-text"></i>
                                 <p>Rapport d'activités</p>
                             </a>
@@ -184,7 +185,7 @@
                 </li>
             @endcan
             <li class="nav-item">
-                <a href="{{ route('admin.statistique') }}"
+                <a href="{{ route('statistiques.index') }}"
                     class="nav-link {{ Request::is('*statistique*') ? 'active' : '' }}">
                     <i class="nav-icon bi bi-bar-chart-fill"></i>
                     <p>Statistiques</p>
