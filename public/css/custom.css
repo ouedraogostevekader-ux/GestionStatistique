@@ -83,11 +83,16 @@ button.btn.btn-primary.btn-sm {
     border: 1px solid red;
 }
 
-button.btn.btn-primary,
-
+button.btn.btn-primary:hover,
+a.btn.btn-primary:hover,
 button.btn.btn-primary.btn-sm:hover {
     background: red;
     border: 1px solid yellow;
+}
+
+li.breadcrumb-item a {
+    font-weight: 900;
+    color: #006232;
 }
 
 /* Fin bouton */

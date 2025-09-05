@@ -48,12 +48,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact</a>
                     </li>
-                    @php
-                        $uid = '01k4ajrd18mh6ynmkvrry6mdrs';
+                    {{-- @php
+                        $uid = '01k4b0htq73412c3y1jhjd8xza';
                     @endphp
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('edit.compte', $uid) }}">Modif</a>
-                    </li>
+                    </li> --}}
                 </ul>
                 <!-- Bouton de connexion à droite -->
                 <ul class="navbar-nav ms-auto">
