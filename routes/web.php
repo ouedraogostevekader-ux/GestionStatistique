@@ -99,15 +99,15 @@ Route::middleware('auth')->group(function () {
         ->name('programmebudgetaire.toggleEditable');
     // Routes CRUD (édition et suppression protégées par le middleware)
     Route::group(['middleware' => ['check.programme.active']], function () {
-    Route::get('/programmebudgetaire/{id}/edit', [ProgrammeBudgetaireController::class, 'edit'])->name('programmebudgetaire.edit');
-    Route::patch('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'update'])->name('programmebudgetaire.update');
-    Route::delete('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'destroy'])->name('programmebudgetaire.destroy');
+        Route::get('/programmebudgetaire/{id}/edit', [ProgrammeBudgetaireController::class, 'edit'])->name('programmebudgetaire.edit');
+        Route::patch('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'update'])->name('programmebudgetaire.update');
+        Route::delete('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'destroy'])->name('programmebudgetaire.destroy');
     });
     Route::get('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'show'])
         ->name('programmebudgetaire.show');
     Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
-        ->name('programmebudgetaire.store');    
-Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+        ->name('programmebudgetaire.store');
+    //Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
         ->name('programmes-budgetaires.create-duplicate');

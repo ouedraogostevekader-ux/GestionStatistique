@@ -1,31 +1,30 @@
 @extends('layouts.admin')
 @section('breadcrumb', 'Rapports d\'activités')
 @section('content')
-    <link rel="stylesheet" href="{{asset('css/suivi.css')}}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('css/suivi.css') }}" type="text/css" />
     <section class="content-header">
         <div class="container px-2">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>
                         Rapports d'activités
-                    </h1>    
+                    </h1>
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
-                        @can('rapportActivite-create')
-                        
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rapportActiviteModal"
-                            data-url="{{ route('rapportActivites.create') }}">
-                            <i class="bi bi-plus"></i> Generer un rapport
-                        </button>
+                        @can('rapport_Activite-create')
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rapportActiviteModal"
+                                data-url="{{ route('rapportActivites.create') }}">
+                                <i class="bi bi-plus"></i> Generer un rapport
+                            </button>
                         @endcan
 
-                        @can('rapportActivite-create')
-                        
-                        <button class="btn btn-secondary ms-2" data-bs-toggle="modal" data-bs-target="#rapportActiviteVisualiserModal"
-                            data-url="{{ route('rapportActivites.visualiser') }}">
-                            <i class="bi bi-eye"></i> Visualiser
-                        </button>
+                        @can('rapport_Activite-create')
+                            <button class="btn btn-secondary ms-2" data-bs-toggle="modal"
+                                data-bs-target="#rapportActiviteVisualiserModal"
+                                data-url="{{ route('rapportActivites.visualiser') }}">
+                                <i class="bi bi-eye"></i> Visualiser
+                            </button>
                         @endcan
                     </div>
                 </div>
@@ -47,7 +46,7 @@
                     <label for="filterPeriode" class="form-label">Filtrer par periode :</label>
                     <select id="filterPeriode" class="form-select">
                         <option value="">-- Toutes --</option>
-                        @foreach ($periodes as $key=>$periode)
+                        @foreach ($periodes as $key => $periode)
                             <option value="{{ $key }}">{{ $periode }}</option>
                         @endforeach
                     </select>
@@ -61,7 +60,7 @@
                     @endphp
                     <select id="filterAnnee" class="form-select">
                         <option value="">-- Toutes --</option>
-                        @for ($year = intval($currentYear - 10); $year <= $currentYear+1; $year++)
+                        @for ($year = intval($currentYear - 10); $year <= $currentYear + 1; $year++)
                             <option value="{{ $year }}">{{ $year }}</option>
                         @endfor
                     </select>

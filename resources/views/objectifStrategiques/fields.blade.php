@@ -8,7 +8,7 @@
     </div>
 
     <!-- programme_budgetaire_id field: select -->
-    @if (!$programmeBudgetaire)
+    @if ($programmeBudgetaires)
         <div class="form-group col-sm-8">
             <label for="programme_budgetaire_id">Programme Budgetaire</label>
             <select name="programme_budgetaire_id" id="programme_budgetaire_id" class="form-control">

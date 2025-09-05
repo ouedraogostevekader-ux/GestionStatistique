@@ -13,15 +13,14 @@ use App\Models\Structure;
 use App\Models\User;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
 class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 {
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function middleware(): array
     {
@@ -38,14 +37,30 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        // Charger les programmes avec structures + responsable actif
-        $programmes = ProgrammeBudgetaire::with([
-            'structures',
-            'responsables' => function ($q) {
-                $q->wherePivotNull('date_fin'); // uniquement responsables actifs
-            }
+        $user = Auth::user();
 
-        ])->paginate(10);
+        if (Auth::user()->isAdmin()) {
+            // Charger les programmes avec structures + responsable actif
+            $programmes = ProgrammeBudgetaire::with([
+                'structures',
+                'responsables' => function ($q) {
+                    $q->wherePivotNull('date_fin'); // uniquement responsables actifs
+                }
+
+            ])->get();
+        } else {
+            $programmes = ProgrammeBudgetaire::whereHas('structures', function ($q) use ($user) {
+                $q->where('structures.id', $user->structure_id);
+            })
+                ->with([
+                    'structures',
+                    'responsables' => function ($q) {
+                        $q->wherePivotNull('date_fin'); // uniquement responsables actifs
+                    }
+                ])
+                ->get();
+        }
+
 
         $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
 
@@ -80,8 +95,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     {
         $structures = Structure::orderBy('nom')->get();
         $users = User::orderBy('name')->get();
-
-
 
         return view('programmebudgetaire.create', compact('structures', 'users'));
     }
@@ -128,7 +141,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 
     public function edit($id)
     {
-
 
         $programmeBudgetaire = ProgrammeBudgetaire::with(['structures', 'responsables'])->findOrFail($id);
 
@@ -185,7 +197,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
         });
 
         return redirect()->route('programmebudgetaire.index');
-
     }
 
     /**
