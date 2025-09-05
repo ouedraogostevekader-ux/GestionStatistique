@@ -52,12 +52,40 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
         return view('prog_activite.index', compact('programmes'));
     }
 
+    public function tableProgrammeActivite()
+    {
+        $programmes = ProgrammeBudgetaire::with([
+            'objectifsStrategiques' => function ($query) {
+                $query->with([
+                    'actions' => function ($query) {
+                        $query->with([
+                            'objectifsSpecifiques' => function ($query) {
+                                $query->with([
+                                    'activites' => function ($query) {
+                                        $query->with(['indicateurs', 'periodes']);
+                                    },
+                                    'indicateurs'
+                                ]);
+                            }
+                        ]);
+                    },
+                    'indicateurs'
+                ]);
+            },
+            'programmeActivite',
+            'structures'
+        ])->get();
+
+
+        return view('prog_activite.tableau', compact('programmes'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('prog_activite.create');
     }
 
     /**
@@ -65,7 +93,20 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'libelle' => 'required|string|max:255',
+            'file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+        $request['annee'] = date('Y');
+        $request['date_generation'] = now();
+        $programmeActivite = ProgrammesActivite::create($request->all());
+
+        // Récupérer programmes budgétaires de l'année sans attribution
+        $programmesBudgetaires = ProgrammeBudgetaire::where('annee', now()->year)
+            //->whereDoesntHave('programmesActivites')
+            ->pluck('id');
+        $programmeActivite->programmesBudgetaires()->attach($programmesBudgetaires);
+        return redirect()->route('programme_activites.index')->with('success', 'Programme d\'activité créé avec succès');
     }
 
     /**
@@ -74,12 +115,24 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
     public function show($id)
     {
         $programme = ProgrammeBudgetaire::with([
-            'objectifsStrategiques.actions.objectifsSpecifiques.activites.indicateurs.suivis',
-            'objectifsStrategiques.actions.objectifsSpecifiques.indicateurs.suivis',
-            'objectifsStrategiques.indicateurs.suivis',
-            'objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes',
-            'programmeActivite',
-            'structures'
+            'objectifsStrategiques' => function ($query) {
+                $query->with([
+                    'indicateurs',
+                    'actions' => function ($query) {
+                        $query->with([
+                            'objectifsSpecifiques' => function ($query) {
+                                $query->with([
+                                    'indicateurs',
+                                    'activites' => function ($query) {
+                                        $query->with(['indicateurs', 'periodes']);
+                                    }
+                                ]);
+                            }
+                        ]);
+                    }
+                ]);
+            },
+            'programmeActivite'
         ])->findOrFail($id);
 
         return view('prog_activite.show', compact('programme'));
@@ -108,7 +161,7 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
             'programmeActivite'
         ])->findOrFail($id);
 
-        return view('prog_activite.tableau', compact('programme'));
+        return view('prog_activite.show', compact('programme'));
     }
 
     public function suiviTableau($id)

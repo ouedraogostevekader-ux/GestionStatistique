@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 @section('breadcrumb', 'Suivis')
 @section('content')
-    <link rel="stylesheet" href="{{asset('css/suivi.css')}}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('css/suivi.css') }}" type="text/css" />
     <section class="content-header">
-        <div class="container px-2">
+        <div class="container px-2" id="filters-section">
             <div class="row mb-2">
-                
+
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
                         {{-- <a class="btn btn-primary" href="{{ route('suivis.create') }}">

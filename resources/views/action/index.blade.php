@@ -61,7 +61,7 @@
 
                                             {{-- @can('action-edit') --}}
                                             <a href="{{ route('actions.edit', $action->id) }}"
-                                                class="btn btn-primary btn-xs" title="Modifier">
+                                                class="btn btn-warning btn-xs" title="Modifier">
                                                 <i class="bi bi-pencil-fill"></i>
                                             </a>
                                             {{-- @endcan --}}

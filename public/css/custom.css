@@ -28,13 +28,15 @@ body {
 }
 
 .sidebar-brand {
-    background: #006233;
+    background: linear-gradient(180deg, var(--burkina-green) 0%, var(--burkina-dark) 100%);
+    /* background: #006233; */
+    box-shadow: var(--shadow-lg);
 }
 
 .sidebar-wrapper {
-    background: #019e48;
+    /* background: #019e48; */
     width: auto;
-    background: linear-gradient(180deg, var(--burkina-green) 0%, var(--burkina-dark) 100%);
+    background: linear-gradient(180deg, var(--burkina-green) 100%, var(--burkina-dark) 10%);
     color: white;
     box-shadow: var(--shadow-lg);
     min-height: calc(100vh - 80px);
@@ -178,6 +180,39 @@ nav.app-header.navbar.navbar-expand.bg-body {
     background: #019e48;
 }
 
+#btnAjouter {
+    background: linear-gradient(135deg, var(--burkina-green), var(--burkina-dark));
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+}
+
+#btnAjouter:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, var(--burkina-dark), var(--burkina-green));
+    color: white;
+}
+
+#btnEditer {
+    background: var(--burkina-yellow);
+    color: var(--burkina-dark);
+    border: none;
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+#btnEditer:hover {
+    background: var(--burkina-gold);
+    transform: scale(1.05);
+}
+
 a.btn.btn-info.btn-sm,
 a.btn.btn-info.btn-xs {
     background: #5c6b3e3b;
@@ -251,7 +286,7 @@ select[multiple] option {
 }
 
 select[multiple] option:checked {
-    background-color: #007bff;
+    background-color: #464d53;
     color: white;
 }
 
@@ -284,4 +319,51 @@ select[multiple] option:checked {
 
 ul.pagination a {
     color: #a99622 !important;
+}
+
+.form-select,
+.form-control {
+    border: 2px solid rgba(34, 139, 34, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: var(--transition);
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: var(--burkina-green);
+    box-shadow: 0 0 0 0.2rem rgba(34, 139, 34, 0.25);
+    outline: none;
+}
+
+/* tableau */
+.table {
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: none;
+}
+
+.table thead th {
+    background: linear-gradient(90deg, var(--burkina-green), var(--burkina-dark));
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(34, 139, 34, 0.1);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background: var(--burkina-light-green);
+    transform: scale(1.01);
+    transition: var(--transition);
 }

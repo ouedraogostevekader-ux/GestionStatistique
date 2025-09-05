@@ -85,18 +85,16 @@ class ProgrammeBudgetaire extends Model
             ->select('activites.*');
     }
 
-protected static function boot()
-{
-    parent::boot();
+    protected static function boot()
+    {
+        parent::boot();
 
-    static::deleting(function ($programme) {
-        // Supprimer relations pivot car cascadesondelete n'a pas ete fait sur les migrations 
-        $programme->structures()->detach();
-        $programme->responsables()->detach();
+        static::deleting(function ($programme) {
+            // Supprimer relations pivot car cascadesondelete n'a pas ete fait sur les migrations 
+            $programme->structures()->detach();
+            $programme->responsables()->detach();
 
-    });
-}
-
-
+        });
+    }
 
 }
