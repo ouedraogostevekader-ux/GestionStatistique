@@ -8,10 +8,24 @@ use App\Models\Structure;
 use App\Repositories\StructureRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class StructureController extends Controller
+class StructureController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:structure-list', only: ['index', 'show']),
+            new Middleware('permission:structure-create', only: ['create', 'store']),
+            new Middleware('permission:structure-edit', only: ['edit', 'update']),
+            new Middleware('permission:structure-delete', only: ['destroy']),
+        ];
+    }
+
+
     protected $structureRepository;
 
     public function __construct(StructureRepository $structureRepository)

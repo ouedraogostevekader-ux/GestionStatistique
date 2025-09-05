@@ -8,9 +8,11 @@
                     <h1>Les objectifs spécifiques</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a id="btnAjouter" class="btn btn-primary float-right" href="{{ route('objectifs-specifiques.create') }}">
-                        Ajouter
-                    </a>
+                    @can('objectif_Specifique-create')
+                        <a id="btnAjouter" class="btn btn-primary float-right" href="{{ route('objectifs-specifiques.create') }}">
+                            Ajouter
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -61,20 +63,26 @@
                                     <td>{{ $objectif->activites->count() }}</td>
                                     <td>
                                         <div class='btn-group'>
-                                            <a href="{{ route('objectifs-specifiques.show', $objectif->id) }}"
-                                                class="btn btn-info btn-xs" title="Voir">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </a>
-                                            <a href="{{ route('objectifs-specifiques.edit', $objectif->id) }}"
-                                                class="btn btn-primary btn-xs" title="Modifier">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </a>
-                                            <button type="button" class="btn btn-outline-danger delete-btn"
-                                                title="Supprimer"
-                                                data-url="{{ route('objectifs-specifiques.destroy', $objectif->id) }}"
-                                                data-message="L'objectif spécifique <strong>{{ $objectif->libelle }}</strong> sera supprimé. Continuer ?">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
+                                            @can('objectif_Specifique-list')
+                                                <a href="{{ route('objectifs-specifiques.show', $objectif->id) }}"
+                                                    class="btn btn-info btn-xs" title="Voir">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                </a>
+                                            @endcan
+                                            @can('objectif_Specifique-edit')
+                                                <a href="{{ route('objectifs-specifiques.edit', $objectif->id) }}"
+                                                    class="btn btn-primary btn-xs" title="Modifier">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </a>
+                                            @endcan
+                                            @can('objectif_Specifique-delete')
+                                                <button type="button" class="btn btn-outline-danger delete-btn"
+                                                    title="Supprimer"
+                                                    data-url="{{ route('objectifs-specifiques.destroy', $objectif->id) }}"
+                                                    data-message="L'objectif spécifique <strong>{{ $objectif->libelle }}</strong> sera supprimé. Continuer ?">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

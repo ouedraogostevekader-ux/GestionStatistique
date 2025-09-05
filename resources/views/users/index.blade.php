@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Utilisateurs</h1>
+                    <h1>Utilisateurs : <span class="btn btn-info">({{ $users->count() }})</span></h1>
                 </div>
                 <div class="col-sm-6">
                     @can('user-create')

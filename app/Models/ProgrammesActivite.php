@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class ProgrammesActivite extends Model
 {
     use HasFactory, SoftDeletes;
     use HasUlids, LogsActivity;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.

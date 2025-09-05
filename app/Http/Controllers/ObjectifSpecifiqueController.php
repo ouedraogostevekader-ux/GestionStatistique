@@ -6,9 +6,23 @@ use App\Models\ObjectifSpecifique;
 use App\Models\Action;
 use App\Models\Periode;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ObjectifSpecifiqueController extends Controller
+class ObjectifSpecifiqueController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:objectif_Specifique-list', only: ['index', 'show']),
+            new Middleware('permission:objectif_Specifique-create', only: ['create', 'store']),
+            new Middleware('permission:objectif_Specifique-edit', only: ['edit', 'update']),
+            new Middleware('permission:objectif_Specifique-delete', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */

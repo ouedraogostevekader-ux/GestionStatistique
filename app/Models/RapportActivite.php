@@ -10,11 +10,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class RapportActivite extends Authenticatable
 {
 
     use HasFactory, SoftDeletes, HasUlids, LogsActivity;
+    use HasRoles;
+    use LogsActivity;
 
     protected $table = 'rapports_activites';
 

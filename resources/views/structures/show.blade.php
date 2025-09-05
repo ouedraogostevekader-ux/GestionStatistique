@@ -12,12 +12,16 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end gap-2">
-                        <a class="btn btn-primary" href="{{ route('structures.edit', $structure->id) }}">
-                            <i class="bi bi-pencil-fill"></i> Modifier
-                        </a>
-                        <a class="btn btn-secondary" href="{{ route('structures.index') }}">
-                            <i class="bi bi-arrow-left"></i> Retour
-                        </a>
+                        @can('structure-edit')
+                            <a class="btn btn-primary" href="{{ route('structures.edit', $structure->id) }}">
+                                <i class="bi bi-pencil-fill"></i> Modifier
+                            </a>
+                        @endcan
+                        @can('structure-list')
+                            <a class="btn btn-secondary" href="{{ route('structures.index') }}">
+                                <i class="bi bi-arrow-left"></i> Retour
+                            </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -86,15 +90,19 @@
                                 onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette structure ?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-trash-fill"></i> Supprimer
-                                </button>
+                                @can('structure-delete')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash-fill"></i> Supprimer
+                                    </button>
+                                @endcan
                             </form>
 
                             <div>
-                                <a href="{{ route('structures.edit', $structure->id) }}" class="btn btn-primary">
-                                    <i class="bi bi-pencil-fill"></i> Modifier
-                                </a>
+                                @can('structure-edit')
+                                    <a href="{{ route('structures.edit', $structure->id) }}" class="btn btn-primary">
+                                        <i class="bi bi-pencil-fill"></i> Modifier
+                                    </a>
+                                @endcan
                             </div>
                         </div>
                     </div>
