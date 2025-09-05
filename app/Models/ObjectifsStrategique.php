@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 class ObjectifsStrategique extends Model
 {
     use HasFactory;
     use HasUlids, LogsActivity, SoftDeletes;
+    use LogsActivity;
+    use HasRoles;
+
     protected $keyType = 'string';
     public $incrementing = false;
     protected $fillable = [

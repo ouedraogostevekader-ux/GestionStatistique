@@ -96,7 +96,6 @@ class User extends Authenticatable
     public function programmesBudgetaires()
     {
         return $this->belongsToMany(ProgrammeBudgetaire::class, 'responsables')->withPivot('date_debut', 'date_fin');
-
     }
 
     /* Role administrateur */

@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class ObjectifStrategiqueController extends Controller implements HasMiddleware
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function middleware(): array
     {

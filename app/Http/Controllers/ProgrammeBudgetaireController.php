@@ -11,13 +11,25 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProgrammeBudgetaire;
 use App\Models\Structure;
 use App\Models\User;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Str;
 
 
-class ProgrammeBudgetaireController extends Controller
+class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 {
 
+    public function __construct() {}
 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
+            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
+            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
+            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+        ];
+    }
 
     /**
      * Afficher la liste des programmes
@@ -106,7 +118,6 @@ class ProgrammeBudgetaireController extends Controller
         });
 
         return redirect()->route('programmebudgetaire.index');
-
     }
 
     /**
@@ -127,7 +138,6 @@ class ProgrammeBudgetaireController extends Controller
         $responsableActif = $programmeBudgetaire->responsables->firstWhere('pivot.date_fin', null);
 
         return view('programmebudgetaire.edit', compact('programmeBudgetaire', 'structures', 'users', 'responsableActif'));
-
     }
 
     /**
@@ -173,7 +183,6 @@ class ProgrammeBudgetaireController extends Controller
         });
 
         return redirect()->route('programmebudgetaire.index');
-           
     }
 
     /**
@@ -234,7 +243,6 @@ class ProgrammeBudgetaireController extends Controller
 
             return redirect()->route('programmebudgetaire.index')
                 ->with('success', 'Programme budgétaire dupliqué avec succès !');
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Erreur lors de la duplication: ' . $e->getMessage())
@@ -298,17 +306,17 @@ class ProgrammeBudgetaireController extends Controller
     }
 
     // public function toggleGlobalEditable()
-// {
+    // {
 
     //     // Vérifie l'état actuel
-//     $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
+    //     $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
 
     //     // Inverse tous les programmes
-//     ProgrammeBudgetaire::query()->update(['isActive' => $locked ? true : false]);
+    //     ProgrammeBudgetaire::query()->update(['isActive' => $locked ? true : false]);
 
     //     return redirect()->route('programmebudgetaire.index')
-//                      ->with('success', $locked ? 'Tous les programmes sont activés.' : 'Toutes les modifications sont désactivées.');
-// }
+    //                      ->with('success', $locked ? 'Tous les programmes sont activés.' : 'Toutes les modifications sont désactivées.');
+    // }
 
     public function toggleEditable($id)
     {
@@ -318,10 +326,5 @@ class ProgrammeBudgetaireController extends Controller
         $programme->save();
 
         return redirect()->route('programmebudgetaire.index');
-
-
     }
-
-
-
 }
