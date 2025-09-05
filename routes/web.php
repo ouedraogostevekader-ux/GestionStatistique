@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\ObjectifStrategiqueController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -77,20 +78,33 @@ Route::middleware('auth')->group(function () {
 
         // Validation d'un fichier CSV (AJAX)
         Route::post('/validate', [ImportController::class, 'validateCsv'])->name('validate');
+        // imports
+        Route::resource('imports', ImportController::class);
+        Route::post('imports/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
+        Route::post('imports/structure', [ImportController::class, 'importStructures'])->name('import.structures');
+        Route::post('imports/objectifs-stra', [ImportController::class, 'importObjectifsStrategiques'])->name('import.objectifs-strategiques');
+        Route::post('imports/objectif-spec', [ImportController::class, 'downloadTemplate'])->name('import.objectifs-specifiques');
     });
 
     // Activites
     Route::resource('activites', ActiviteController::class);
     Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
         ->name('programmes-budgetaires.create-duplicate');
     Route::post('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'storeDuplicate'])
         ->name('programmes-budgetaires.store-duplicate');
+    // OS routes
     route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
+    route::get('objectifStrategiques/pb/{id}', [ObjectifStrategiqueController::class, 'osByPB'])->name('programmebudgetaire.os');
+
     Route::get('suivis/create/{id}', [App\Http\Controllers\SuiviController::class, 'createByMIndicateur'])->name('suivis.createM');
     route::resource('suivis', App\Http\Controllers\SuiviController::class);
     Route::resource('actions', App\Http\Controllers\ActionController::class);
+
     Route::resource('objectifs-specifiques', App\Http\Controllers\ObjectifSpecifiqueController::class);
+    route::get('objectifSpecifiqiques/os/{id}', [ObjectifStrategiqueController::class, 'osByPB'])->name('os.specifiques');
+
     Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
 });

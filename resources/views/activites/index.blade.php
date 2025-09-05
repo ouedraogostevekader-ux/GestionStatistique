@@ -64,6 +64,7 @@
                                 <th>Période</th>
                                 <th>Coût prévisionnel</th>
                                 <th>Objectif spécifique</th>
+                                <th>Indicateurs</th>
                                 <th>Date création</th>
                                 <th>Action</th>
                             </tr>
@@ -76,7 +77,8 @@
                                     <td>{{ $activite->periodes[0]->libelle }}</td>
                                     <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
                                     <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
-                                    <td>{{ $activite->created_at->format('d/m/Y, H:i') }}</td>
+                                    <td>{{ $activite->indicateursProgrammes->count() }}</td>
+                                    <td>{{ $activite->updated_at->format('d/m/Y, H:i') }}</td>
                                     <td>
                                         <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
                                             class="d-inline">
@@ -102,16 +104,6 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>No</th>
-                                <th>Libellé</th>
-                                <th>Période</th>
-                                <th>Coût prévisionnel</th>
-                                <th>Objectif spécifique</th>
-                                <th>Action</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>

@@ -21,6 +21,8 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB as DB;
 
+
+
 use Spatie\Permission\Models\Role as ModelsRole;
 
 class UserController extends Controller implements HasMiddleware

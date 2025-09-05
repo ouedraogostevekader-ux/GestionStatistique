@@ -239,7 +239,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-primary">Budget prévisionnel</h5>
+                        <h5 class="card-title text-primary">Coût prévisionnel</h5>
                         <h3 class="text-primary">{{ number_format($financialStats['budget_prevu'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
@@ -248,7 +248,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-success">Budget exécuté</h5>
+                        <h5 class="card-title text-success">Coût exécuté</h5>
                         <h3 class="text-success">{{ number_format($financialStats['budget_execute'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
@@ -257,7 +257,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-warning">Budget restant</h5>
+                        <h5 class="card-title text-warning">Coût restant</h5>
                         <h3 class="text-warning">{{ number_format($financialStats['budget_restant'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
@@ -349,7 +349,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Budget par trimestre</h3>
+                        <h3 class="card-title">Coût par trimestre</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="budgetTrimestreChart" width="400" height="200"></canvas>
@@ -376,7 +376,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Budget par programme budgétaire</h3>
+                            <h3 class="card-title">Coût par programme budgétaire</h3>
                         </div>
                         <div class="card-body">
                             <canvas id="budgetProgrammesChart" width="400" height="150"></canvas>
