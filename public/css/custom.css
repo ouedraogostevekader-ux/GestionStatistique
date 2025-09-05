@@ -1,13 +1,76 @@
+/* --- Palette Burkina Faso --- */
+/* Variables CSS inspirées du drapeau du Burkina Faso */
+:root {
+    --burkina-red: #DC143C;
+    --burkina-green: #228B22;
+    --burkina-yellow: #FFD700;
+    --burkina-white: #FFFFFF;
+    --burkina-dark: #1a4a2e;
+    --burkina-light-green: #e8f5e8;
+    --burkina-light-red: #fdf2f2;
+    --burkina-gold: #B8860B;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--burkina-light-green) 0%, var(--burkina-white) 100%);
+    min-height: 100vh;
+}
+
 .sidebar-brand {
     background: #006233;
 }
 
 .sidebar-wrapper {
     background: #019e48;
+    width: auto;
+    background: linear-gradient(180deg, var(--burkina-green) 0%, var(--burkina-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-lg);
+    min-height: calc(100vh - 80px);
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    color: var(--burkina-yellow);
+    opacity: 0.5;
+    animation: twinkle 2s infinite;
 }
 
 .sidebar-wrapper P {
     color: #fff;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.sidebar-menu {
+    padding: 1.5rem 0;
 }
 
 footer.bg.mt-2.py-3.bg-blue-500 {
@@ -15,6 +78,41 @@ footer.bg.mt-2.py-3.bg-blue-500 {
 }
 
 /* Entete */
+li.nav-item.dropdown.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+}
+
+/* Breadcrumb burkinabé */
+ol.breadcrumb {
+    background: linear-gradient(90deg, var(--burkina-light-green), var(--burkina-white));
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--burkina-green);
+}
+
+ol.breadcrumb {
+    margin-bottom: 0;
+    background: transparent;
+}
+
+ol.breadcrumb .breadcrumb-item a {
+    color: var(--burkina-green);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+ol.breadcrumb .breadcrumb-item.active {
+    color: var(--burkina-red);
+    font-weight: 600;
+}
 
 nav.app-header.navbar.navbar-expand.bg-body {
     background: #efaa2a !important;
@@ -25,6 +123,23 @@ nav.app-header.navbar.navbar-expand.bg-body {
     /* rouge & vert */
     border-bottom: 4px solid #FFD700;
     /* bande jaune */
+    background: linear-gradient(135deg, var(--burkina-red) 0%, var(--burkina-green) 100%);
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--burkina-yellow), transparent);
+    opacity: 0.3;
 }
 
 .custom-navbar .nav-link {
@@ -75,9 +190,10 @@ a#nouveauPB {
 }
 
 a.nav-link.active {
-    border: 0.2px solid #ede199;
-    /* background: #f1ead0 !important; */
-    color: white !important;
+    background: linear-gradient(90deg, var(--burkina-yellow), transparent);
+    color: var(--burkina-dark);
+    font-weight: 600;
+    border-left-color: var(--burkina-red);
 }
 
 button.btn.btn-primary,
@@ -155,4 +271,13 @@ select[multiple] option:checked {
 
 .card {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+#filters-section {
+    background: var(--burkina-white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(34, 139, 34, 0.1);
 }

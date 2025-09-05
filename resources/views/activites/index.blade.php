@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-2 d-flex gap-3">
+            <div class="mb-2 d-flex gap-3" id="filters-section">
                 <div>
                     <label for="filterPeriode" class="form-label">Filtrer par période :</label>
                     <select id="filterPeriode" class="form-select">
@@ -60,7 +60,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Libellé</th>
+                                <th>Activité</th>
                                 <th>Période</th>
                                 <th>Coût prévisionnel</th>
                                 <th>Objectif spécifique</th>

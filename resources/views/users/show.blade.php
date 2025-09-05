@@ -1,13 +1,13 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Utilisateurs')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h2>
+                    <h3>
                         Détails de l'utilisateur
-                    </h2>
+                    </h3>
                 </div>
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">

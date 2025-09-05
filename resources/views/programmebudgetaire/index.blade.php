@@ -82,7 +82,7 @@
                                 <table class="table table-hover align-middle" id="example2">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Libellé</th>
+                                            <th>Programme budgétaire</th>
                                             <th>Numéro programme</th>
                                             {{-- <th>Programme activité</th> --}}
                                             <th>Responsable Budgétaire</th>
@@ -136,7 +136,7 @@
                                                         <!-- Edit -->
                                                         @can('programme_Budgetaire-edit')
                                                             <a href="{{ $programme->isActive ? route('programmebudgetaire.edit', $programme->id) : '#' }}"
-                                                                class="btn btn-primary btn-xs {{ !$programme->isActive ? 'locked-program' : '' }}"
+                                                                class="btn btn-warning btn-xs {{ !$programme->isActive ? 'locked-program' : '' }}"
                                                                 title="{{ $programme->isActive ? 'Modifier' : 'Programme verrouillé' }}"
                                                                 data-message="Ce programme est verrouillé et ne peut pas être modifié.">
                                                                 <i class="bi bi-pencil-fill"></i>
