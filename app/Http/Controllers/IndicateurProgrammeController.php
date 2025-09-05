@@ -53,8 +53,8 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
             'unite_mesure' => 'required|string|max:255',
-            'valeur_ref' => 'required|numeric',
-            'valeur_cible' => 'required|numeric',
+            'valeur_ref' => 'required',
+            'valeur_cible' => 'required',
             'objectif_specifique_id' => 'nullable|exists:objectifs_specifiques,id',
             'objectif_strategique_id' => 'nullable|exists:objectifs_strategiques,id',
             'activites_id' => 'nullable|exists:activites,id',
