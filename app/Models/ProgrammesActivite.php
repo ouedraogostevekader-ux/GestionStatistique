@@ -37,7 +37,7 @@ class ProgrammesActivite extends Model
 
     public function programmesBudgetaires()
     {
-        return $this->hasMany(ProgrammeBudgetaire::class);
+        return $this->hasMany(ProgrammeBudgetaire::class, 'programme_activite_id', 'id');
     }
 
     public function rapportsActivites()
