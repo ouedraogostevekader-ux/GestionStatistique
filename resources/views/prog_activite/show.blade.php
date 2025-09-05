@@ -44,7 +44,7 @@
                 <div class="card-header bg-info text-white">
                     <h3 class="mb-0">
                         <i class="fas fa-bullseye"></i>
-                        Objectif Stratégique {{ $objectifIndex + 1 }} : {{ $objectif->libelle }}
+                        Objectif Stratégique {{ $objectif->libelle }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -93,7 +93,7 @@
                             <div class="card-header bg-light">
                                 <h4 class="mb-0">
                                     <i class="fas fa-play text-success"></i>
-                                    Action {{ $objectifIndex + 1 }}.{{ $actionIndex + 1 }} : {{ $action->libelle }}
+                                    Action {{ $action->libelle }}
                                 </h4>
                             </div>
                             <div class="card-body">
@@ -103,7 +103,6 @@
                                         <h5>
                                             <i class="fas fa-target text-warning"></i>
                                             Objectif Spécifique
-                                            {{ $objectifIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }} :
                                             {{ $objSpec->libelle }}
                                         </h5>
 
@@ -146,8 +145,6 @@
                                                             <div class="col-md-8">
                                                                 <strong>
                                                                     Activité
-                                                                    {{ $objectifIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }}.{{ $activiteIndex + 1 }}
-                                                                    :
                                                                 </strong>
                                                                 {{ $activite->libelle }}
                                                             </div>
