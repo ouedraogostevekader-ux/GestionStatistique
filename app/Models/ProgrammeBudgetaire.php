@@ -22,7 +22,7 @@ class ProgrammeBudgetaire extends Model
         'libelle',
         'numero_programme',
         'annee',
-        'isActive',
+        'is_active',
         'programme_activite_id',
     ];
     public function getDescriptionForEvent(string $eventName): string

@@ -32,6 +32,10 @@
                         </a>
 
                     </div>
+                    <div class="card-body">
+                        @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
 
                     <div class="card-body">
                         @if (session('success'))
@@ -72,37 +76,62 @@
                                                     <span class="text-muted">Aucun responsable assigné</span>
                                                 @endif
                                             </td>
-
-                                            <td
-                                                class="badge bg-{{ $programme->isActive ? 'success' : 'secondary' }} text-white">
-                                                {{ $programme->isActive ? 'Ouvert' : 'Vérouillé' }}
+                                            <td>
+                                                @if ($programme->isActive)
+                                                    <span class="badge bg-success">Ouvert</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Verrouillé</span>
+                                                @endif
                                             </td>
+
+
                                             <td class="text-end">
+
                                                 <div class="btn-group">
+
+                                                    <!-- Voir toujours accessible -->
                                                     <a href="{{ route('programmebudgetaire.show', $programme->id) }}"
                                                         class="btn btn-info btn-xs" title="Voir">
                                                         <i class="bi bi-eye-fill"></i>
                                                     </a>
 
-                                                    <a href="{{ route('programmebudgetaire.edit', $programme->id) }}"
-                                                        class="btn btn-warning btn-xs" title="Modifier">
+                                                    <!-- Edit -->
+                                                    <a href="{{ $programme->isActive ? route('programmebudgetaire.edit', $programme->id) : '#' }}"
+                                                        class="btn btn-primary btn-xs {{ !$programme->isActive ? 'locked-program' : '' }}"
+                                                        title="{{ $programme->isActive ? 'Modifier' : 'Programme verrouillé' }}"
+                                                        data-message="Ce programme est verrouillé et ne peut pas être modifié.">
                                                         <i class="bi bi-pencil-fill"></i>
                                                     </a>
-                                                    <a href="{{ route('programmebudgetaire.os', $programme->id) }}"
-                                                        class="btn btn-success btn-xs"
-                                                        title="Voir les objectifs stratégiques">
-                                                        <i class="bi bi-bullseye"></i>
-                                                    </a>
 
-                                                    <button type="button" class="btn btn-outline-danger delete-btn"
-                                                        title="Supprimer"
-                                                        data-url="{{ route('programmebudgetaire.destroy', $programme->id) }}"
-                                                        data-message="Le programme <strong>{{ $programme->libelle }}</strong> sera supprimé. Continuer ?">
+                                                    <!-- Delete -->
+                                                    <button type="button"
+                                                        class="btn btn-outline-danger {{ !$programme->isActive ? 'locked-program' : 'delete-btn' }}"
+                                                        title="{{ $programme->isActive ? 'Supprimer' : 'Programme verrouillé' }}"
+                                                        data-url="{{ $programme->isActive ? route('programmebudgetaire.destroy', $programme->id) : '' }}"
+                                                        data-message="Ce programme est verrouillé et ne peut pas être supprimé.">
                                                         <i class="bi bi-trash-fill"></i>
                                                     </button>
 
+                                                 <!-- Toggle isActive -->
+<button type="button" 
+        class="btn btn-outline-warning toggle-program-btn"
+        data-id="{{ $programme->id }}"
+        data-libelle="{{ $programme->libelle }}"
+        data-active="{{ $programme->isActive }}"
+        title="{{ $programme->isActive ? 'Verrouiller ce programme' : 'Déverrouiller ce programme' }}">
+    <i class="fas {{ $programme->isActive ? 'bi-unlock' : 'bi-lock' }}"></i>
+</button>
 
+
+                                                    <form id="toggle-form-{{ $programme->id }}"
+                                                        action="{{ route('programmebudgetaire.toggleEditable', $programme->id) }}"
+                                                        method="POST" class="d-none">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                    </form>
                                                 </div>
+
+
                                             </td>
 
 
@@ -120,4 +149,22 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="lockModal" tabindex="-1" aria-labelledby="lockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" id="lockModalMessage">
+        <!-- Message dynamique -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection

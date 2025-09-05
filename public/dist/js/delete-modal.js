@@ -1,33 +1,32 @@
-// public/js/delete-modal.js
 document.addEventListener("DOMContentLoaded", function () {
     const deleteModal = document.getElementById("deleteModal");
     const deleteForm = document.getElementById("deleteForm");
     const deleteMessage = document.getElementById("deleteMessage");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+       
+    const lockModal = new bootstrap.Modal(document.getElementById("lockModal"));
+    const lockModalMessage = document.getElementById("lockModalMessage");
+    const confirmLockBtn = document.getElementById("confirmLockBtn");
+    let currentForm = null;
 
     if (deleteModal) {
-        // Écouteur pour tous les boutons de suppression
+        /**
+         * Cas 1 : Suppression normale (programme actif)
+         */
         document.addEventListener("click", function (e) {
             if (e.target.matches(".delete-btn, .delete-btn *")) {
                 e.preventDefault();
 
-                // Trouver le bouton parent si on a cliqué sur une icône
                 const deleteBtn = e.target.closest(".delete-btn");
-
-                // Récupérer les données
                 const deleteUrl = deleteBtn.getAttribute("data-url");
-                const itemName =
-                    deleteBtn.getAttribute("data-item") || "cet élément";
                 const customMessage = deleteBtn.getAttribute("data-message");
 
-                // Configurer le modal
-                if (customMessage) {
-                    deleteMessage.innerHTML = customMessage;
-                } else {
-                    deleteMessage.innerHTML = `Êtes-vous sûr de vouloir supprimer "<strong>${itemName}</strong>" ?`;
-                }
-
+                // Message
+                deleteMessage.innerHTML = customMessage || "Êtes-vous sûr de vouloir supprimer cet élément ?";
                 deleteForm.action = deleteUrl;
+
+                // Bouton supprimer visible
+                confirmDeleteBtn.style.display = "inline-block";
 
                 // Afficher le modal
                 const modal = new bootstrap.Modal(deleteModal);
@@ -35,85 +34,48 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Gérer la soumission du formulaire
-        deleteForm.addEventListener("submit", function (e) {
+
+
+    // Boutons toggle
+    document.querySelectorAll(".toggle-program-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const programmeId = this.dataset.id;
+            const programmeLibelle = this.dataset.libelle;
+            const isActive = this.dataset.active === "1" || this.dataset.active === true;
+
+            lockModalMessage.innerHTML = isActive
+                ? `Voulez-vous vraiment verrouiller le programme <strong>${programmeLibelle}</strong> ?`
+                : `Voulez-vous vraiment déverrouiller le programme <strong>${programmeLibelle}</strong> ?`;
+
+            currentForm = document.getElementById(`toggle-form-${programmeId}`);
+            lockModal.show();
+        });
+    });
+
+    confirmLockBtn.addEventListener("click", function () {
+        if (currentForm) {
+            currentForm.submit();
+        }
+    });
+
+    // Gestion Edit/Delete sur programmes verrouillés
+    document.querySelectorAll(".locked-program").forEach(button => {
+        button.addEventListener("click", function (e) {
             e.preventDefault();
-
-            // Désactiver le bouton et afficher le loader
-            const originalText = confirmDeleteBtn.innerHTML;
-            confirmDeleteBtn.disabled = true;
-            confirmDeleteBtn.innerHTML = `
-                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                Suppression...
-            `;
-
-            // Créer et soumettre le formulaire
-            const formData = new FormData(this);
-
-            fetch(this.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'input[name="_token"]'
-                    ).value,
-                },
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        // Fermer le modal
-                        const modal = bootstrap.Modal.getInstance(deleteModal);
-                        modal.hide();
-
-                        // Afficher message de succès
-                        if (typeof Swal !== "undefined") {
-                            Swal.fire({
-                                title: "Supprimé !",
-                                text: "L'élément a été supprimé avec succès.",
-                                icon: "success",
-                                timer: 2000,
-                            });
-                        }
-
-                        // Recharger la page après un délai
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    } else {
-                        throw new Error("Erreur lors de la suppression");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Erreur:", error);
-
-                    if (typeof Swal !== "undefined") {
-                        Swal.fire({
-                            title: "Erreur !",
-                            text: "Une erreur est survenue lors de la suppression.",
-                            icon: "error",
-                        });
-                    } else {
-                        alert(
-                            "Une erreur est survenue lors de la suppression."
-                        );
-                    }
-                })
-                .finally(() => {
-                    // Réactiver le bouton
-                    confirmDeleteBtn.disabled = false;
-                    confirmDeleteBtn.innerHTML = originalText;
+            const message = this.dataset.message || "Action impossible : le programme est verrouillé.";
+            // Affiche un toast ou alert
+            if (typeof Swal !== "undefined") {
+                Swal.fire({
+                    title: "Attention",
+                    html: message,
+                    icon: "warning",
+                    timer: 2500,
+                    showConfirmButton: false
                 });
+            } else {
+                alert(message);
+            }
         });
-
-        // Réinitialiser le modal à la fermeture
-        deleteModal.addEventListener("hidden.bs.modal", function () {
-            deleteMessage.textContent =
-                "Êtes-vous sûr de vouloir supprimer cet élément ?";
-            deleteForm.action = "";
-            confirmDeleteBtn.disabled = false;
-            confirmDeleteBtn.innerHTML =
-                '<i class="bi bi-trash"></i> Supprimer';
-        });
+    });
     }
 });
