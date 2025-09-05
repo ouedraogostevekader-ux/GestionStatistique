@@ -11,32 +11,63 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProgrammeBudgetaire;
 use App\Models\Structure;
 use App\Models\User;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Str;
 
 
-class ProgrammeBudgetaireController extends Controller
+class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 {
 
+    public function __construct()
+    {
+    }
 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:programme_Budgetaire-list', only: ['index', 'show']),
+            new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
+            new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
+            new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+        ];
+    }
 
     /**
      * Afficher la liste des programmes
      */
-    public function index()
-    {
-        // Charger les programmes avec structures + responsable actif
-        $programmes = ProgrammeBudgetaire::with([
-            'structures',
-            'responsables' => function ($q) {
-                $q->wherePivotNull('date_fin'); // uniquement responsables actifs
-            }
+ public function index(Request $request)
+{
+    $query = ProgrammeBudgetaire::with(['structures', 'responsables']);
 
-        ])->paginate(10);
-
-        $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
-
-        return view('programmebudgetaire.index', compact('programmes', 'locked'));
+    // Filtre par année
+    if ($request->filled('annee')) {
+        $query->whereYear('created_at', $request->annee);
     }
+
+    // Filtre par structure
+    if ($request->filled('structure_id')) {
+        $query->whereHas('structures', function($q) use ($request) {
+            $q->where('id', $request->structure_id);
+        });
+    }
+
+    // Filtre par responsable actif
+    if ($request->filled('responsable_id')) {
+        $query->whereHas('responsables', function($q) use ($request) {
+            $q->where('id', $request->responsable_id)
+              ->whereNull('responsables.date_fin'); // ici la bonne syntaxe
+        });
+    }
+
+    $programmes = $query->paginate(10);
+
+    $structures = Structure::orderBy('nom')->get();
+    $users = User::orderBy('name')->get();
+
+    return view('programmebudgetaire.index', compact('programmes', 'structures', 'users'));
+}
+
 
     /**
      * Afficher les détails d’un programme
@@ -106,7 +137,6 @@ class ProgrammeBudgetaireController extends Controller
         });
 
         return redirect()->route('programmebudgetaire.index');
-
     }
 
     /**
@@ -127,7 +157,6 @@ class ProgrammeBudgetaireController extends Controller
         $responsableActif = $programmeBudgetaire->responsables->firstWhere('pivot.date_fin', null);
 
         return view('programmebudgetaire.edit', compact('programmeBudgetaire', 'structures', 'users', 'responsableActif'));
-
     }
 
     /**
@@ -173,7 +202,7 @@ class ProgrammeBudgetaireController extends Controller
         });
 
         return redirect()->route('programmebudgetaire.index');
-           
+
     }
 
     /**
@@ -234,7 +263,6 @@ class ProgrammeBudgetaireController extends Controller
 
             return redirect()->route('programmebudgetaire.index')
                 ->with('success', 'Programme budgétaire dupliqué avec succès !');
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Erreur lors de la duplication: ' . $e->getMessage())
@@ -298,17 +326,17 @@ class ProgrammeBudgetaireController extends Controller
     }
 
     // public function toggleGlobalEditable()
-// {
+    // {
 
     //     // Vérifie l'état actuel
-//     $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
+    //     $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
 
     //     // Inverse tous les programmes
-//     ProgrammeBudgetaire::query()->update(['isActive' => $locked ? true : false]);
+    //     ProgrammeBudgetaire::query()->update(['isActive' => $locked ? true : false]);
 
     //     return redirect()->route('programmebudgetaire.index')
-//                      ->with('success', $locked ? 'Tous les programmes sont activés.' : 'Toutes les modifications sont désactivées.');
-// }
+    //                      ->with('success', $locked ? 'Tous les programmes sont activés.' : 'Toutes les modifications sont désactivées.');
+    // }
 
     public function toggleEditable($id)
     {
@@ -318,10 +346,5 @@ class ProgrammeBudgetaireController extends Controller
         $programme->save();
 
         return redirect()->route('programmebudgetaire.index');
-
-
     }
-
-
-
 }

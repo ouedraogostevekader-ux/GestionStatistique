@@ -66,8 +66,12 @@ nav.app-header.navbar.navbar-expand.bg-body {
 a.btn.btn-info.btn-sm,
 a.btn.btn-info.btn-xs {
     background: #5c6b3e3b;
-    color: #da0606ab;
+    color: #05a6c6;
     border: 1px solid #036234;
+}
+
+a#nouveauPB {
+    border: 2px solid #ffc008;
 }
 
 a.nav-link.active {

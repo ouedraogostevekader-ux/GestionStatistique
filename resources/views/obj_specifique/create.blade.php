@@ -8,9 +8,11 @@
                     <h1>Ajouter un objectif spécifique</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-secondary float-right" href="{{ route('objectifs-specifiques.index') }}">
-                        Retour
-                    </a>
+                    @can('objectif_Specifique-create')
+                        <a class="btn btn-secondary float-right" href="{{ route('objectifs-specifiques.index') }}">
+                            Retour
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>

@@ -7,9 +7,24 @@ use App\Models\ObjectifSpecifique;
 use App\Models\ObjectifsStrategique;
 use App\Models\Activite;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class IndicateurProgrammeController extends Controller
+class IndicateurProgrammeController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:indicateur_Programme-list', only: ['index', 'show']),
+            new Middleware('permission:indicateur_Programme-create', only: ['create', 'store']),
+            new Middleware('permission:indicateur_Programme-edit', only: ['edit', 'update']),
+            new Middleware('permission:indicateur_Programme-delete', only: ['destroy']),
+        ];
+    }
+
+
     /**
      * Display a listing of the resource.
      */

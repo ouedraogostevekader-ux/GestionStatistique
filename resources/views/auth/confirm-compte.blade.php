@@ -22,7 +22,7 @@
                         <input type="hidden" name="name" id="name">
 
                         <!-- Name Field -->
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="nom" class="form-label">Nom</label>
                             <input type="text" name="nom" id="nom"
                                 class="form-control @error('nom') is-invalid @enderror" maxlength="255"
@@ -31,7 +31,7 @@
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="prenom" class="form-label">Prénom</label>
                             <input type="text" name="prenom" id="prenom"
                                 class="form-control @error('prenom') is-invalid @enderror" maxlength="255"
@@ -41,7 +41,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="matricule" class="form-label">Matricule</label>
                             <input type="text" name="matricule" id="matricule"
                                 class="form-control @error('matricule') is-invalid @enderror" maxlength="255"
@@ -50,7 +50,7 @@
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="fonction" class="form-label">Fonction</label>
                             <input type="text" name="fonction" id="fonction"
                                 class="form-control @error('fonction') is-invalid @enderror" maxlength="255"
@@ -59,7 +59,7 @@
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="telephone" class="form-label">Telephone</label>
                             <input type="text" name="telephone" id="telephone"
                                 class="form-control @error('telephone') is-invalid @enderror" maxlength="255"
@@ -68,7 +68,7 @@
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="structure_id" class="form-label">Structure</label>
                             <select class="form-select @error('title') is-invalid @enderror" name="structure_id"
                                 data-placeholder="Selectionner" style="width: 100%;">
@@ -83,7 +83,7 @@
                         </div>
 
                         <!-- Email Field -->
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" name="email" id="email"
                                 class="form-control @error('email') is-invalid @enderror" required maxlength="255"
@@ -94,7 +94,7 @@
                         </div>
 
                         <!-- Password Field -->
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="password" class="form-label">Mot de passe</label>
                             <input type="password" name="password" id="password"
                                 class="form-control @error('password') is-invalid @enderror" maxlength="255">
@@ -103,7 +103,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-12">
                             <label for="confirm-password" class="form-label">Ressaisissez le mot de passe</label>
                             <input type="password" name="confirm-password" id="confirm-password"
                                 class="form-control @error('confirm-password') is-invalid @enderror"

@@ -27,9 +27,7 @@ use Spatie\Permission\Models\Role as ModelsRole;
 
 class UserController extends Controller implements HasMiddleware
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function middleware(): array
     {
