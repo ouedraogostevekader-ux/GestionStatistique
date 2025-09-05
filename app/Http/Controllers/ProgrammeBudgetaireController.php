@@ -22,21 +22,38 @@ class ProgrammeBudgetaireController extends Controller
     /**
      * Afficher la liste des programmes
      */
-    public function index()
-    {
-        // Charger les programmes avec structures + responsable actif
-        $programmes = ProgrammeBudgetaire::with([
-            'structures',
-            'responsables' => function ($q) {
-                $q->wherePivotNull('date_fin'); // uniquement responsables actifs
-            }
+ public function index(Request $request)
+{
+    $query = ProgrammeBudgetaire::with(['structures', 'responsables']);
 
-        ])->paginate(10);
-
-        $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
-
-        return view('programmebudgetaire.index', compact('programmes', 'locked'));
+    // Filtre par année
+    if ($request->filled('annee')) {
+        $query->whereYear('created_at', $request->annee);
     }
+
+    // Filtre par structure
+    if ($request->filled('structure_id')) {
+        $query->whereHas('structures', function($q) use ($request) {
+            $q->where('id', $request->structure_id);
+        });
+    }
+
+    // Filtre par responsable actif
+    if ($request->filled('responsable_id')) {
+        $query->whereHas('responsables', function($q) use ($request) {
+            $q->where('id', $request->responsable_id)
+              ->whereNull('responsables.date_fin'); // ici la bonne syntaxe
+        });
+    }
+
+    $programmes = $query->paginate(10);
+
+    $structures = Structure::orderBy('nom')->get();
+    $users = User::orderBy('name')->get();
+
+    return view('programmebudgetaire.index', compact('programmes', 'structures', 'users'));
+}
+
 
     /**
      * Afficher les détails d’un programme
