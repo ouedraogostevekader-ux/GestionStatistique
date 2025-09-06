@@ -8,7 +8,7 @@
 <div class="card-body p-0">
     <div class="table-container">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover mb-0" id="example1">
                 <thead>
                     <tr>
                         <th><i class="fas fa-map-marker-alt me-2"></i>Libellé</th>
@@ -112,6 +112,18 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-map-marker-alt me-2"></i>Libellé</th>
+                        <th><i class="fas fa-euro-sign me-2"></i>Unité mesure</th>
+                        <th><i class="fas fa-chart-line me-2"></i>Reference</th>
+                        <th><i class="fas fa-star me-2"></i>Cible</th>
+                        <th><i class="fas fa-star me-2"></i>Objectif spécifique</th>
+                        <th><i class="fas fa-star me-2"></i>Objectif stratégique</th>
+                        <th><i class="fas fa-star me-2"></i>Activité</th>
+                        <th><i class="fas fa-eye me-2"></i>Suivis</th>
+                    </tr>
+                </thead>
             </table>
         </div>
     </div>
