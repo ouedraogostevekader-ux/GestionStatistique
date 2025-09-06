@@ -173,6 +173,34 @@
                 </li>
             @endcan
 
+            @can('manageProgramme_Activite')
+                <li class="nav-item {{ Route::is('programme-activites*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('programme-activites*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-journal-text"></i>
+                        <p>
+                            Programmes d'activités
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        {{-- @can('manageObjectifStrategique') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('programme-activites.index') }}"
+                                class="nav-link {{ Route::is('programme-activites*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-journal-text"></i>
+                                <p>Programmes budgétaires</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('programme-activites.liste') }}"
+                                class="nav-link {{ Request::is('programme-activites.liste*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-eye-fill"></i>
+                                <p>Programmes d'activités</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endcan
             @can('manageRapport')
                 <li class="nav-item {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'menu-open' : '' }}">
                     <a href="#"

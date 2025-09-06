@@ -14,7 +14,7 @@ use App\Exports\RapportActiviteExport;
 use App\Models\Periode;
 use App\Models\ProgrammeBudgetaire;
 use App\Models\ProgrammesActivite;
-use Barryvdh\DomPDF\Facade\Pdf;
+use PDF;
 use Illuminate\Support\Str;
 
 class RapportActiviteController extends Controller implements HasMiddleware

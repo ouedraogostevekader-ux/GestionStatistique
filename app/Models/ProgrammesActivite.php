@@ -24,7 +24,8 @@ class ProgrammesActivite extends Model
     protected $fillable = [
         'libelle',
         'annee',
-        'file',
+        'file_pdf',
+        'file_excel',
         'date_generation',
     ];
 
@@ -39,7 +40,12 @@ class ProgrammesActivite extends Model
 
     public function programmesBudgetaires()
     {
-        return $this->hasMany(ProgrammeBudgetaire::class, 'programme_activite_id', 'id');
+        return $this->belongsToMany(
+            ProgrammeBudgetaire::class,
+            'programme_activite_programme_budgetaire',
+            'programme_activite_id',
+            'programme_budgetaire_id'
+        );
     }
 
     public function rapportsActivites()
