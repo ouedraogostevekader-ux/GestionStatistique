@@ -84,22 +84,16 @@ class ProgrammeBudgetaire extends Model
             ->where('objectifs_strategiques.programme_budgetaire_id', $this->id)
             ->select('activites.*');
     }
-<<<<<<<<< Temporary merge branch 1
-=========
-
-protected static function boot()
-{
-    parent::boot();
-
-    static::deleting(function ($programme) {
-        // Supprimer relations pivot car cascadesondelete n'a pas ete fait sur les migrations
-        $programme->structures()->detach();
-        $programme->responsables()->detach();
-
-    });
-}
 
 
+    protected static function boot()
+    {
+        parent::boot();
 
->>>>>>>>> Temporary merge branch 2
+        static::deleting(function ($programme) {
+            // Supprimer relations pivot car cascadesondelete n'a pas ete fait sur les migrations
+            $programme->structures()->detach();
+            $programme->responsables()->detach();
+        });
+    }
 }
