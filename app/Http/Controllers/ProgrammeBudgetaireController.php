@@ -227,7 +227,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
         $programmeBudgetaire->isActive = false;
         $programmeBudgetaire->save();
         return redirect()->back()->with('success', "Ce programme bugétaire a été validé.");
-
     }
 
     // Afficher le formulaire de duplication

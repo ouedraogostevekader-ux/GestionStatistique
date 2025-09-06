@@ -66,7 +66,11 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $activite->libelle }}</td>
-                                    <td>{{ $activite->periodes[0]->libelle }}</td>
+                                    <td>
+                                        @foreach ($activite->periodes as $periode)
+                                            {{ $periode->libelle }},
+                                        @endforeach
+                                    </td>
                                     <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
                                     <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
                                     <td>{{ $activite->indicateursProgrammes->count() }}</td>
