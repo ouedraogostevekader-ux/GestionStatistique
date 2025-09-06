@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-12">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Liste des Programmes Budgétaires</h5>
                         <a href="{{ route('programmebudgetaire.create') }}" id="nouveauPB" class="btn btn-success btn-sm">
                             + Nouveau
@@ -111,12 +111,8 @@
                                                         <span class="badge bg-secondary">Verrouillé</span>
                                                     @endif
                                                 </td>
-
-
                                                 <td class="text-end">
-
                                                     <div class="btn-group">
-
                                                         <!-- Voir toujours accessible -->
                                                         @can('programme_Budgetaire-list')
                                                             <a href="{{ route('programmebudgetaire.show', $programme->id) }}"

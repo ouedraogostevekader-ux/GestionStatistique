@@ -33,10 +33,13 @@
                             <dd class="col-sm-8">{{ $objectifSpecifique->libelle }}</dd>
 
                             <dt class="col-sm-4">Action :</dt>
-                            <dd class="col-sm-8">{{ $objectifSpecifique->action->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $objectifSpecifique->action ? $objectifSpecifique->action->libelle : 'N/A' }}</dd>
 
                             <dt class="col-sm-4">Objectif stratégique :</dt>
-                            <dd class="col-sm-8">{{ $objectifSpecifique->action->objectifStrategique->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $objectifSpecifique->action ? $objectifSpecifique->action->objectifStrategique->libelle : 'N/A' }}
+                            </dd>
 
                             <dt class="col-sm-4">Créé le :</dt>
                             <dd class="col-sm-8">{{ $objectifSpecifique->created_at->format('d/m/Y à H:i') }}</dd>
