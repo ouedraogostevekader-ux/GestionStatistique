@@ -6,7 +6,7 @@
         <div class="container px-2">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Statistiques</h1>
+                    <h3>Statistiques</h3>
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end gap-2">
@@ -27,7 +27,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header" id="filers-section">
                         <h3 class="card-title">Filtres</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-bs-toggle="collapse"
