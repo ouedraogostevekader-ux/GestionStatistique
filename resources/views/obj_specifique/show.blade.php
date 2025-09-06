@@ -143,7 +143,7 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <form action="{{ route('activites.store') }}" method="POST">
-                        <input type="hidden" name="objectif" value="{{ $objectifSpecifique->id }}">
+                        <input type="hidden" name="activite" value="{{ $objectifSpecifique->id }}">
                         @include('activites.form')
                     </form>
                 </div>
