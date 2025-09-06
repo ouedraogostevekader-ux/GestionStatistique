@@ -20,12 +20,13 @@
                         <td>{{ $key + 1 }} </td>
                         <td>{{ $data->libelle }}</td>
                         <td>{{ $data->programmeActivite->libelle ?? ' Indisponible' }}</td>
-                        <td>{{ $data->periode_rapport }}</td>
+                        <td>{{ $data->periode->libelle ?? 'Indisponible' }}</td>
                         <td>{{ $data->annee }}</td>
                         <td>{{ $data->date_rapport->format('d/m/Y') }}</td>
                         <td>
                             @if ($data->file)
-                                <a href="{{ asset('storage/rapports/' . $data->file) }}" target="_blank">Voir le fichier</a>
+                                <a href="{{ asset('storage/rapports/' . $data->file) }}" target="_blank">Voir le
+                                    fichier</a>
                             @else
                                 Aucun fichier
                             @endif

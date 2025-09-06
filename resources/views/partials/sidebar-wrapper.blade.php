@@ -174,8 +174,9 @@
             @endcan
 
             @can('manageRapport')
-                <li class="nav-item {{ Route::is('structures*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
+                <li class="nav-item {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-journal-text"></i>
                         <p>
                             Rapports

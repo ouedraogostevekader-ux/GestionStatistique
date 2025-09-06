@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Libelle</th>
+                    <th>Objectif Stratégique</th>
                     <th>Programme Budgetaire</th>
                     <th>Action</th>
                 </tr>
@@ -30,7 +30,7 @@
 
                                     @can('objectif_Strategique-edit')
                                         <a href="{{ route('objectifStrategiques.edit', $data->id) }}"
-                                            class="btn btn-primary btn-xs" title="Modifier">
+                                            class="btn btn-warning btn-xs" title="Modifier">
                                             <i class="bi bi-pencil-fill"></i>
                                         </a>
                                     @endcan

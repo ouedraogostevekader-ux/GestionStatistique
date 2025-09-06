@@ -133,7 +133,7 @@ class DataSeeder extends Seeder
                 'id' => $programmeBudgetaireId,
                 'libelle' => $faker->sentence(6),
                 'numero_programme' => 'P' . str_pad($i + 1, 3, '0', STR_PAD_LEFT),
-                'programme_activite_id' => $faker->randomElement($programmesActivites),
+                // 'programme_activite_id' => $faker->randomElement($programmesActivites),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

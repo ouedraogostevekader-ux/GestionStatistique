@@ -1,95 +1,11 @@
-{{-- @extends('layouts.admin')
-
-@section('content')
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Détails de l'action</h1>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-right">
-                        <a class="btn btn-secondary" href="{{ route('actions.index') }}">Retour</a>
-                        <a class="btn btn-primary" href="{{ route('actions.edit', $action->id) }}">Modifier</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="content px-3">
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Informations générales</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <dl class="row">
-                            <dt class="col-sm-4">Libellé :</dt>
-                            <dd class="col-sm-8">{{ $action->libelle }}</dd>
-
-                            <dt class="col-sm-4">Objectif stratégique :</dt>
-                            <dd class="col-sm-8">{{ $action->objectifStrategique->libelle }}</dd>
-
-                            <dt class="col-sm-4">Créé le :</dt>
-                            <dd class="col-sm-8">{{ $action->created_at->format('d/m/Y à H:i') }}</dd>
-
-                            <dt class="col-sm-4">Modifié le :</dt>
-                            <dd class="col-sm-8">{{ $action->updated_at->format('d/m/Y à H:i') }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        @if ($action->objectifsSpecifiques->count() > 0)
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Objectifs spécifiques associés</h3>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Libellé</th>
-                                    <th>Nombre d'activités</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($action->objectifsSpecifiques as $objectifSpecifique)
-                                    <tr>
-                                        <td>{{ $objectifSpecifique->libelle }}</td>
-                                        <td>{{ $objectifSpecifique->activites->count() }}</td>
-                                        <td>
-                                            <a href="{{ route('objectifs-specifiques.show', $objectifSpecifique->id) }}"
-                                                class="btn btn-info btn-sm">Voir</a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        @endif
-    </div>
-@endsection --}}
-
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Actions')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Détails de l'action</h1>
+                    <h3>Détails de l'action</h3>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
@@ -145,7 +61,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Libellé</th>
+                                <th>Objectif spécifique</th>
                                 <th>Nombre d'activités</th>
                                 <th>Actions</th>
                             </tr>

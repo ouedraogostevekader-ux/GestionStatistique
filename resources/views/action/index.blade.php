@@ -1,20 +1,61 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Actions')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Les actions</h1>
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Liste des activités<span
+                                class="btn btn-success">({{ $actions->count() }})</span>
+                        </li>
+                    </ol>
                 </div>
                 <div class="col-sm-6">
-                    <a id="btnAjouter" class="btn btn-primary float-right" href="{{ route('actions.create') }}">
-                        Ajouter
-                    </a>
+                    <div class="mt-3 d-flex justify-content-end">
+                        <a class="btn btn-primary" id="btnAjouter" href="{{ route('actions.create') }}">
+                            <i class="bi bi-plus"></i> Ajouter
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <form method="GET" action="{{ route('actions.index') }}" class="mb-3 row g-2">
+        <div class="col-md-3">
+            <label for="annee" class="form-label">Année</label>
+            <input type="number" name="annee" id="annee" class="form-control" value="{{ request('annee') }}"
+                placeholder="Ex: 2025">
+        </div>
+        <div class="col-md-3">
+            <label for="programme_budgetaire_id" class="form-label">Programme Budgetaire</label>
+            <select name="programme_budgetaire_id" id="programme_budgetaire_id" class="form-select">
+                <option value="">Toutes</option>
+                @foreach ($programmes as $programme)
+                    <option value="{{ $programme->id }}"
+                        {{ request('programme_budgetaire_id') == $programme->id ? 'selected' : '' }}>
+                        {{ $programme->numero_programme }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="structure_id" class="form-label">Structure</label>
+            <select name="structure_id" id="structure_id" class="form-select">
+                <option value="">Tous</option>
+                @foreach ($structures as $structure)
+                    <option value="{{ $structure->id }}" {{ request('structure_id') == $structure->id ? 'selected' : '' }}>
+                        {{ $structure->sigle }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+            <a href="{{ route('actions.index') }}" class="btn btn-secondary">Réinitialiser</a>
+        </div>
+    </form>
 
     <div class="content px-3">
         <div class="col-sm-10">
@@ -33,7 +74,7 @@
                     <table class="table table-striped table-bordered" id="example2">
                         <thead>
                             <tr>
-                                <th>Libellé</th>
+                                <th>Action</th>
                                 <th>Objectif strategique</th>
                                 <th>Action</th>
                             </tr>
@@ -55,7 +96,7 @@
 
                                             {{-- @can('action-edit') --}}
                                             <a href="{{ route('actions.edit', $action->id) }}"
-                                                class="btn btn-primary btn-xs" title="Modifier">
+                                                class="btn btn-warning btn-xs" title="Modifier">
                                                 <i class="bi bi-pencil-fill"></i>
                                             </a>
                                             {{-- @endcan --}}

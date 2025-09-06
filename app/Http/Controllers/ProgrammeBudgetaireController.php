@@ -35,37 +35,38 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     /**
      * Afficher la liste des programmes
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        $query = ProgrammeBudgetaire::with(['structures', 'responsables']);
 
-        if (Auth::user()->isAdmin()) {
-            // Charger les programmes avec structures + responsable actif
-            $programmes = ProgrammeBudgetaire::with([
-                'structures',
-                'responsables' => function ($q) {
-                    $q->wherePivotNull('date_fin'); // uniquement responsables actifs
-                }
-
-            ])->get();
-        } else {
-            $programmes = ProgrammeBudgetaire::whereHas('structures', function ($q) use ($user) {
-                $q->where('structures.id', $user->structure_id);
-            })
-                ->with([
-                    'structures',
-                    'responsables' => function ($q) {
-                        $q->wherePivotNull('date_fin'); // uniquement responsables actifs
-                    }
-                ])
-                ->get();
+        // Filtre par année
+        if ($request->filled('annee')) {
+            $query->whereYear('created_at', $request->annee);
         }
 
+        // Filtre par structure
+        if ($request->filled('structure_id')) {
+            $query->whereHas('structures', function ($q) use ($request) {
+                $q->where('id', $request->structure_id);
+            });
+        }
 
-        $locked = ProgrammeBudgetaire::where('isActive', false)->exists();
+        // Filtre par responsable actif
+        if ($request->filled('responsable_id')) {
+            $query->whereHas('responsables', function ($q) use ($request) {
+                $q->where('id', $request->responsable_id)
+                    ->whereNull('responsables.date_fin'); // ici la bonne syntaxe
+            });
+        }
 
-        return view('programmebudgetaire.index', compact('programmes', 'locked'));
+        $programmes = $query->paginate(10);
+
+        $structures = Structure::orderBy('nom')->get();
+        $users = User::orderBy('name')->get();
+
+        return view('programmebudgetaire.index', compact('programmes', 'structures', 'users'));
     }
+
 
     /**
      * Afficher les détails d’un programme

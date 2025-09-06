@@ -13,25 +13,61 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-2 d-flex justify-content-end">
-                        <a class="btn btn-primary" id="btnAjouter" href="{{ route('programmebudgetaire.create') }}">
+                        {{-- <a class="btn btn-primary" id="btnAjouter" href="{{ route('programmebudgetaire.create') }}">
                             <i class="bi bi-plus"></i> Ajouter
-                        </a>
+                        </a> --}}
                         <a href="{{ route('programmes-budgetaires.create-duplicate') }}" id="btnEditer"
                             class="btn btn-warning text-white m-1">
-                            <i class="bi bi-copy"></i> Crééer à partir d'un autre programme
+                            <i class="bi bi-copy"></i> Créer à partir d'un autre programme
                         </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Liste des Programmes Budgétaires</h5>
-                        <a href="{{ route('programmebudgetaire.create') }}" class="btn btn-light btn-sm">
+                        <a href="{{ route('programmebudgetaire.create') }}" id="nouveauPB" class="btn btn-success btn-sm">
                             + Nouveau
                         </a>
 
                     </div>
+                    <form method="GET" action="{{ route('programmebudgetaire.index') }}" class="mb-3 row g-2">
+                        <div class="col-md-3">
+                            <label for="annee" class="form-label">Année</label>
+                            <input type="number" name="annee" id="annee" class="form-control"
+                                value="{{ request('annee') }}" placeholder="Ex: 2025">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="structure_id" class="form-label">Structure</label>
+                            <select name="structure_id" id="structure_id" class="form-select">
+                                <option value="">Toutes</option>
+                                @foreach ($structures as $structure)
+                                    <option value="{{ $structure->id }}"
+                                        {{ request('structure_id') == $structure->id ? 'selected' : '' }}>
+                                        {{ $structure->nom }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="responsable_id" class="form-label">Responsable</label>
+                            <select name="responsable_id" id="responsable_id" class="form-select">
+                                <option value="">Tous</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}"
+                                        {{ request('responsable_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+                            <a href="{{ route('programmebudgetaire.index') }}" class="btn btn-secondary">Réinitialiser</a>
+                        </div>
+                    </form>
+
                     <div class="card-body">
                         @if (session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>
@@ -46,7 +82,7 @@
                                 <table class="table table-hover align-middle" id="example2">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Libellé</th>
+                                            <th>Programme budgétaire</th>
                                             <th>Numéro programme</th>
                                             {{-- <th>Programme activité</th> --}}
                                             <th>Responsable Budgétaire</th>
@@ -100,7 +136,7 @@
                                                         <!-- Edit -->
                                                         @can('programme_Budgetaire-edit')
                                                             <a href="{{ $programme->isActive ? route('programmebudgetaire.edit', $programme->id) : '#' }}"
-                                                                class="btn btn-primary btn-xs {{ !$programme->isActive ? 'locked-program' : '' }}"
+                                                                class="btn btn-warning btn-xs {{ !$programme->isActive ? 'locked-program' : '' }}"
                                                                 title="{{ $programme->isActive ? 'Modifier' : 'Programme verrouillé' }}"
                                                                 data-message="Ce programme est verrouillé et ne peut pas être modifié.">
                                                                 <i class="bi bi-pencil-fill"></i>
@@ -157,22 +193,23 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="lockModal" tabindex="-1" aria-labelledby="lockModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                    </div>
-                    <div class="modal-body" id="lockModalMessage">
-                        <!-- Message dynamique -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    @endsection
+    </div>
+    <div class="modal fade" id="lockModal" tabindex="-1" aria-labelledby="lockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" id="lockModalMessage">
+        <!-- Message dynamique -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{{ asset('dist/js/lock-programme.js') }}"></script>
+@endsection

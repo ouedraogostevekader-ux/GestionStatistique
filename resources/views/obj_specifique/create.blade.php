@@ -1,11 +1,11 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Objectifs spéciques')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Ajouter un objectif spécifique</h1>
+                    <h3>Ajouter un objectif spécifique</h3>
                 </div>
                 <div class="col-sm-6">
                     @can('objectif_Specifique-create')

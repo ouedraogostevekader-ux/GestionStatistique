@@ -1,11 +1,11 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Objectifs spéciques')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Les objectifs spécifiques</h1>
+                    <h3>Les objectifs spécifiques</h3>
                 </div>
                 <div class="col-sm-6">
                     @can('objectif_Specifique-create')
@@ -35,7 +35,7 @@
                     <table class="table table-striped table-bordered" id="example2">
                         <thead>
                             <tr>
-                                <th>Libellé</th>
+                                <th>Objectif spécifique</th>
                                 <th>Action</th>
                                 <th>Objectif stratégique</th>
                                 <th>Nb activités</th>
@@ -71,7 +71,7 @@
                                             @endcan
                                             @can('objectif_Specifique-edit')
                                                 <a href="{{ route('objectifs-specifiques.edit', $objectif->id) }}"
-                                                    class="btn btn-primary btn-xs" title="Modifier">
+                                                    class="btn btn-warning btn-xs" title="Modifier">
                                                     <i class="bi bi-pencil-fill"></i>
                                                 </a>
                                             @endcan

@@ -84,12 +84,14 @@ class ObjectifSpecifiqueController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ObjectifSpecifique $objectifSpecifique)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
             'action_id' => 'required|exists:actions,id',
         ]);
+
+        $objectifSpecifique = ObjectifSpecifique::findOrFail($id);
 
         $objectifSpecifique->update($validatedData);
 

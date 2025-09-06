@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Utilisateurs')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -14,8 +14,6 @@
     </section>
 
     <div class="content px-3">
-
-
         <div class="card">
             @if ($errors->any())
                 <div class="alert alert-danger">

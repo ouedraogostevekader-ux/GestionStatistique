@@ -1,11 +1,11 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Objectifs spéciques')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Détails de l'objectif spécifique</h1>
+                    <h3>Détails de l'objectif spécifique</h3>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
@@ -52,7 +52,50 @@
                 </div>
             </div>
         </div>
-
+        {{-- Indicateurs --}}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">Indicateurs associés</h3>
+                @can('indicateur_Programe-create')
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#addIndicateurModal">
+                        <i class="fas fa-plus"></i> Ajouter un indicateur
+                    </button>
+                @endcan
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Indicateur</th>
+                                <th>Unité mesure</th>
+                                <th>Valeur cible</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($objectifSpecifique->indicateursProgrammes as $indicateur)
+                                <tr>
+                                    <td>{{ $indicateur->libelle }}</td>
+                                    <td>{{ $indicateur->unite_mesure }}</td>
+                                    <td>{{ $indicateur->valeur_cible }}</td>
+                                    <td>
+                                        <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
+                                            class="btn btn-info btn-sm">Voir</a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">Aucun indicateur associé</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{-- Activités --}}
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0">Activités associées</h3>
@@ -68,7 +111,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Libellé</th>
+                                <th>Activité</th>
                                 <th>Période</th>
                                 <th>Coût prévisionnel</th>
                                 <th>Actions</th>
@@ -90,49 +133,6 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="text-center text-muted">Aucune activité associée</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title mb-0">Indicateurs associés</h3>
-                @can('indicateur_Programe-create')
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#addIndicateurModal">
-                        <i class="fas fa-plus"></i> Ajouter un indicateur
-                    </button>
-                @endcan
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Libellé</th>
-                                <th>Unité mesure</th>
-                                <th>Valeur cible</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($objectifSpecifique->indicateursProgrammes as $indicateur)
-                                <tr>
-                                    <td>{{ $indicateur->libelle }}</td>
-                                    <td>{{ $indicateur->unite_mesure }}</td>
-                                    <td>{{ $indicateur->valeur_cible }}</td>
-                                    <td>
-                                        <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
-                                            class="btn btn-info btn-sm">Voir</a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">Aucun indicateur associé</td>
                                 </tr>
                             @endforelse
                         </tbody>
