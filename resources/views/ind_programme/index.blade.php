@@ -19,8 +19,8 @@
             </div>
         </div>
     </section>
-    <div class="container-fluid">
-        <div class="row mb-2">
+ <div class="container-fluid">
+        <div class="row mb-3">
             <div class="col-sm-6">
                 <h3>Filtrer les indicateurs</h3>
             </div>
@@ -77,7 +77,7 @@
     </div>
             </form>
 
-        </div>
+ </div>
 
 
     <div class="content px-3">
@@ -92,7 +92,7 @@
         <div class="clearfix"></div>
 
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-body px-3">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="example2">
                         <thead>
