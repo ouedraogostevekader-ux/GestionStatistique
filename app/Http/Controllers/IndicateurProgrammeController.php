@@ -28,11 +28,40 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $indicateurs = IndicateurProgramme::with('objectifSpecifique', 'objectifStrategique', 'activite')->get();
-        return view('ind_programme.index', compact('indicateurs'));
+public function index(Request $request)
+{
+    $query = IndicateurProgramme::with(['objectifSpecifique', 'objectifStrategique', 'activite']);
+
+    // Filtrer par objectif spécifique
+    if ($request->filled('objectif_specifique_id')) {
+        $query->where('objectif_specifique_id', $request->objectif_specifique_id);
     }
+
+    // Filtrer par objectif stratégique
+    if ($request->filled('objectif_strategique_id')) {
+        $query->where('objectif_strategique_id', $request->objectif_strategique_id);
+    }
+
+    // Filtrer par activité
+    if ($request->filled('activites_id')) {
+        $query->where('activites_id', $request->activites_id);
+    }
+
+    $indicateurs = $query->get();
+
+    // Pour alimenter les selects
+   $objectifsSpecifiques = ObjectifSpecifique::all();
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        $activites = Activite::all();
+
+    return view('ind_programme.index', compact(
+        'indicateurs',
+        'objectifsSpecifiques',
+        'objectifsStrategiques',
+        'activites'
+    ));
+}
+
 
     /**
      * Show the form for creating a new resource.

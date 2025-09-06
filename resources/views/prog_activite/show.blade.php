@@ -54,7 +54,7 @@
                                 <tr>
                                     @if ($indIndex == 0)
                                         <td rowspan="{{ $objectif->indicateurs->count() }}" class="objectif-strategique">
-                                            {{ $objectif->libelle }}
+                                            OS{{ $objIndex + 1 }} : {{ $objectif->libelle }}
                                         </td>
                                     @endif
                                     <td>{{ $indicateur->libelle }}</td>
@@ -71,7 +71,7 @@
                         @else
                             <tr>
                                 <td class="objectif-strategique">
-                                    {{ $objectif->libelle }}
+                                    OS{{ $objIndex + 1 }} : {{ $objectif->libelle }}
                                 </td>
                                 <td>-</td>
                                 <td>-</td>
@@ -89,7 +89,7 @@
                         @foreach ($objectif->actions as $actionIndex => $action)
                             <tr>
                                 <td class="action">
-                                    {{ $action->libelle }}
+                                    Action {{ $objIndex + 1 }}.{{ $actionIndex + 1 }} : {{ $action->libelle }}
                                 </td>
                                 <td>-</td>
                                 <td>-</td>
@@ -111,6 +111,8 @@
                                             @if ($indIndex == 0)
                                                 <td rowspan="{{ $objSpec->indicateurs->count() }}"
                                                     class="objectif-specifique">
+                                                    OSp
+                                                    {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }} :
                                                     {{ $objSpec->libelle }}
                                                 </td>
                                             @endif
@@ -128,6 +130,7 @@
                                 @else
                                     <tr>
                                         <td class="objectif-specifique">
+                                            OSp {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }} :
                                             {{ $objSpec->libelle }}
                                         </td>
                                         <td>-</td>
@@ -149,7 +152,9 @@
                                             <tr>
                                                 @if ($indIndex == 0)
                                                     <td rowspan="{{ $activite->indicateurs->count() }}" class="activite">
-                                                        {{ $activite->libelle }}
+                                                        Act
+                                                        {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }}.{{ $activiteIndex + 1 }}
+                                                        : {{ $activite->libelle }}
                                                     </td>
                                                 @endif
                                                 <td>{{ $indicateur->libelle }}</td>
@@ -197,7 +202,9 @@
                                     @else
                                         <tr>
                                             <td class="activite">
-                                                {{ $activite->libelle }}
+                                                Act
+                                                {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }}.{{ $activiteIndex + 1 }}
+                                                : {{ $activite->libelle }}
                                             </td>
                                             <td>-</td>
                                             <td>-</td>

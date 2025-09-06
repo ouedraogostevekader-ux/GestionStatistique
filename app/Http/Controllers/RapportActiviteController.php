@@ -42,9 +42,9 @@ class RapportActiviteController extends Controller implements HasMiddleware
 
     public function create()
     {
-        $programmeActivites = ProgrammesActivite::all();
+        $programmeActivite = ProgrammesActivite::where('annee', now()->year)->latest()->first();
         $periodes = Periode::pluck('libelle', 'id');
-        return view('rapportActivites.create', compact('programmeActivites', 'periodes'));
+        return view('rapportActivites.create', compact('programmeActivite', 'periodes'));
     }
 
     public function store(RapportActiviteRequest $request)

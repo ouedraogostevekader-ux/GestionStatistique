@@ -13,18 +13,20 @@
             <input type="number" step="0.01" class="form-control" name="resultat_atteint" required>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Coût effectif </label>
-            <input type="number" step="0.01" class="form-control" name="cout_effectif" >
-        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <label class="form-label">Coût effectif </label>
+                <input type="number" step="0.01" class="form-control" name="cout_effectif" >
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Période </label>
-            <select class="form-select" name="periode">
-                @foreach ($periodes as $key=>$periode)
-                    <option value="{{$key}}">{{$periode}}</option>
-                @endforeach
-            </select>
+            <div class="col-sm-6">
+                <label class="form-label">Période </label>
+                <select class="form-select" name="periode">
+                    @foreach ($periodes as $key=>$periode)
+                        <option value="{{$key}}">{{$periode}}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
 
         <div class="mb-3">

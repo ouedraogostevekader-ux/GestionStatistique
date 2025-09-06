@@ -106,7 +106,8 @@
                         <li class="nav-item">
                             @can('manageProgramme_Budgetaire')
                                 <a href="{{ route('programmebudgetaire.index') }}"
-                                    class="nav-link {{ Request::is('programmebudgetaire*') ? 'active' : '' }}">
+                                    class="nav-link {{ Request::is('programmebudgetaire*') ? 'active' : '' }}"
+                                    title="Programme budgetaire">
                                     <i class="nav-icon bi bi-journal-text"></i>
                                     <p>Programme budgetaire</p>
                                 </a>
@@ -143,7 +144,8 @@
                         <li class="nav-item">
                             @can('manageIndicateur_Programme')
                                 <a href="{{ route('indicateurs-programmes.index') }}"
-                                    class="nav-link {{ Request::is('indicateurs-programmes*') ? 'active' : '' }}">
+                                    class="nav-link {{ Request::is('indicateurs-programmes*') ? 'active' : '' }}"
+                                    title="Indicateurs programme">
                                     <i class="nav-icon bi bi-graph-up"></i>
                                     <p>Indicateurs programme</p>
                                 </a>
@@ -163,7 +165,8 @@
                         <li class="nav-item">
                             @can('manageProgramme_Activite')
                                 <a href="{{ route('programme-activites.index') }}"
-                                    class="nav-link {{ Request::is('programme-activites*') ? 'active' : '' }}">
+                                    class="nav-link {{ Request::is('programme-activites*') ? 'active' : '' }}"
+                                    title="Programme d'activité">
                                     <i class="nav-icon bi bi-journal"></i>
                                     <p>Programmes d'activités</p>
                                 </a>

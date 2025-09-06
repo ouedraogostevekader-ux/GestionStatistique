@@ -103,12 +103,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/programmebudgetaire/{id}/edit', [ProgrammeBudgetaireController::class, 'edit'])->name('programmebudgetaire.edit');
         Route::patch('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'update'])->name('programmebudgetaire.update');
         Route::delete('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'destroy'])->name('programmebudgetaire.destroy');
+        Route::get('/programmebudgetaire/validate/{id}', [ProgrammeBudgetaireController::class, 'validate'])->name('programmebudgetaire.validate');
     });
     Route::get('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'show'])
         ->name('programmebudgetaire.show');
     Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
         ->name('programmebudgetaire.store');
-    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    //Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
         ->name('programmes-budgetaires.create-duplicate');

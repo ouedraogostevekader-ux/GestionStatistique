@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Action;
 use App\Models\ObjectifsStrategique;
+use App\Models\ProgrammeBudgetaire;
+use App\Models\Structure;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 
 class ActionController extends Controller implements HasMiddleware
 {
@@ -25,10 +28,48 @@ class ActionController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $actions = Action::with('objectifStrategique')->get();
-        return view('action.index', compact('actions'));
+        $user = Auth::user();
+
+        if (Auth::user()->isAdmin()) {
+            $query = Action::with(['objectifStrategique.programmeBudgetaire.structures']);
+            $programmes = ProgrammeBudgetaire::all();
+            $structures = Structure::all();
+        } else {
+            $query = Action::with(['objectifStrategique.programmeBudgetaire.structures'])
+                ->whereHas('objectifStrategique.programmeBudgetaire.structures', function ($q) {
+                    $q->where('structures.id', Auth::user()->structure_id);
+                });
+
+            $programmes = ProgrammeBudgetaire::whereHas('structures', function ($q) use ($user) {
+                $q->where('structures.id', Auth::user()->structure_id);
+            })->get();
+            $structures = Structure::where('id', Auth::user()->structure_id)->get();
+        }
+
+        // Filtre par année
+        if ($request->filled('annee')) {
+            $query->whereYear('created_at', $request->annee);
+        }
+
+        // Filtre par structure
+        if ($request->filled('programme_budgetaire_id')) {
+            $query->whereHas('objectifStrategique', function ($q) use ($request) {
+                $q->where('programme_budgetaire_id', $request->programme_budgetaire_id);
+            });
+        }
+
+        // Filtre par responsable actif
+        if ($request->filled('structure_id')) {
+            $query->whereHas('objectifStrategique.programmeBudgetaire.structures', function ($q) use ($request) {
+                $q->where('structures.id', $request->structure_id);
+            });
+        }
+
+        $actions = $query->get();
+
+        return view('action.index', compact('actions', 'structures', 'programmes'));
     }
 
     /**

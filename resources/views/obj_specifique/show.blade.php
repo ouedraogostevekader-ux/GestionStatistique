@@ -21,10 +21,6 @@
     </section>
 
     <div class="content px-3">
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Informations générales</h3>
@@ -37,10 +33,13 @@
                             <dd class="col-sm-8">{{ $objectifSpecifique->libelle }}</dd>
 
                             <dt class="col-sm-4">Action :</dt>
-                            <dd class="col-sm-8">{{ $objectifSpecifique->action->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $objectifSpecifique->action ? $objectifSpecifique->action->libelle : 'N/A' }}</dd>
 
                             <dt class="col-sm-4">Objectif stratégique :</dt>
-                            <dd class="col-sm-8">{{ $objectifSpecifique->action->objectifStrategique->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $objectifSpecifique->action ? $objectifSpecifique->action->objectifStrategique->libelle : 'N/A' }}
+                            </dd>
 
                             <dt class="col-sm-4">Créé le :</dt>
                             <dd class="col-sm-8">{{ $objectifSpecifique->created_at->format('d/m/Y à H:i') }}</dd>
@@ -56,7 +55,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0">Indicateurs associés</h3>
-                @can('indicateur_Programe-create')
+                @can('indicateur_Programme-create')
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                         data-bs-target="#addIndicateurModal">
                         <i class="fas fa-plus"></i> Ajouter un indicateur
@@ -147,7 +146,7 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <form action="{{ route('activites.store') }}" method="POST">
-                        <input type="hidden" name="objectif" value="{{ $objectifSpecifique->id }}">
+                        <input type="hidden" name="activite" value="{{ $objectifSpecifique->id }}">
                         @include('activites.form')
                     </form>
                 </div>
