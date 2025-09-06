@@ -52,7 +52,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0">Indicateurs associés</h3>
-                @can('indicateur_Programe-create')
+                @can('indicateur_Programme-create')
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                         data-bs-target="#addIndicateurModal">
                         <i class="fas fa-plus"></i> Ajouter un indicateur
