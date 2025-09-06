@@ -1,220 +1,347 @@
+{{-- resources/views/programmes/tableau.blade.php --}}
 @extends('layouts.admin')
 
-{{-- @section('title', 'Programme ' . $programme->numero_programme) --}}
+{{-- @section('title', 'Tableau Programme Budgétaire') --}}
+@section('styles')
+    <style>
+        .programme-table {
+            font-size: 12px;
+            border-collapse: collapse;
+            width: 100%;
+            border: 2px solid #343a40;
+        }
+
+        .programme-table th,
+        .programme-table td {
+            border: 1px solid #6c757d;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .programme-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border: 1px solid #0056b3;
+        }
+
+        .programme-header {
+            background-color: #28a745 !important;
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            border: 2px solid #1e7e34 !important;
+        }
+
+        .objectif-strategique {
+            background-color: #f8f9fa;
+            text-align: left;
+            font-weight: bold;
+            border-left: 3px solid #007bff !important;
+        }
+
+        .action {
+            background-color: #e9ecef;
+            text-align: left;
+            font-weight: bold;
+            padding-left: 20px;
+            border-left: 3px solid #28a745 !important;
+        }
+
+        .objectif-specifique {
+            background-color: #f1f2f6;
+            text-align: left;
+            padding-left: 40px;
+            border-left: 3px solid #ffc107 !important;
+        }
+
+        .activite {
+            text-align: left;
+            padding-left: 60px;
+            border-left: 3px solid #fd7e14 !important;
+        }
+
+        .programme-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .programme-table .programme-header:hover {
+            background-color: #28a745 !important;
+        }
+
+        .periode-check {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+
+            .programme-table {
+                font-size: 10px;
+            }
+        }
+    </style>
+@endsection
 
 @section('content')
     <div class="container-fluid">
-        <!-- En-tête -->
-        <div class="row mb-4">
+        <div class="row mb-3 no-print">
             <div class="col-12">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <h1 class="card-title mb-0">
-                            Programme {{ $programme->numero_programme }} : {{ $programme->libelle }}
-                        </h1>
-                        @if ($programme->programmeActivite)
-                            <p class="mb-0">Programme d'activité : {{ $programme->programmeActivite->libelle }}
-                                ({{ $programme->programmeActivite->annee }})</p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation rapide -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="btn-group w-100">
-                    <a href="{{ route('programme-activites.tableau', $programme->id) }}" class="btn btn-success">
-                        <i class="fas fa-table"></i> Vue Tableau
-                    </a>
-                    <a href="{{ route('programme-activites.suivi', $programme->id) }}" class="btn btn-warning">
-                        <i class="fas fa-chart-line"></i> Suivi Performance
-                    </a>
-                    <button class="btn btn-info" onclick="window.print()">
+                <div class="btn-group">
+                    {{-- <a href="{{ route('programme-activites.show', $programme->id) }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a> --}}
+                    {{-- <button onclick="window.print()" class="btn btn-primary">
                         <i class="fas fa-print"></i> Imprimer
+                    </button> --}}
+                    <button onclick="exportTableToExcel()" class="btn btn-success">
+                        <i class="fas fa-file-excel"></i> Excel
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Contenu hiérarchique -->
-        @foreach ($programme->objectifsStrategiques as $objectifIndex => $objectif)
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h3 class="mb-0">
-                        <i class="fas fa-bullseye"></i>
-                        Objectif Stratégique {{ $objectif->libelle }}
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <!-- Indicateurs de l'objectif stratégique -->
-                    @if ($objectif->indicateurs->count() > 0)
-                        <div class="mb-4">
-                            <h5><i class="fas fa-chart-bar text-info"></i> Indicateurs</h5>
-                            <div class="table-responsive">
-                                <table class="table table-sm table-striped">
-                                    <thead class="thead-light">
+        <div class="table-responsive">
+            <table class="programme-table" id="programmeTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Objectifs/Activités</th>
+                        <th colspan="4">Indicateurs</th>
+                        <th rowspan="2">Coûts Estimatifs<br>(en FCFA)</th>
+                        <th colspan="4">Période de réalisation</th>
+                    </tr>
+                    <tr>
+                        <th>Indicateurs</th>
+                        <th>Unité de l'indicateur</th>
+                        <th>Référence</th>
+                        <th>Cible</th>
+                        <th>T1</th>
+                        <th>T2</th>
+                        <th>T3</th>
+                        <th>T4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- En-tête programme -->
+                    <tr>
+                        <td colspan="10" class="programme-header">
+                            Programme {{ $programme->numero_programme }} : {{ $programme->libelle }}
+                        </td>
+                    </tr>
+
+                    @foreach ($programme->objectifsStrategiques as $objIndex => $objectif)
+                        <!-- Objectif stratégique -->
+                        @if ($objectif->indicateurs->count() > 0)
+                            @foreach ($objectif->indicateurs as $indIndex => $indicateur)
+                                <tr>
+                                    @if ($indIndex == 0)
+                                        <td rowspan="{{ $objectif->indicateurs->count() }}" class="objectif-strategique">
+                                            OS : {{ $objectif->libelle }}
+                                        </td>
+                                    @endif
+                                    <td>{{ $indicateur->libelle }}</td>
+                                    <td>{{ $indicateur->unite_mesure }}</td>
+                                    <td>{{ $indicateur->valeur_ref }}</td>
+                                    <td>{{ $indicateur->valeur_cible }}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td class="objectif-strategique">
+                                    OS : {{ $objectif->libelle }}
+                                </td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        @endif
+
+                        <!-- Actions -->
+                        @foreach ($objectif->actions as $actionIndex => $action)
+                            <tr>
+                                <td class="action">
+                                    Action : {{ $action->libelle }}
+                                </td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+
+                            <!-- Objectifs spécifiques -->
+                            @foreach ($action->objectifsSpecifiques as $objSpecIndex => $objSpec)
+                                <!-- Indicateurs objectif spécifique -->
+                                @if ($objSpec->indicateurs->count() > 0)
+                                    @foreach ($objSpec->indicateurs as $indIndex => $indicateur)
                                         <tr>
-                                            <th>Indicateur</th>
-                                            <th>Unité</th>
-                                            <th>Référence</th>
-                                            <th>Cible</th>
-                                            <th>Suivi</th>
+                                            @if ($indIndex == 0)
+                                                <td rowspan="{{ $objSpec->indicateurs->count() }}"
+                                                    class="objectif-specifique">
+                                                    OSp :
+                                                    {{ $objSpec->libelle }}
+                                                </td>
+                                            @endif
+                                            <td>{{ $indicateur->libelle }}</td>
+                                            <td>{{ $indicateur->unite_mesure }}</td>
+                                            <td>{{ $indicateur->valeur_ref }}</td>
+                                            <td>{{ $indicateur->valeur_cible }}</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>-</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($objectif->indicateurs as $indicateur)
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td class="objectif-specifique">
+                                            OSp :
+                                            {{ $objSpec->libelle }}
+                                        </td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
+                                @endif
+
+                                <!-- Activités -->
+                                @foreach ($objSpec->activites as $activiteIndex => $activite)
+                                    @if ($activite->indicateurs->count() > 0)
+                                        @foreach ($activite->indicateurs as $indIndex => $indicateur)
                                             <tr>
+                                                @if ($indIndex == 0)
+                                                    <td rowspan="{{ $activite->indicateurs->count() }}" class="activite">
+                                                        Act: {{ $activite->libelle }}
+                                                    </td>
+                                                @endif
                                                 <td>{{ $indicateur->libelle }}</td>
                                                 <td>{{ $indicateur->unite_mesure }}</td>
                                                 <td>{{ $indicateur->valeur_ref }}</td>
                                                 <td>{{ $indicateur->valeur_cible }}</td>
-                                                <td>
-                                                    @if ($indicateur->suivis->count() > 0)
-                                                        <span
-                                                            class="badge badge-success">{{ $indicateur->suivis->count() }}
-                                                            suivis</span>
-                                                    @else
-                                                        <span class="badge badge-secondary">Aucun suivi</span>
-                                                    @endif
-                                                </td>
+                                                @if ($indIndex == 0)
+                                                    <td rowspan="{{ $activite->indicateurs->count() }}">
+                                                        {{ number_format($activite->cout_previsionnel) }}
+                                                    </td>
+                                                    @php
+                                                        $periodes = $activite->periodes->pluck('libelle')->toArray();
+                                                    @endphp
+                                                    <td rowspan="{{ $activite->indicateurs->count() }}">
+                                                        @if (in_array('T1', $periodes) || in_array('Trimestre 1', $periodes))
+                                                            <span class="periode-check">✓</span>
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td rowspan="{{ $activite->indicateurs->count() }}">
+                                                        @if (in_array('T2', $periodes) || in_array('Trimestre 2', $periodes))
+                                                            <span class="periode-check">✓</span>
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td rowspan="{{ $activite->indicateurs->count() }}">
+                                                        @if (in_array('T3', $periodes) || in_array('Trimestre 3', $periodes))
+                                                            <span class="periode-check">✓</span>
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td rowspan="{{ $activite->indicateurs->count() }}">
+                                                        @if (in_array('T4', $periodes) || in_array('Trimestre 4', $periodes))
+                                                            <span class="periode-check">✓</span>
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Actions -->
-                    @foreach ($objectif->actions as $actionIndex => $action)
-                        <div class="card border-left-success mb-3">
-                            <div class="card-header bg-light">
-                                <h4 class="mb-0">
-                                    <i class="fas fa-play text-success"></i>
-                                    Action {{ $action->libelle }}
-                                </h4>
-                            </div>
-                            <div class="card-body">
-                                <!-- Objectifs spécifiques -->
-                                @foreach ($action->objectifsSpecifiques as $objSpecIndex => $objSpec)
-                                    <div class="border rounded p-3 mb-3 bg-light">
-                                        <h5>
-                                            <i class="fas fa-target text-warning"></i>
-                                            Objectif Spécifique
-                                            {{ $objSpec->libelle }}
-                                        </h5>
-
-                                        <!-- Indicateurs objectif spécifique -->
-                                        @if ($objSpec->indicateurs->count() > 0)
-                                            <div class="mb-3">
-                                                <h6>📊 Indicateurs</h6>
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Indicateur</th>
-                                                                <th>Unité</th>
-                                                                <th>Référence</th>
-                                                                <th>Cible</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($objSpec->indicateurs as $indicateur)
-                                                                <tr>
-                                                                    <td>{{ $indicateur->libelle }}</td>
-                                                                    <td>{{ $indicateur->unite_mesure }}</td>
-                                                                    <td>{{ $indicateur->valeur_ref }}</td>
-                                                                    <td>{{ $indicateur->valeur_cible }}</td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        <!-- Activités -->
-                                        <div class="activites">
-                                            <h6>⚡ Activités</h6>
-                                            @foreach ($objSpec->activites as $activiteIndex => $activite)
-                                                <div class="card border-warning mb-2">
-                                                    <div class="card-body p-3">
-                                                        <div class="row">
-                                                            <div class="col-md-8">
-                                                                <strong>
-                                                                    Activité
-                                                                </strong>
-                                                                {{ $activite->libelle }}
-                                                            </div>
-                                                            <div class="col-md-4 text-right">
-                                                                <span class="badge badge-info">
-                                                                    {{ number_format($activite->cout_previsionnel) }} FCFA
-                                                                </span>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Périodes -->
-                                                        <div class="mt-2">
-                                                            <small><strong>Périodes :</strong></small>
-                                                            @forelse($activite->periodes as $periode)
-                                                                <span
-                                                                    class="badge badge-secondary">{{ $periode->libelle }}</span>
-                                                            @empty
-                                                                <span class="text-muted">Non définies</span>
-                                                            @endforelse
-                                                        </div>
-
-                                                        <!-- Indicateurs activité -->
-                                                        @if ($activite->indicateurs->count() > 0)
-                                                            <div class="mt-2">
-                                                                <small><strong>Indicateurs :</strong></small>
-                                                                @foreach ($activite->indicateurs as $indicateur)
-                                                                    <div class="small text-muted">
-                                                                        • {{ $indicateur->libelle }}
-                                                                        ({{ $indicateur->unite_mesure }})
-                                                                        :
-                                                                        {{ $indicateur->valeur_ref }} →
-                                                                        {{ $indicateur->valeur_cible }}
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
+                                    @else
+                                        <tr>
+                                            <td class="activite">
+                                                Act: {{ $activite->libelle }}
+                                            </td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>{{ number_format($activite->cout_previsionnel) }}</td>
+                                            @php
+                                                $periodes = $activite->periodes->pluck('libelle')->toArray();
+                                            @endphp
+                                            <td>
+                                                @if (in_array('T1', $periodes) || in_array('Trimestre 1', $periodes))
+                                                    <span class="periode-check">✓</span>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if (in_array('T2', $periodes) || in_array('Trimestre 2', $periodes))
+                                                    <span class="periode-check">✓</span>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if (in_array('T3', $periodes) || in_array('Trimestre 3', $periodes))
+                                                    <span class="periode-check">✓</span>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if (in_array('T4', $periodes) || in_array('Trimestre 4', $periodes))
+                                                    <span class="periode-check">✓</span>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
-                            </div>
-                        </div>
+                            @endforeach
+                        @endforeach
                     @endforeach
-                </div>
-            </div>
-        @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
-@endsection
-@section('styles')
-    <style>
-        @media print {
 
-            .btn,
-            .card-header,
-            .card-footer,
-            .no-print {
-                display: none !important;
-            }
-
-            .card {
-                border: none !important;
-                box-shadow: none !important;
-            }
-
-            .container-fluid {
-                padding: 0 !important;
-                margin: 0 !important;
-            }
+    <script>
+        function exportTableToExcel() {
+            const table = document.getElementById('programmeTable');
+            const ws = XLSX.utils.table_to_sheet(table);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Programme");
+            XLSX.writeFile(wb, `Programme_${document.querySelector('.programme-header').textContent.trim()}.xlsx`);
         }
-    </style>
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 @endsection

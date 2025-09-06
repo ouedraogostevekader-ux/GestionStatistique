@@ -8,14 +8,12 @@
     <form method="POST" action="{{ route('rapportActivites.store') }}">
         @csrf
 
-        {{-- <div class="mb-3">
+        <div class="mb-3">
             <label class="form-label">Programme d'activité *</label>
-            <select class="form-select" name="programme_activite_id" required>
-                @foreach ($programmeActivites as $key=>$programmeActivite)
-                    <option value="{{$programmeActivite->id}}">{{$programmeActivite->libelle}}</option>
-                @endforeach
+            <select class="form-select" name="programme_activite_id" required disabled>
+                <option value="{{$programmeActivite->id}}">{{$programmeActivite->libelle}}</option>
             </select>
-        </div> --}}
+        </div>
 
         <div class="mb-3">
             <label class="form-label">Libelle *</label>
