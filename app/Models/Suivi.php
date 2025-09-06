@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use Attribute;
+use Dom\Attr;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class Suivi extends Model
 {
     //
     use HasFactory, SoftDeletes;
     use HasUlids, LogsActivity;
+    use HasRoles;
 
     protected $fillable = [
         'cout_effectif',
@@ -34,6 +38,12 @@ class Suivi extends Model
     public function indicateurProgramme()
     {
         return $this->belongsTo(IndicateurProgramme::class, 'indicateur_programme_id');
+    }
+
+    // L'attribut 'periode' contient l'id de la période
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class, 'periode', 'id');
     }
 
     public function getDescriptionForEvent(string $eventName): string

@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 
+{{-- @section('title', 'Programmes Budgétaires') --}}
+
 @section('content')
     <div class="container-fluid">
         <div class="row">

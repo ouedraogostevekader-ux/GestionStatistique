@@ -8,17 +8,18 @@
     </div>
 
     <!-- programme_budgetaire_id field: select -->
-    <div class="form-group col-sm-8">
-        <label for="programme_budgetaire_id">Programme Budgetaire</label>
-        <select name="programme_budgetaire_id" id="programme_budgetaire_id" class="form-control">
-            <option value="">-- Sélectionner un programme budgetaire --</option>
-            @foreach ($programmeBudgetaires as $programmeBudgetaire)
-                <option value="{{ $programmeBudgetaire->id }}"
-                    {{ (old('programme_budgetaire_id') ?? ($objectifStrategique->programme_budgetaire_id ?? '')) === $programmeBudgetaire->id ? 'selected' : '' }}>
-                    {{ $programmeBudgetaire->libelle ?? '' }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
+    @if (!isset($programmeBudgetaire))
+        <div class="form-group col-sm-8">
+            <label for="programme_budgetaire_id">Programme Budgetaire</label>
+            <select name="programme_budgetaire_id" id="programme_budgetaire_id" class="form-control">
+                <option value="">-- Sélectionner un programme budgetaire --</option>
+                @foreach ($programmeBudgetaires as $programmeBudgetaire)
+                    <option value="{{ $programmeBudgetaire->id }}"
+                        {{ (old('programme_budgetaire_id') ?? ($objectifStrategique->programme_budgetaire_id ?? '')) === $programmeBudgetaire->id ? 'selected' : '' }}>
+                        {{ $programmeBudgetaire->libelle ?? '' }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    @endif
 </div>

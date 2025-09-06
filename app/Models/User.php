@@ -94,9 +94,13 @@ class User extends Authenticatable
             ->dontSubmitEmptyLogs();
     }
     public function programmesBudgetaires()
-{
-    return $this->belongsToMany(ProgrammeBudgetaire::class, 'responsables')->withPivot('date_debut', 'date_fin');
-       
-}
+    {
+        return $this->belongsToMany(ProgrammeBudgetaire::class, 'responsables')->withPivot('date_debut', 'date_fin');
+    }
 
+    /* Role administrateur */
+    public function isAdmin()
+    {
+        return $this->hasRole('admin') || $this->hasRole('Super-Admin');
+    }
 }

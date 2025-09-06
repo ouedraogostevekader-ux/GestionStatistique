@@ -58,14 +58,17 @@
                         <!-- Indicateurs associés -->
                         <div class="mb-3">
                             <strong>Indicateurs :</strong>
-                            @if ($activite->objectifSpecifique->indicateursProgrammes->count() > 0)
+                            @if ($activite->indicateursProgrammes->count() > 0)
                                 <ul class="list-group mt-2">
-                                    @foreach ($activite->objectifSpecifique->indicateursProgrammes as $indicateur)
+                                    @foreach ($activite->indicateursProgrammes as $indicateur)
                                         <li class="list-group-item">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span>{{ $indicateur->libelle }}</span>
-                                                <span class="badge bg-info">
-                                                    {{ $indicateur->valeur_cible }} {{ $indicateur->unite_mesure }}
+                                                Valeur cible:<span class="badge bg-info">
+                                                    {{ $indicateur->valeur_cible }}
+                                                    {{ $indicateur->unite_mesure }}
+                                                </span> | Resultat atteint : <span class="badge bg-info">
+                                                    {{ $indicateur->suivis->count() ? $indicateur->suivisresultat_atteint : 'NA' }}
                                                 </span>
                                             </div>
                                             @if ($indicateur->description)

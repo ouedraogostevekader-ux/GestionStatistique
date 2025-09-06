@@ -7,9 +7,24 @@ use App\Models\ObjectifSpecifique;
 use App\Models\ObjectifsStrategique;
 use App\Models\Activite;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class IndicateurProgrammeController extends Controller
+class IndicateurProgrammeController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:indicateur_Programme-list', only: ['index', 'show']),
+            new Middleware('permission:indicateur_Programme-create', only: ['create', 'store']),
+            new Middleware('permission:indicateur_Programme-edit', only: ['edit', 'update']),
+            new Middleware('permission:indicateur_Programme-delete', only: ['destroy']),
+        ];
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -38,8 +53,8 @@ class IndicateurProgrammeController extends Controller
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
             'unite_mesure' => 'required|string|max:255',
-            'valeur_ref' => 'required|numeric',
-            'valeur_cible' => 'required|numeric',
+            'valeur_ref' => 'required',
+            'valeur_cible' => 'required',
             'objectif_specifique_id' => 'nullable|exists:objectifs_specifiques,id',
             'objectif_strategique_id' => 'nullable|exists:objectifs_strategiques,id',
             'activites_id' => 'nullable|exists:activites,id',

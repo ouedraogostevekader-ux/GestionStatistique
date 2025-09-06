@@ -42,14 +42,18 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $user = \App\Models\User::where('email', $this->input('email'))->first();
-
-        if (! $user->is_active) {
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => 'Votre compte est n\'existe pas. Veuillez contactez l’administrateur.',
+            ]);
+        }
+        if (!$user->is_active) {
             throw ValidationException::withMessages([
                 'email' => 'Votre compte est désactivé. Contactez l’administrateur.',
             ]);
         }
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -67,7 +71,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 

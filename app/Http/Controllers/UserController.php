@@ -7,7 +7,6 @@ use App\Mail\UserMaillable;
 use App\Models\Role;
 use App\Models\Structure;
 use App\Models\User;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -24,19 +23,18 @@ use Illuminate\Support\Facades\DB as DB;
 
 
 
+use Spatie\Permission\Models\Role as ModelsRole;
 
 class UserController extends Controller implements HasMiddleware
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function middleware(): array
     {
         return [
             new Middleware('permission:user-list', only: ['index', 'show']),
             new Middleware('permission:user-create', only: ['create', 'store']),
-            //new Middleware('permission:user-edit', only: ['edit', 'update']),
+            new Middleware('permission:user-edit', only: ['edit', 'update']),
             new Middleware('permission:user-delete', only: ['destroy']),
         ];
     }
@@ -56,8 +54,6 @@ class UserController extends Controller implements HasMiddleware
         $user = null;
         return view('users.create', compact('roles', 'userRole', 'user', 'structures'));
     }
-
-
 
     /**
      * Store a newly created User in storage.
@@ -79,6 +75,7 @@ class UserController extends Controller implements HasMiddleware
                 'nom.*' => 'Le nom est obligatoire',
                 'prenom.*' => 'Le prénom est obligatoire',
                 'matricule.required' => 'Le matricule est obligatoire',
+                'fonction.required' => 'La fonction est obligatoire',
                 'matricule.unique' => 'Ce matricule est déjà utilisé',
                 'telephone.*' => 'Le telephone est obligatoire',
             ]
@@ -88,23 +85,18 @@ class UserController extends Controller implements HasMiddleware
 
         DB::beginTransaction();
         try {
-            $user = User::create(array_merge($input, [
-                'password' => null,
-                'name' => $request->nom . ' ' . $request->prenom,
-            ]));
+            $user = User::create($input);
 
             $user->assignRole($request->input('roles'));
             DB::commit();
             $this->sendWelcomeEmail($user);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('users.index')->with('error', $e->getMessage());
+            return redirect()->route('users.index')->with('error', 'Erreur lors de la création de User');
         }
 
         return redirect()->route('users.index')->with('success', 'User créé avec succès');
     }
-
-
 
     /**
      * Display the specified User.
@@ -119,20 +111,25 @@ class UserController extends Controller implements HasMiddleware
         return view('users.show')->with('user', $user);
     }
 
+    /**
+     * Show the form for editing the specified User.
+     */
     public function edit($id)
     {
         $user = User::find($id);
         if (empty($user)) {
-            return redirect()->route('/')->with('error', 'User non retrouvé');
+            return redirect()->route('users.index')->with('error', 'User non retrouvé');
         }
 
         $structures = Structure::all();
         $roles = Role::all();
         $userRole = $user->roles->pluck('name', 'name')->all();
-        return view('auth.confirm-compte', compact('user', 'roles', 'userRole', 'structures'));
+        return view('users.edit', compact('user', 'roles', 'userRole', 'structures'));
     }
 
-
+    /**
+     * Show the form for editing the specified User.
+     */
     public function profile($id)
     {
         $user = User::find($id);
@@ -144,7 +141,9 @@ class UserController extends Controller implements HasMiddleware
         return view('users.profile', compact('user', 'structures'));
     }
 
-
+    /**
+     * Show the form for editing the specified User.
+     */
     public function changepwd($id)
     {
         if ($id != Auth::id()) {
@@ -158,7 +157,9 @@ class UserController extends Controller implements HasMiddleware
         return view('users.changepwd', compact('user', 'communes'));
     }
 
-
+    /**
+     * Update the specified User in storage.
+     */
     public function changepwdstore($id, Request $request)
     {
         if ($id != Auth::id()) {
@@ -204,10 +205,7 @@ class UserController extends Controller implements HasMiddleware
                 'password.same' => 'Les saisies ne sont pas conformes',
                 'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
                 'confirm-password.required' => 'Veuillez confirmer le mot de passe',
-                // 'photo.required' => 'Veuillez sélectionner une image',
-                // 'photo.image' => 'Le fichier doit être une image',
-                // 'photo.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
-                // 'photo.max' => 'La taille maximale est de 2MB'
+
             ]
         );
 
@@ -225,14 +223,15 @@ class UserController extends Controller implements HasMiddleware
         return redirect()->route('users.index')->with('success', 'Mot de passe modifié avec success');
     }
 
-
-    public function update($id, Request $request): RedirectResponse
+    /**
+     * Update the specified User in storage.
+     */
+    public function update($id, Request $request)
     {
         $user = User::find($id);
 
         if (empty($user)) {
-            //retourne dans le mail
-            return redirect()->route('/')->with('error', 'User non retrouvé, veuillez contacter un administrateur de la DSI pour avoir un compte');
+            return redirect()->route('users.index')->with('error', 'User non retrouvé');
         }
 
         $request->validate(
@@ -243,8 +242,6 @@ class UserController extends Controller implements HasMiddleware
                 'matricule' => ['required', 'string', Rule::unique('users', 'matricule')->ignore($id)->whereNull('deleted_at')],
                 'telephone' => 'required|string',
                 'email' => ['required', Rule::unique('users', 'email')->ignore($id)->whereNull('deleted_at')],
-                'password' => 'required|same:confirm-password',
-                'confirm-password' => 'required|same:password',
                 'structure_id' => 'required|string',
             ],
             [
@@ -253,48 +250,23 @@ class UserController extends Controller implements HasMiddleware
                 'matricule.required' => 'Le matricule est obligatoire',
                 'matricule.unique' => 'Ce matricule est déjà utilisé',
                 'telephone.*' => 'Le telephone est obligatoire',
-                'password.required' => 'Le mot de passe est obligatoire',
-                'password.min' => 'Le mot de passe doit avoir au moins 8 caractères',
-                'password.same' => 'Les saisies ne sont pas conformes',
-                'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
-                'confirm-password.required' => 'Veuillez confirmer le mot de passe',
+
             ]
         );
 
         $input = $request->all();
 
-        if (!empty($input['password'])) {
-            $request->validate([
-
-                'password' => [
-                    'required',
-                    'string',
-                    'min:8',             // must be at least 8 characters in length
-                    'regex:/[a-z]/',      // must contain at least one lowercase letter
-                    //'regex:/[A-Z]/',      // must contain at least one uppercase letter
-                    //'regex:/[0-9]/',      // must contain at least one digit
-                    //'regex:/[@$!%*#?&]/', // must contain a special character
-                ],
-                'confirm-password' => 'required|same:password',
-            ]);
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            $input = Arr::except($input, array('password'));
-        }
         $user->update($input);
 
-        event(new Registered($user));
+        if (isset($input['roles'])) {
+            $user->syncRoles($request->input('roles'));
+        } else {
+            return redirect()->route('dashboard')->with('success', 'User modifié avec success');
+        }
 
-        Auth::login($user);
-
-        return redirect()->route('dashboard')->with('success', 'Vous venez de confirmer la création de votre compte avec success');
+        return redirect()->route('users.index')->with('success', 'User modifié avec success');
     }
 
-    /**
-     * Remove the specified User from storage.
-     *
-     * @throws \Exception
-     */
     public function destroy($id)
     {
         $user = User::find($id);
@@ -325,6 +297,72 @@ class UserController extends Controller implements HasMiddleware
         return back()->with('success', 'Le compte utilisateur a été réactivé.');
     }
 
+    public function edit_perso($id)
+    {
+        $user = User::find($id);
+        if (empty($user)) {
+            return redirect()->route('acceuil')->with('error', 'User non retrouvé, veuillez contacter un administrateur de la DSI pour avoir un compte');
+        }
+
+        $structures = Structure::all();
+        return view('auth.confirm-compte', compact('user', 'structures'));
+    }
+
+    public function update_perso(Request $request, $id): RedirectResponse
+    {
+        $user = User::find($id);
+
+        if (empty($user)) {
+            //retourne dans le mail
+            return redirect()->route('acceuil')->with('error', 'User non retrouvé, veuillez contacter un administrateur de la DSI pour avoir un compte');
+        }
+
+        $request->validate(
+            [
+                'nom' => 'required|string',
+                'prenom' => 'required|string',
+                'fonction' => 'required|string',
+                'matricule' => ['required', 'string', Rule::unique('users', 'matricule')->ignore($id)->whereNull('deleted_at')],
+                'telephone' => 'required|string',
+                'email' => ['required', Rule::unique('users', 'email')->ignore($id)->whereNull('deleted_at')],
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',             // must be at least 8 characters in length
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    //'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    //'regex:/[0-9]/',      // must contain at least one digit
+                    //'regex:/[@$!%*#?&]/', // must contain a special character
+                ],
+                'confirm-password' => 'same:password',
+                'structure_id' => 'required|string',
+            ],
+            [
+                'nom.*' => 'Le nom est obligatoire',
+                'prenom.*' => 'Le prénom est obligatoire',
+                'matricule.required' => 'Le matricule est obligatoire',
+                'matricule.unique' => 'Ce matricule est déjà utilisé',
+                'telephone.*' => 'Le telephone est obligatoire',
+                'password.required' => 'Le mot de passe est obligatoire',
+                'password.min' => 'Le mot de passe doit avoir au moins 8 caractères',
+                'password.same' => 'Les saisies ne sont pas conformes',
+                'password.regex' => 'Le mot de passe doit contenir au moins une lettre',
+                'confirm-password.required' => 'Veuillez confirmer le mot de passe',
+            ]
+        );
+
+        $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
+
+        $user->update($input);
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect()->route('dashboard')->with('success', 'Vous venez de confirmer la création de votre compte avec success');
+    }
+
     /* Send mail */
     public function sendWelcomeEmail(User $user)
     {
@@ -338,6 +376,4 @@ class UserController extends Controller implements HasMiddleware
             // return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email'], 500);
         }
     }
-
-
 }

@@ -6,9 +6,23 @@ use App\Models\ObjectifSpecifique;
 use App\Models\Action;
 use App\Models\Periode;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ObjectifSpecifiqueController extends Controller
+class ObjectifSpecifiqueController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:objectif_Specifique-list', only: ['index', 'show']),
+            new Middleware('permission:objectif_Specifique-create', only: ['create', 'store']),
+            new Middleware('permission:objectif_Specifique-edit', only: ['edit', 'update']),
+            new Middleware('permission:objectif_Specifique-delete', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -38,6 +52,10 @@ class ObjectifSpecifiqueController extends Controller
         ]);
 
         $objectif = ObjectifSpecifique::create($validatedData);
+        if ($request->os) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
         return redirect()->route('objectifs-specifiques.index')
             ->with('success', 'Objectif spécifique créé avec succès.');
     }
@@ -66,12 +84,14 @@ class ObjectifSpecifiqueController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ObjectifSpecifique $objectifSpecifique)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
             'action_id' => 'required|exists:actions,id',
         ]);
+
+        $objectifSpecifique = ObjectifSpecifique::findOrFail($id);
 
         $objectifSpecifique->update($validatedData);
 

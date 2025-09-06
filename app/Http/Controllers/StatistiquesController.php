@@ -178,9 +178,9 @@ class StatistiquesController extends Controller
             ->whereHas('periodes', function ($q) use ($currentYear, $trimestre) {
                 $q->where('annee', $currentYear);
                 if ($trimestre) {
-                    $q->whereHas('periode', function ($subQ) use ($trimestre) {
-                        $subQ->where('libelle', 'T' . $trimestre);
-                    });
+                    //  $q->whereHas('periode', function ($subQ) use ($trimestre) {
+                    $q->where('libelle', 'T' . $trimestre);
+                    // });
                 }
             })
             ->count();
@@ -196,10 +196,8 @@ class StatistiquesController extends Controller
             })
             ->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
                 return $q->whereHas('periodes', function ($subQ) use ($trimestre, $annee) {
-                    $subQ->where('annee', $annee)
-                        ->whereHas('periode', function ($subSubQ) use ($trimestre) {
-                            $subSubQ->where('libelle', 'T' . $trimestre);
-                        });
+                    $subQ->where('annee', $annee) // Champ 'annee' de la table pivot
+                        ->where('libelle', 'T' . $trimestre); // Champ 'libelle' de la table periodes
                 });
             })
             ->count();
@@ -213,10 +211,8 @@ class StatistiquesController extends Controller
             ->whereDoesntHave('objectifSpecifique.indicateursProgrammes.suivis')
             ->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
                 return $q->whereHas('periodes', function ($subQ) use ($trimestre, $annee) {
-                    $subQ->where('annee', $annee)
-                        ->whereHas('periode', function ($subSubQ) use ($trimestre) {
-                            $subSubQ->where('libelle', 'T' . $trimestre);
-                        });
+                    $subQ->where('annee', $annee)->where('libelle', 'T' . $trimestre);
+
                 });
             })
             ->count();
@@ -276,7 +272,7 @@ class StatistiquesController extends Controller
             });
         })->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
             $periode = $annee . '-T' . $trimestre;
-            return $q->where('periodes', 'LIKE', '%' . $periode . '%');
+            return $q->where('periode', 'LIKE', '%' . $periode . '%');
         })->whereNotNull('resultat_atteint')->get();
 
         $moyenneResultats = $suivis->count() > 0 ? round($suivis->avg('resultat_atteint'), 1) : 0;

@@ -1,16 +1,22 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Actions')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Les actions</h1>
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Liste des activités<span
+                                class="btn btn-success">({{ $actions->count() }})</span>
+                        </li>
+                    </ol>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-primary float-right" href="{{ route('actions.create') }}">
-                        Ajouter
-                    </a>
+                    <div class="mt-3 d-flex justify-content-end">
+                        <a class="btn btn-primary" id="btnAjouter" href="{{ route('actions.create') }}">
+                            <i class="bi bi-plus"></i> Ajouter
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -33,7 +39,7 @@
                     <table class="table table-striped table-bordered" id="example2">
                         <thead>
                             <tr>
-                                <th>Libellé</th>
+                                <th>Action</th>
                                 <th>Objectif strategique</th>
                                 <th>Action</th>
                             </tr>

@@ -6,9 +6,9 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>
+                    <h3>
                         objectif strategiques details
-                    </h1>
+                    </h3>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-default float-right" href="{{ route('objectifStrategiques.index') }}"> Retour
@@ -27,40 +27,6 @@
         </div>
         {{-- Actions --}}
     </div>
-    <div class="card-body p-2">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title mb-0">Indicateurs associés</h3>
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addActionModal">
-                <i class="fas fa-plus"></i> Ajouter une action
-            </button>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Libellé</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($objectifStrategique->actions as $o_specifique)
-                        <tr>
-                            <td>{{ $o_specifique->libelle }}</td>
-                            <td>
-                                <a href="{{ route('actions.show', $o_specifique->id) }}"
-                                    class="btn btn-info btn-sm">Voir</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">Aucune activité associée</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <hr>
     {{-- Indicateurs --}}
     <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -75,7 +41,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Libellé</th>
+                            <th>Indicateur</th>
                             <th>Unité mesure</th>
                             <th>Valeur cible</th>
                             <th>Actions</th>
@@ -100,6 +66,39 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <div class="card-body p-2">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">Actions associées</h3>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addActionModal">
+                <i class="fas fa-plus"></i> Ajouter une action
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Actions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($objectifStrategique->actions as $o_specifique)
+                        <tr>
+                            <td>{{ $o_specifique->libelle }}</td>
+                            <td>
+                                <a href="{{ route('actions.show', $o_specifique->id) }}"
+                                    class="btn btn-info btn-sm">Voir</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Aucune activité associée</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
     <!-- Modal Ajouter Indicateur -->

@@ -1,17 +1,19 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Objectifs spéciques')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Détails de l'objectif spécifique</h1>
+                    <h3>Détails de l'objectif spécifique</h3>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
                         <a class="btn btn-secondary" href="{{ route('objectifs-specifiques.index') }}">Retour</a>
-                        <a class="btn btn-primary"
-                            href="{{ route('objectifs-specifiques.edit', $objectifSpecifique->id) }}">Modifier</a>
+                        @can('objectif_Specifique-edit')
+                            <a class="btn btn-primary"
+                                href="{{ route('objectifs-specifiques.edit', $objectifSpecifique->id) }}">Modifier</a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -50,62 +52,23 @@
                 </div>
             </div>
         </div>
-
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title mb-0">Activités associées</h3>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#addActiviteModal">
-                    <i class="fas fa-plus"></i> Ajouter une activité
-                </button>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Libellé</th>
-                                <th>Période</th>
-                                <th>Coût prévisionnel</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($objectifSpecifique->activites as $activite)
-                                <tr>
-                                    <td>{{ $activite->libelle }}</td>
-                                    <td>{{ $activite->periode }}</td>
-                                    <td>{{ number_format($activite->cout_previsionnel, 0, ',', ' ') }} F CFA</td>
-                                    <td>
-                                        <a href="{{ route('activites.show', $activite->id) }}"
-                                            class="btn btn-info btn-sm">Voir</a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">Aucune activité associée</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
+        {{-- Indicateurs --}}
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0">Indicateurs associés</h3>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#addIndicateurModal">
-                    <i class="fas fa-plus"></i> Ajouter un indicateur
-                </button>
+                @can('indicateur_Programe-create')
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#addIndicateurModal">
+                        <i class="fas fa-plus"></i> Ajouter un indicateur
+                    </button>
+                @endcan
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Libellé</th>
+                                <th>Indicateur</th>
                                 <th>Unité mesure</th>
                                 <th>Valeur cible</th>
                                 <th>Actions</th>
@@ -125,6 +88,51 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="text-center text-muted">Aucun indicateur associé</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{-- Activités --}}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">Activités associées</h3>
+                @can('activite-create')
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#addActiviteModal">
+                        <i class="fas fa-plus"></i> Ajouter une activité
+                    </button>
+                @endcan
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Activité</th>
+                                <th>Période</th>
+                                <th>Coût prévisionnel</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($objectifSpecifique->activites as $activite)
+                                <tr>
+                                    <td>{{ $activite->libelle }}</td>
+                                    <td>{{ $activite->periode }}</td>
+                                    <td>{{ number_format($activite->cout_previsionnel, 0, ',', ' ') }} F CFA</td>
+                                    <td>
+                                        @can('activite-list')
+                                            <a href="{{ route('activites.show', $activite->id) }}"
+                                                class="btn btn-info btn-sm">Voir</a>
+                                        @endcan
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">Aucune activité associée</td>
                                 </tr>
                             @endforelse
                         </tbody>

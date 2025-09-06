@@ -15,10 +15,10 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
-});
+})->name('acceuil');
 
-Route::get('/user/{id}/confirm-compte/', [UserController::class, 'edit'])->name('edit.compte');
-Route::patch('/user/{id}/confirm-compte/enregistre', [UserController::class, 'update'])->name('update.compte');
+Route::get('/user/{id}/confirm-compte/', [UserController::class, 'edit_perso'])->name('edit.compte');
+Route::patch('/user/{id}/confirm-compte/enregistre', [UserController::class, 'update_perso'])->name('update.compte');
 /* Route::get('/dashboard', function () {
     return view('layouts.admin');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('users/{id}/changepwd', [App\Http\Controllers\UserController::class, 'changepwdstore'])->name('users.changepwdstore');
 
     //Logs, Utilisateurs, Roles et Permissions
-    Route::resource('users', App\Http\Controllers\UserController::class)->except(['update', 'edit']);
+    Route::resource('users', App\Http\Controllers\UserController::class); //->except(['update', 'edit']);
     Route::patch('/users/{id}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
     Route::patch('/users/{id}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
 
@@ -88,7 +88,26 @@ Route::middleware('auth')->group(function () {
 
     // Activites
     Route::resource('activites', ActiviteController::class);
-    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
+    // Routes index (toujours accessible)
+    Route::get('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'index'])
+        ->name('programmebudgetaire.index');
+    Route::get('/programmebudgetaire/create', [ProgrammeBudgetaireController::class, 'create'])
+        ->name('programmebudgetaire.create');
+    // Toggle individuel (toujours accessible)
+    Route::patch('/programmebudgetaire/{id}/toggle', [ProgrammeBudgetaireController::class, 'toggleEditable'])
+        ->name('programmebudgetaire.toggleEditable');
+    // Routes CRUD (édition et suppression protégées par le middleware)
+    Route::group(['middleware' => ['check.programme.active']], function () {
+    Route::get('/programmebudgetaire/{id}/edit', [ProgrammeBudgetaireController::class, 'edit'])->name('programmebudgetaire.edit');
+    Route::patch('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'update'])->name('programmebudgetaire.update');
+    Route::delete('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'destroy'])->name('programmebudgetaire.destroy');
+    });
+    Route::get('/programmebudgetaire/{id}', [ProgrammeBudgetaireController::class, 'show'])
+        ->name('programmebudgetaire.show');
+    Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
+        ->name('programmebudgetaire.store');    
+Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
         ->name('programmes-budgetaires.create-duplicate');
@@ -106,6 +125,8 @@ Route::middleware('auth')->group(function () {
     route::get('objectifSpecifiqiques/os/{id}', [ObjectifStrategiqueController::class, 'osByPB'])->name('os.specifiques');
 
     Route::resource('indicateurs-programmes', App\Http\Controllers\IndicateurProgrammeController::class);
+
+    Route::post('rapportActivites/visualiser', [App\Http\Controllers\RapportActiviteController::class, 'visualiser'])->name('rapportActivites.visualiser');
     Route::resource('programme-activites', App\Http\Controllers\ProgrammeActiviteController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
     //Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');

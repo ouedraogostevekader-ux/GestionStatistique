@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-2 d-flex gap-3">
+            <div class="mb-2 d-flex gap-3" id="filters-section">
                 <div>
                     <label for="filterPeriode" class="form-label">Filtrer par période :</label>
                     <select id="filterPeriode" class="form-select">
@@ -60,7 +60,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Libellé</th>
+                                <th>Activité</th>
                                 <th>Période</th>
                                 <th>Coût prévisionnel</th>
                                 <th>Objectif spécifique</th>
@@ -90,7 +90,7 @@
                                                         class="bi bi-eye-fill"></i></a>
 
                                                 <a href="{{ route('activites.edit', $activite->id) }}"
-                                                    class="btn btn-primary btn-xs" title="Modifier"><i
+                                                    class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
                                                         class="bi bi-pencil-fill"></i></a>
 
                                                 <button type="submit" class="btn btn-danger btn-xs"
