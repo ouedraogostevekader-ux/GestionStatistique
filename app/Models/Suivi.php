@@ -41,7 +41,7 @@ class Suivi extends Model
     }
 
     // L'attribut 'periode' contient l'id de la période
-    public function periode()
+    public function getPeriode()
     {
         return $this->belongsTo(Periode::class, 'periode', 'id');
     }

@@ -77,7 +77,7 @@
                                                 <tr>
                                                     <td>{{ $suivi->resultat_atteint }}</td>
                                                     <td>{{ $suivi->cout_effectif }}</td>
-                                                    <td>{{ $suivi->periode->libelle ?? "Indisponible" }}</td>
+                                                    <td>{{ $suivi->getPeriode->libelle ?? "Indisponible" }}</td>
                                                     <td class="text-danger">{{$suivi->observations}}</td>
                                                     <td>
                                                        @can('suivi-edit')
@@ -91,7 +91,7 @@
                                                         @can('suivi-delete')
                                                         <button type="button" class="btn btn-outline-danger delete-btn" title="Supprimer"
                                                             data-url="{{ route('suivis.destroy', $suivi->id) }}"
-                                                            data-message="<strong>{{ $suivi->resultat_atteint }} - {{ $suivi->cout_effectif }} - {{ $suivi->periode }} </strong> sera supprimé. Continuer ?">
+                                                            data-message="<strong>{{ $suivi->resultat_atteint }} - {{ $suivi->cout_effectif }} - {{ $suivi->getPeriode->libelle }} </strong> sera supprimé. Continuer ?">
                                                             <i class="bi bi-trash-fill"></i>
                                                         </button>
                                                         @endcan

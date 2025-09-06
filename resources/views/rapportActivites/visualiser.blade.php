@@ -20,35 +20,16 @@
             </div>
         </div>
         <div class="mb-2 d-flex gap-3">
-            {{-- Filtre selon le programme d'activites --}}
-            {{-- <div>
-                <label for="filterProgramme" class="form-label">Filtrer par programme d'activités :</label>
-                <select id="filterProgramme" class="form-select">
-                    <option value="">-- Tous --</option>
-                    @foreach ($programmeActivites as $programme)
-                        <option value="{{ $programme->libelle }}">{{ $programme->libelle }}</option>
-                    @endforeach
-                </select>
-            </div> --}}
-
-            {{-- Filtre selon la periode --}}
-            {{-- <div>
-                <label for="filterPeriode" class="form-label">Filtrer par periode :</label>
-                <select id="filterPeriode" class="form-select">
-                    <option value="">-- Toutes --</option>
-                    @foreach ($periodes as $key=>$periode)
-                        <option value="{{ $key }}">{{ $periode }}</option>
-                    @endforeach
-                </select>
-            </div> --}}
-
         </div>
 
     </div>
 </section>
 <section class="content px-3">
     <div class="card">
-        <h3 class="text-center">Rapport d'activités de {{$periode}} {{$annee}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
+        @php
+            $periodeModel = App\Models\Periode::find($periode);
+        @endphp
+        <h3 class="text-center">Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible"}} {{$annee}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
         <table>
             <thead>
                 <tr>

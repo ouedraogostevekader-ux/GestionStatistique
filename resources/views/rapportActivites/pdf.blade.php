@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    @php
+        $periodeModel = App\Models\Periode::find($periode);
+    @endphp
     <meta charset="utf-8">
-    <title>Rapport d'activités de {{$periode}} {{$annee}}</title>
+    <title>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible" }} {{$annee}}</title>
     <style>
         /* body {
             font-family: DejaVu Sans, sans-serif;
@@ -51,7 +54,7 @@
     </style>
 </head>
 <body>
-    <h3>Rapport d'activités de {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
+    <h3>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible" }} {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
     <table>
         <thead>
             <tr>

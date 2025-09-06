@@ -1,5 +1,8 @@
 
-<h3>Rapport d'activités de {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i')}}</h3>
+@php
+    $periodeModel = App\Models\Periode::find($periode);
+@endphp
+<h3>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible"}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i')}}</h3>
 
 <table>
     <thead>
