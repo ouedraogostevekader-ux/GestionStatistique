@@ -85,5 +85,49 @@
             @include('rapportActivites.table')
         </div>
     </section>
+    <!-- Modal -->
+    <div class="modal fade" id="rapportActiviteModal" tabindex="-1" aria-labelledby="rapportActiviteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="rapportActiviteVisualiserModal" tabindex="-1" aria-labelledby="rapportActiviteVisualiserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                {{-- Formulaire de creation de rapport d'activité --}}
+                <div class="modal-header">
+                    <h5 class="modal-title">Prévusialiser une rapport</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('rapportActivites.visualiser') }}" id="formVisualiserRapport">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Periode rapport *</label>
+                            <select class="form-select" name="periode_rapport" required>
+                                @foreach ($periodes as $key=>$periodeRapport)
+                                    <option value="{{$key}}">{{$periodeRapport}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Année *</label>
+                            <input type="number" class="form-control" name="annee" value="{{ date('Y') }}" required>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="button" class="btn btn-primary" id="btnVisualiserRapport">Visualiser</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="{{ asset('js/rapport.js') }}"></script>
 @endsection

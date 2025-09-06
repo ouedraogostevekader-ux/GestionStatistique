@@ -8,37 +8,36 @@
     <form method="POST" action="{{ route('rapportActivites.store') }}">
         @csrf
 
-        {{-- <div class="mb-3">
+        <div class="mb-3">
             <label class="form-label">Programme d'activité *</label>
-            <select class="form-select" name="programme_activite_id" required>
-                @foreach ($programmeActivites as $key=>$programmeActivite)
-                    <option value="{{$programmeActivite->id}}">{{$programmeActivite->libelle}}</option>
-                @endforeach
+            <select class="form-select" name="programme_activite_id" required disabled>
+                <option value="{{$programmeActivite->id}}">{{$programmeActivite->libelle}}</option>
             </select>
-        </div> --}}
+        </div>
 
         <div class="mb-3">
             <label class="form-label">Libelle *</label>
             <input type="text" class="form-control" name="libelle" required>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Periode rapport *</label>
-            <select class="form-select" name="periode_rapport" required>
-                @foreach ($periodes as $key=>$periodeRapport)
-                    <option value="{{$key}}">{{$periodeRapport}}</option>
-                @endforeach
-            </select>
-        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">Periode rapport *</label>
+                <select class="form-select" name="periode_rapport" required>
+                    @foreach ($periodes as $key=>$periodeRapport)
+                        <option value="{{$key}}">{{$periodeRapport}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <label class="form-label">Date *</label>
+                <input type="date" class="form-control" name="date_rapport" value="{{ date('Y-m-d') }}" disabled required>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Date *</label>
-            <input type="date" class="form-control" name="date_rapport" value="{{ date('Y-m-d') }}" disabled required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Année *</label>
-            <input type="number" class="form-control" name="annee" value="{{ date('Y') }}" disabled required>
+            <div class="col-sm-4">
+                <label class="form-label">Année *</label>
+                <input type="number" class="form-control" name="annee" value="{{ date('Y') }}" disabled required>
+            </div>
         </div>
 
         <div class="modal-footer">

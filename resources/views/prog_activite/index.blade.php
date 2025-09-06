@@ -130,7 +130,7 @@
                                                                     aria-expanded="false"
                                                                     aria-controls="objectifContent{{ $programme->id }}_{{ $objIndex }}"
                                                                     style="background-color: #28a745; color: white; font-weight: bold;">
-                                                                    🎯 OS{{ $objIndex + 1 }} : {{ $objectif->libelle }}
+                                                                    🎯 OS : {{ $objectif->libelle }}
                                                                 </button>
                                                             </h2>
                                                             <div id="objectifContent{{ $programme->id }}_{{ $objIndex }}"
@@ -188,9 +188,7 @@
                                                                                         aria-expanded="false"
                                                                                         aria-controls="actionContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}"
                                                                                         style="background-color: #17a2b8; color: white; margin-left: 20px;">
-                                                                                        📋 Action
-                                                                                        {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}
-                                                                                        : {{ $action->libelle }}
+                                                                                        📋 Action : {{ $action->libelle }}
                                                                                     </button>
                                                                                 </h2>
                                                                                 <div id="actionContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}"
@@ -216,9 +214,7 @@
                                                                                                             aria-expanded="false"
                                                                                                             aria-controls="objSpecContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}_{{ $objSpecIndex }}"
                                                                                                             style="background-color: #ffc107; color: #212529; margin-left: 20px;">
-                                                                                                            🎯 OSp
-                                                                                                            {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }}
-                                                                                                            :
+                                                                                                            🎯 OSp :
                                                                                                             {{ $objSpec->libelle }}
                                                                                                         </button>
                                                                                                     </h2>
@@ -288,9 +284,7 @@
                                                                                                                             <h6 class="card-title"
                                                                                                                                 style="color: #fd7e14;">
                                                                                                                                 ⚙️
-                                                                                                                                Act
-                                                                                                                                {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }}.{{ $activiteIndex + 1 }}
-                                                                                                                                :
+                                                                                                                                Act :
                                                                                                                                 {{ $activite->libelle }}
                                                                                                                             </h6>
 
