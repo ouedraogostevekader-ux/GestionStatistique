@@ -12,3 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     });
 });
+
+// Masquer automatiquement les alertes après 10 secondes (10000 ms)
+setTimeout(() => {
+    let alerts = document.querySelectorAll(".alert");
+    alerts.forEach((alert) => {
+        let bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+    });
+}, 10000);

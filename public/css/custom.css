@@ -84,6 +84,7 @@ li.nav-item.dropdown.user-menu {
     display: flex;
     align-items: center;
     gap: 1rem;
+    z-index: 1050;
     background: rgba(255, 255, 255, 0.1);
     padding: 0.5rem 1rem;
     border-radius: 25px;
@@ -130,7 +131,7 @@ nav.app-header.navbar.navbar-expand.bg-body {
     padding: 1rem 2rem;
     box-shadow: var(--shadow-lg);
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .custom-navbar::before {

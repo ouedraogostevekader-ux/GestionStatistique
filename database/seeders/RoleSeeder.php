@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
         // Roles
         Role::create(['name' => 'Coordonateur']);
         Role::create(['name' => 'Correspondant']);
-        //Permission::create(['name' => 'manageDeProgramme', 'table' => 'interfaceProgramme', 'groupe' => 'Programme']);
+        Permission::create(['name' => 'manageDeProgramme', 'table' => 'interfaceProgramme', 'groupe' => 'Programme']);
         //Permission::create(['name' => 'manageRapport', 'table' => 'interfaceRapport', 'groupe' => 'Rapport']);
     }
 }
