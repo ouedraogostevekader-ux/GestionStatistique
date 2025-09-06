@@ -21,7 +21,7 @@
             </div>
             <div class="mb-2 d-flex gap-3" id="filters-section">
                 <div>
-                    <label for="filterPeriode" class="form-label">Filtrer par période :</label>
+                    <label for="filterPeriode" class="form-label fw-bold">Filtrer par période :</label>
                     <select id="filterPeriode" class="form-select">
                         <option value="">-- Toutes --</option>
                         @foreach ($activites->pluck('periode')->unique() as $periode)
@@ -31,7 +31,7 @@
                 </div>
 
                 <div>
-                    <label for="filterObjectif" class="form-label">Filtrer par objectif spécifique :</label>
+                    <label for="filterObjectif" class="form-label fw-bold">Filtrer par objectif spécifique :</label>
                     <select id="filterObjectif" class="form-select">
                         <option value="">-- Tous --</option>
                         @foreach ($objectifs as $obj)
@@ -46,7 +46,7 @@
 
     <section class="content px-3">
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-body px-3">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="example1">
                         <thead>

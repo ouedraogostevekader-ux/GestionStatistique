@@ -34,12 +34,12 @@
                     </div>
                     <form method="GET" action="{{ route('programmebudgetaire.index') }}" class="mb-3 row g-2">
                         <div class="col-md-3">
-                            <label for="annee" class="form-label">Année</label>
+                            <label for="annee" class="form-label fw-bold">Année</label>
                             <input type="number" name="annee" id="annee" class="form-control"
                                 value="{{ request('annee') }}" placeholder="Ex: 2025">
                         </div>
                         <div class="col-md-3">
-                            <label for="structure_id" class="form-label">Structure</label>
+                            <label for="structure_id" class="form-label fw-bold">Structure</label>
                             <select name="structure_id" id="structure_id" class="form-select">
                                 <option value="">Toutes</option>
                                 @foreach ($structures as $structure)
@@ -51,7 +51,7 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="responsable_id" class="form-label">Responsable</label>
+                            <label for="responsable_id" class="form-label fw-bold">Responsable</label>
                             <select name="responsable_id" id="responsable_id" class="form-select">
                                 <option value="">Tous</option>
                                 @foreach ($users as $user)
