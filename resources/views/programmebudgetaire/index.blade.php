@@ -69,15 +69,7 @@
                     </form>
 
                     <div class="card-body">
-                        @if (session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
-                        @endif
-
                         <div class="card-body">
-                            @if (session('success'))
-                                <div class="alert alert-success">{{ session('success') }}</div>
-                            @endif
-
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle" id="example2">
                                     <thead class="table-light">
@@ -165,8 +157,6 @@
                                                             <i
                                                                 class="fas {{ $programme->isActive ? 'bi-unlock' : 'bi-lock' }}"></i>
                                                         </button>
-
-
                                                         <form id="toggle-form-{{ $programme->id }}"
                                                             action="{{ route('programmebudgetaire.toggleEditable', $programme->id) }}"
                                                             method="POST" class="d-none">
@@ -174,20 +164,12 @@
                                                             @method('PATCH')
                                                         </form>
                                                     </div>
-
-
                                                 </td>
-
-
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
-
-                            {{-- <div class="mt-3">
-                                {{ $programmes->links() }}
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -195,21 +177,21 @@
         </div>
     </div>
     <div class="modal fade" id="lockModal" tabindex="-1" aria-labelledby="lockModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-      </div>
-      <div class="modal-body" id="lockModalMessage">
-        <!-- Message dynamique -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
-      </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body" id="lockModalMessage">
+                    <!-- Message dynamique -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-<script src="{{ asset('dist/js/lock-programme.js') }}"></script>
+    <script src="{{ asset('dist/js/lock-programme.js') }}"></script>
 @endsection

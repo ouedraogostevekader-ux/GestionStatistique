@@ -31,10 +31,12 @@
     <div class="card m-3">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title mb-0">Indicateurs associés</h3>
+            @can('indicateur_Programme-create')
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#addIndicateurModal">
                 <i class="fas fa-plus"></i> Ajouter un indicateur
             </button>
+            @endcan
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">

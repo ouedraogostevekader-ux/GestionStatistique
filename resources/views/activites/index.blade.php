@@ -45,14 +45,6 @@
     </section>
 
     <section class="content px-3">
-        <div class="col-sm-10">
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
-        </div>
         <div class="card">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -74,7 +66,11 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $activite->libelle }}</td>
-                                    <td>{{ $activite->periodes[0]->libelle }}</td>
+                                    <td>
+                                        @foreach ($activite->periodes as $periode)
+                                            {{ $periode->libelle }},
+                                        @endforeach
+                                    </td>
                                     <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
                                     <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
                                     <td>{{ $activite->indicateursProgrammes->count() }}</td>

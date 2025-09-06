@@ -1,5 +1,8 @@
 
-<h3>Rapport d'activités de {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i')}}</h3>
+@php
+    $periodeModel = App\Models\Periode::find($periode);
+@endphp
+<h3>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible"}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i')}}</h3>
 
 <table>
     <thead>
@@ -26,7 +29,7 @@
             @if($objectifStrategique->indicateurs->count() > 0)
                 <tr>
                     <td rowspan="{{$objectifStrategique->indicateurs->count()}}" style="text-align: center; vertical-align: middle; font-weight: bold;">
-                        {{$objectifStrategique->libelle}}
+                        Objectif stratégique : {{$objectifStrategique->libelle}}
                     </td>
                     @php
                         // Obtenir le premier indicateur de l'objectif stratégique
@@ -58,19 +61,19 @@
                     </tr>
                     @endif
                 @endforeach
-                <!-- objectif strategique -->
+                <!-- Actions -->
                 @foreach($objectifStrategique->actions as $action)
                     <tr>
                         <td colspan="8" style="text-align: center; font-weight: bold; background-color: #e8f5f5;">
-                            {{$action->libelle}}
+                            Action : {{$action->libelle}}
                         </td>
                     </tr>
-                    <!-- Objectif Opérationnel -->
+                    <!-- Objectif Specifique -->
                     @foreach($action->objectifsSpecifiques as $objectifsSpecifique)
                     @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                         <tr>
                             <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" style="text-align: center; vertical-align: middle; font-weight: bold;">
-                                {{$objectifsSpecifique->libelle}}
+                                Objectif Spécifique {{$objectifsSpecifique->libelle}}
                             </td>
                             @php
                                 // Obtenir le premier indicateur de l'objectif opérationnel
@@ -106,7 +109,7 @@
                         @if($activite->indicateursProgrammes->count()>0)
                             <tr>
                                 <td  style="text-align: center;">
-                                    {{$activite->libelle}}
+                                    Activité : {{$activite->libelle}}
                                 </td>
                                 @php
                                     // Obtenir le premier indicateur de l'activité

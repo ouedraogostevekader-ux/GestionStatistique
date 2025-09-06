@@ -58,14 +58,6 @@
     </form>
 
     <div class="content px-3">
-        <div class="col-sm-10">
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
-        </div>
         <div class="clearfix"></div>
 
         <div class="card">

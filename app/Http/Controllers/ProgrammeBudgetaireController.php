@@ -20,7 +20,9 @@ use Illuminate\Support\Str;
 class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 {
 
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public static function middleware(): array
     {
@@ -73,16 +75,12 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
      */
     public function show($id)
     {
-
-
         $programmeBudgetaire = ProgrammeBudgetaire::with([
             'structures',
             'responsables' => function ($q) {
                 $q->wherePivotNull('date_fin');
             }
         ])->findOrFail($id);
-
-
 
         $responsableActif = $programmeBudgetaire->responsables->last();
 
@@ -205,7 +203,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
      */
     public function destroy($id)
     {
-
         $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
         $programmeBudgetaire->delete();
         return redirect()->route('programmebudgetaire.index');
@@ -214,6 +211,22 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
             return redirect()->route('programmebudgetaire.index')
                 ->withErrors(['error' => 'Ce programme est verrouillé et ne peut pas être supprimé.']);
         }
+    }
+
+    /* Valider le programme */
+    public function validate($id)
+    {
+        $programmeBudgetaire = ProgrammeBudgetaire::findOrFail($id);
+        $responsable = $programmeBudgetaire->responsables->last();
+        //dd(Auth::user(), $responsable);
+        if (Auth::user()->id !== $responsable->id) {
+            return redirect()->back()->with('error', "Vous n'êtes pas responsable de ce programme. Donc vous ne pouvez pas le valider!");
+
+        }
+        $programmeBudgetaire->statut = 1;
+        $programmeBudgetaire->isActive = false;
+        $programmeBudgetaire->save();
+        return redirect()->back()->with('success', "Ce programme bugétaire a été validé.");
     }
 
     // Afficher le formulaire de duplication
