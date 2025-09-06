@@ -8,7 +8,7 @@
 <div class="card-body p-0">
     <div class="table-container">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover mb-0" id="example1">
                 <thead>
                     <tr>
                         <th><i class="fas fa-map-marker-alt me-2"></i>Libellé</th>
@@ -77,7 +77,7 @@
                                                 <tr>
                                                     <td>{{ $suivi->resultat_atteint }}</td>
                                                     <td>{{ $suivi->cout_effectif }}</td>
-                                                    <td>{{ $suivi->periode->libelle ?? "Indisponible" }}</td>
+                                                    <td>{{ $suivi->getPeriode->libelle ?? "Indisponible" }}</td>
                                                     <td class="text-danger">{{$suivi->observations}}</td>
                                                     <td>
                                                        @can('suivi-edit')
@@ -91,7 +91,7 @@
                                                         @can('suivi-delete')
                                                         <button type="button" class="btn btn-outline-danger delete-btn" title="Supprimer"
                                                             data-url="{{ route('suivis.destroy', $suivi->id) }}"
-                                                            data-message="<strong>{{ $suivi->resultat_atteint }} - {{ $suivi->cout_effectif }} - {{ $suivi->periode }} </strong> sera supprimé. Continuer ?">
+                                                            data-message="<strong>{{ $suivi->resultat_atteint }} - {{ $suivi->cout_effectif }} - {{ $suivi->getPeriode->libelle }} </strong> sera supprimé. Continuer ?">
                                                             <i class="bi bi-trash-fill"></i>
                                                         </button>
                                                         @endcan
@@ -112,6 +112,18 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-map-marker-alt me-2"></i>Libellé</th>
+                        <th><i class="fas fa-euro-sign me-2"></i>Unité mesure</th>
+                        <th><i class="fas fa-chart-line me-2"></i>Reference</th>
+                        <th><i class="fas fa-star me-2"></i>Cible</th>
+                        <th><i class="fas fa-star me-2"></i>Objectif spécifique</th>
+                        <th><i class="fas fa-star me-2"></i>Objectif stratégique</th>
+                        <th><i class="fas fa-star me-2"></i>Activité</th>
+                        <th><i class="fas fa-eye me-2"></i>Suivis</th>
+                    </tr>
+                </thead>
             </table>
         </div>
     </div>

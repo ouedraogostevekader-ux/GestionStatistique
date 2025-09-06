@@ -20,35 +20,16 @@
             </div>
         </div>
         <div class="mb-2 d-flex gap-3">
-            {{-- Filtre selon le programme d'activites --}}
-            {{-- <div>
-                <label for="filterProgramme" class="form-label">Filtrer par programme d'activités :</label>
-                <select id="filterProgramme" class="form-select">
-                    <option value="">-- Tous --</option>
-                    @foreach ($programmeActivites as $programme)
-                        <option value="{{ $programme->libelle }}">{{ $programme->libelle }}</option>
-                    @endforeach
-                </select>
-            </div> --}}
-
-            {{-- Filtre selon la periode --}}
-            {{-- <div>
-                <label for="filterPeriode" class="form-label">Filtrer par periode :</label>
-                <select id="filterPeriode" class="form-select">
-                    <option value="">-- Toutes --</option>
-                    @foreach ($periodes as $key=>$periode)
-                        <option value="{{ $key }}">{{ $periode }}</option>
-                    @endforeach
-                </select>
-            </div> --}}
-
         </div>
 
     </div>
 </section>
 <section class="content px-3">
     <div class="card">
-        <h3 class="text-center">Rapport d'activités de {{$periode}} {{$annee}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
+        @php
+            $periodeModel = App\Models\Periode::find($periode);
+        @endphp
+        <h3 class="text-center">Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible"}} {{$annee}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
         <table>
             <thead>
                 <tr>
@@ -68,7 +49,7 @@
                 @foreach($data as $programme)
                     <tr>
                         <td colspan="8" class="programme-title">
-                            {{$programme->libelle}}
+                            Programme {{$programme->numero_programme }} : {{$programme->libelle}}
                         </td>
                     </tr>
                     <!-- Objectif stratégique -->
@@ -76,7 +57,7 @@
                     @if($objectifStrategique->indicateurs->count() > 0)
                         <tr>
                             <td rowspan="{{$objectifStrategique->indicateurs->count()}}" class="objectif-strategique">
-                                {{$objectifStrategique->libelle}}
+                                Objectif stratégique : {{$objectifStrategique->libelle}}
                             </td>
                             @php
                                 // Obtenir le premier indicateur de l'objectif stratégique
@@ -111,15 +92,15 @@
                         @foreach($objectifStrategique->actions as $action)
                             <tr>
                                 <td colspan="8" class="action-title">
-                                    {{$action->libelle}}
+                                    Action : {{$action->libelle}}
                                 </td>
                             </tr>
-                            <!-- Objectif specifique -->
+                            <!-- Objectif spécifique -->
                             @foreach($action->objectifsSpecifiques as $objectifsSpecifique)
                             @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                                 <tr>
-                                    <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle">
-                                        {{$objectifsSpecifique->libelle}}
+                                    <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
+                                        Objectif spécifique : {{$objectifsSpecifique->libelle}}
                                     </td>
                                     @php
                                         // Obtenir le premier indicateur de l'objectif opérationnel
@@ -155,7 +136,7 @@
                                 @if($activite->indicateursProgrammes->count() > 0)
                                     <tr>
                                         <td >
-                                            {{$activite->libelle}}
+                                            Activité : {{$activite->libelle}}
                                         </td>
                                         @php
                                             // Obtenir le premier indicateur de l'activité

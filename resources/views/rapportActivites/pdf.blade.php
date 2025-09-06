@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    @php
+        $periodeModel = App\Models\Periode::find($periode);
+    @endphp
     <meta charset="utf-8">
-    <title>Rapport d'activités de {{$periode}} {{$annee}}</title>
+    <title>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible" }} {{$annee}}</title>
     <style>
         /* body {
             font-family: DejaVu Sans, sans-serif;
@@ -51,7 +54,7 @@
     </style>
 </head>
 <body>
-    <h3>Rapport d'activités de {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
+    <h3>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible" }} {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
     <table>
         <thead>
             <tr>
@@ -79,7 +82,7 @@
                 @if($objectifStrategique->indicateurs->count() > 0)
                     <tr>
                         <td rowspan="{{$objectifStrategique->indicateurs->count()}}" class="objectif-strategique">
-                            {{$objectifStrategique->libelle}}
+                            Objectif stratégique : {{$objectifStrategique->libelle}}
                         </td>
                         @php
                             // Obtenir le premier indicateur de l'objectif stratégique
@@ -114,15 +117,15 @@
                     @foreach($objectifStrategique->actions as $action)
                         <tr>
                             <td colspan="8" class="action-title">
-                                {{$action->libelle}}
+                                Action : {{$action->libelle}}
                             </td>
                         </tr>
-                        <!-- Objectif specifique -->
+                        <!-- Objectif spécifique -->
                         @foreach($action->objectifsSpecifiques as $objectifsSpecifique)
                         @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                             <tr>
                                 <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
-                                    {{$objectifsSpecifique->libelle}}
+                                    Objectif spécifique : {{$objectifsSpecifique->libelle}}
                                 </td>
                                 @php
                                     // Obtenir le premier indicateur de l'objectif opérationnel
@@ -158,7 +161,7 @@
                             @if($activite->indicateursProgrammes->count() > 0)
                                 <tr>
                                     <td >
-                                        {{$activite->libelle}}
+                                        Activité : {{$activite->libelle}}
                                     </td>
                                     @php
                                         // Obtenir le premier indicateur de l'activité
