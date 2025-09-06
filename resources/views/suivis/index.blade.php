@@ -63,5 +63,14 @@
             @include('suivis.table')
         </div>
     </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="suiviModal" tabindex="-1" aria-labelledby="suiviModalLabel" aria-hidden="true" >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Le contenu sera chargé dynamiquement ici via AJAX -->
+            </div>
+        </div>
+    </div>
     <script src="{{ asset('js/suivi.js') }}"></script>
 @endsection

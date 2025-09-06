@@ -117,11 +117,3 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="suiviModal" tabindex="-1" aria-labelledby="suiviModalLabel" aria-hidden="true" data-bs-backdrop="false">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <!-- Le contenu sera chargé dynamiquement ici via AJAX -->
-        </div>
-    </div>
-</div>
