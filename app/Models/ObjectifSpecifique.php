@@ -71,4 +71,22 @@ class ObjectifSpecifique extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($objectifSpecifique) {
+            if ($objectifSpecifique->isForceDeleting()) {
+                $objectifSpecifique->activites()->withTrashed()->forceDelete();
+                $objectifSpecifique->indicateursProgrammes()->withTrashed()->forceDelete();
+            } else {
+                $objectifSpecifique->activites()->delete();
+                $objectifSpecifique->indicateursProgrammes()->delete();
+            }
+        });
+
+        static::restoring(function ($objectifSpecifique) {
+            $objectifSpecifique->activites()->withTrashed()->restore();
+            $objectifSpecifique->indicateursProgrammes()->withTrashed()->restore();
+        });
+    }
 }

@@ -68,6 +68,7 @@
                             <tr>
                                 <th>Action</th>
                                 <th>Objectif strategique</th>
+                                <th>Objectifs spécifique</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -75,7 +76,9 @@
                             @foreach ($actions as $action)
                                 <tr>
                                     <td>{{ $action->libelle }}</td>
-                                    <td>{{ $action->objectifStrategique->libelle }}</td>
+                                    <td>{{ $action->objectifStrategique ? $action->objectifStrategique->libelle : '-' }}
+                                    </td>
+                                    <td>{{ $action->objectifsSpecifiques->count() }}</td>
                                     <td>
 
                                         <div class='btn-group'>

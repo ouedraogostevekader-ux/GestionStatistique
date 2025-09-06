@@ -30,7 +30,8 @@
                             <dd class="col-sm-8">{{ $action->libelle }}</dd>
 
                             <dt class="col-sm-4">Objectif stratégique :</dt>
-                            <dd class="col-sm-8">{{ $action->objectifStrategique->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $action->objectifStrategique ? $action->objectifStrategique->libelle : '-' }}</dd>
 
                             <dt class="col-sm-4">Créé le :</dt>
                             <dd class="col-sm-8">{{ $action->created_at->format('d/m/Y à H:i') }}</dd>

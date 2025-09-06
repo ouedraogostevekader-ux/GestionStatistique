@@ -62,4 +62,19 @@ class Action extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($action) {
+            if ($action->isForceDeleting()) {
+                $action->objectifsSpecifiques()->withTrashed()->forceDelete();
+            } else {
+                $action->objectifsSpecifiques()->delete();
+            }
+        });
+
+        static::restoring(function ($indicateur) {
+            $indicateur->objectifSpecifiqiques()->withTrashed()->restore();
+        });
+    }
 }

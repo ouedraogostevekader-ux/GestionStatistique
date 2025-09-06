@@ -74,4 +74,19 @@ class IndicateurProgramme extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($indicateur) {
+            if ($indicateur->isForceDeleting()) {
+                $indicateur->suivis()->withTrashed()->forceDelete();
+            } else {
+                $indicateur->suivis()->delete();
+            }
+        });
+
+        static::restoring(function ($indicateur) {
+            $indicateur->suivis()->withTrashed()->restore();
+        });
+    }
 }
