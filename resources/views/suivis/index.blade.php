@@ -4,47 +4,66 @@
     <link rel="stylesheet" href="{{ asset('css/suivi.css') }}" type="text/css" />
     <section class="content-header">
         <div class="container px-2" id="filters-section">
-            <div class="row mb-2">
 
-                <div class="col-sm-6">
-                    <div class="mt-3 d-flex justify-content-end">
-                        {{-- <a class="btn btn-primary" href="{{ route('suivis.create') }}">
-                            <i class="bi bi-plus"></i> Ajouter
-                        </a> --}}
-                    </div>
+            <div class="mb-2 d-flex row">
+                {{-- Filtre selon les objectifs strategiques --}}
+                <div class="col-sm-3">
+                    <label for="filterObjStrat" class="form-label">Objectif stratégique :</label>
+                    <select id="filterObjStrat" class="form-select">
+                        <option value="">-- Tous --</option>
+                        @foreach ($objectifStrategiques as $objStrat)
+                            <option value="{{ $objStrat->id }}" data-libelle="{{ $objStrat->libelle }}">
+                                {{ $objStrat->libelle }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-            </div>
-            <div class="mb-2 d-flex gap-3">
-                {{-- Filtre selon les activites --}}
-                <div>
-                    <label for="filterActivite" class="form-label">Filtrer par activité :</label>
-                    <select id="filterActivite" class="form-select">
-                        <option value="">-- Toutes --</option>
-                        @foreach ($activites as $activite)
-                            <option value="{{ $activite->libelle }}">{{ $activite->libelle }}</option>
+                <div class="col-sm-3">
+                    <label for="filterAction" class="form-label">Action :</label>
+                    <select id="filterAction" class="form-select" disabled>
+                        <option value="">-- Veuillez choisir --</option>
+                        @foreach ($actions as $action)
+                            <option value="{{ $action->id }}" data-parent="{{ $action->objectif_strategique_id }}" data-libelle="{{ $action->libelle }}">
+                                {{ $action->libelle }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
                 {{-- Filtre selon les objectifs specifiques --}}
-                <div>
-                    <label for="filterObjectif" class="form-label">Filtrer par objectif spécifique :</label>
-                    <select id="filterObjectif" class="form-select">
-                        <option value="">-- Tous --</option>
+                <div class="col-sm-3">
+                    <label for="filterObjectif" class="form-label">Objectif spécifique :</label>
+                    <select id="filterObjectif" class="form-select" disabled>
+                        <option value="">-- Veuillez choisir --</option>
                         @foreach ($objectifSpecifiques as $obj)
-                            <option value="{{ $obj->libelle }}">{{ $obj->libelle }}</option>
+                            <option value="{{ $obj->id }}" 
+                                    data-parent="{{ $obj->action_id }}" 
+                                    data-libelle="{{ $obj->libelle }}">
+                                {{ $obj->libelle }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
-                {{-- Filtre selon les objectifs strategiques --}}
-                <div>
-                    <label for="filterObjStrat" class="form-label">Filtrer par objectif stratégique :</label>
-                    <select id="filterObjStrat" class="form-select">
-                        <option value="">-- Tous --</option>
-                        @foreach ($objectifStrategiques as $objStrat)
-                            <option value="{{ $objStrat->libelle }}">{{ $objStrat->libelle }}</option>
+                {{-- Filtre selon les activites --}}
+                <div class="col-sm-3">
+                    <label for="filterActivite" class="form-label">Activité :</label>
+                    <select id="filterActivite" class="form-select" disabled>
+                        <option value="">-- Veuillez choisir --</option>
+                        @foreach ($activites as $activite)
+                            <option value="{{ $activite->id }}" 
+                                    data-parent="{{ $activite->objectif_specifique_id }}" 
+                                    data-libelle="{{ $activite->libelle }}">
+                                {{ $activite->libelle }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
+            </div>
+
+            {{-- Bouton de réinitialisation --}}
+            <div class="mb-2">
+                <button id="resetFilters" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-refresh me-1"></i>Réinitialiser
+                </button>
             </div>
 
         </div>
@@ -63,7 +82,7 @@
             @include('suivis.table')
         </div>
     </section>
-
+            
     <!-- Modal -->
     <div class="modal fade" id="suiviModal" tabindex="-1" aria-labelledby="suiviModalLabel" aria-hidden="true" >
         <div class="modal-dialog modal-lg">
@@ -72,5 +91,8 @@
             </div>
         </div>
     </div>
+    
     <script src="{{ asset('js/suivi.js') }}"></script>
+    <script src="{{ asset('js/suivi2.js') }}"></script>
+
 @endsection

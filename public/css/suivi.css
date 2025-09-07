@@ -128,6 +128,27 @@
     visibility: visible;
 }
 
+.dt-control {
+    cursor: pointer;
+    text-align: center;
+}
+.dt-control:before {
+    content: '►';
+    color: #6c757d;
+}
+tr.shown .dt-control:before {
+    content: '▼';
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+}
+.loading-spinner i {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
 
 @media (max-width: 768px) {
     .table-responsive {
