@@ -3,88 +3,7 @@
 
 {{-- @section('title', 'Tableau Programme Budgétaire') --}}
 @section('styles')
-    <style>
-        .programme-table {
-            font-size: 12px;
-            border-collapse: collapse;
-            width: 100%;
-            border: 2px solid #343a40;
-        }
-
-        .programme-table th,
-        .programme-table td {
-            border: 1px solid #6c757d;
-            padding: 8px;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .programme-table th {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-            border: 1px solid #0056b3;
-        }
-
-        .programme-header {
-            background-color: #28a745 !important;
-            color: white;
-            font-weight: bold;
-            text-align: left;
-            border: 2px solid #1e7e34 !important;
-        }
-
-        .objectif-strategique {
-            background-color: #f8f9fa;
-            text-align: left;
-            font-weight: bold;
-            border-left: 3px solid #007bff !important;
-        }
-
-        .action {
-            background-color: #e9ecef;
-            text-align: left;
-            font-weight: bold;
-            padding-left: 20px;
-            border-left: 3px solid #28a745 !important;
-        }
-
-        .objectif-specifique {
-            background-color: #f1f2f6;
-            text-align: left;
-            padding-left: 40px;
-            border-left: 3px solid #ffc107 !important;
-        }
-
-        .activite {
-            text-align: left;
-            padding-left: 60px;
-            border-left: 3px solid #fd7e14 !important;
-        }
-
-        .programme-table tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        .programme-table .programme-header:hover {
-            background-color: #28a745 !important;
-        }
-
-        .periode-check {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        @media print {
-            .no-print {
-                display: none;
-            }
-
-            .programme-table {
-                font-size: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('dist/css/show_pgb_table.css') }}">
 @endsection
 
 @section('content')
@@ -92,15 +11,10 @@
         <div class="row mb-3 no-print">
             <div class="col-12">
                 <div class="btn-group">
-                    {{-- <a href="{{ route('programme-activites.show', $programme->id) }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Retour
-                    </a> --}}
-                    {{-- <button onclick="window.print()" class="btn btn-primary">
-                        <i class="fas fa-print"></i> Imprimer
-                    </button> --}}
-                    <button onclick="exportTableToExcel()" class="btn btn-success">
+
+                    {{-- <button onclick="exportTableToExcel()" class="btn btn-success">
                         <i class="fas fa-file-excel"></i> Excel
-                    </button>
+                    </button> --}}
                 </div>
             </div>
         </div>
@@ -140,7 +54,7 @@
                                 <tr>
                                     @if ($indIndex == 0)
                                         <td rowspan="{{ $objectif->indicateurs->count() }}" class="objectif-strategique">
-                                            OS : {{ $objectif->libelle }}
+                                            {{ $objectif->libelle }}
                                         </td>
                                     @endif
                                     <td>{{ $indicateur->libelle }}</td>
@@ -157,7 +71,7 @@
                         @else
                             <tr>
                                 <td class="objectif-strategique">
-                                    OS : {{ $objectif->libelle }}
+                                    {{ $objectif->libelle }}
                                 </td>
                                 <td>-</td>
                                 <td>-</td>
@@ -175,7 +89,7 @@
                         @foreach ($objectif->actions as $actionIndex => $action)
                             <tr>
                                 <td class="action">
-                                    Action : {{ $action->libelle }}
+                                    {{ $action->libelle }}
                                 </td>
                                 <td>-</td>
                                 <td>-</td>
@@ -197,7 +111,6 @@
                                             @if ($indIndex == 0)
                                                 <td rowspan="{{ $objSpec->indicateurs->count() }}"
                                                     class="objectif-specifique">
-                                                    OSp :
                                                     {{ $objSpec->libelle }}
                                                 </td>
                                             @endif
@@ -215,7 +128,6 @@
                                 @else
                                     <tr>
                                         <td class="objectif-specifique">
-                                            OSp :
                                             {{ $objSpec->libelle }}
                                         </td>
                                         <td>-</td>
@@ -237,7 +149,7 @@
                                             <tr>
                                                 @if ($indIndex == 0)
                                                     <td rowspan="{{ $activite->indicateurs->count() }}" class="activite">
-                                                        Act: {{ $activite->libelle }}
+                                                        {{ $activite->libelle }}
                                                     </td>
                                                 @endif
                                                 <td>{{ $indicateur->libelle }}</td>
@@ -285,7 +197,7 @@
                                     @else
                                         <tr>
                                             <td class="activite">
-                                                Act: {{ $activite->libelle }}
+                                                {{ $activite->libelle }}
                                             </td>
                                             <td>-</td>
                                             <td>-</td>
@@ -334,7 +246,7 @@
         </div>
     </div>
 
-    <script>
+    {{-- <script>
         function exportTableToExcel() {
             const table = document.getElementById('programmeTable');
             const ws = XLSX.utils.table_to_sheet(table);
@@ -343,5 +255,5 @@
             XLSX.writeFile(wb, `Programme_${document.querySelector('.programme-header').textContent.trim()}.xlsx`);
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> --}}
 @endsection

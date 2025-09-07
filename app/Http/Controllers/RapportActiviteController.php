@@ -50,30 +50,30 @@ class RapportActiviteController extends Controller implements HasMiddleware
     public function store(RapportActiviteRequest $request)
     {
         // Pour année en cours empecher nouvelle génération
-        
+
         DB::beginTransaction();
         try {
-        
+
             //$programmeActivite = ProgrammesActivite::findOrFail($request->programme_activite_id);
             $programmeActivite = ProgrammesActivite::where('annee', now()->year)->latest()->first();
             if (!$programmeActivite) {
                 if ($request->ajax()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Aucun programme d\'activité trouvé pour l\'année en cours '.now()->year
+                        'message' => 'Aucun programme d\'activité trouvé pour l\'année en cours ' . now()->year
                     ]);
                 }
-                return redirect()->back()->with('error', 'Aucun programme d\'activité trouvé pour l\'année en cours '.now()->year);
+                return redirect()->back()->with('error', 'Aucun programme d\'activité trouvé pour l\'année en cours ' . now()->year);
             }
             $rapport = RapportActivite::where('annee', now()->year)->count();
             if ($rapport > 2) {
                 if ($request->ajax()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Deux (02) rapports d\'activité pour l\'année en cours '.now()->year.' ont été déjà générés.'
+                        'message' => 'Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont été déjà générés.'
                     ]);
                 }
-                return redirect()->back()->with('error', 'Deux (02) rapports d\'activité pour l\'année en cours '.now()->year.' ont été déjà générés.');
+                return redirect()->back()->with('error', 'Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont été déjà générés.');
             }
             $periode = $request->input('periode_rapport');
             $annee = now()->year;
@@ -83,20 +83,20 @@ class RapportActiviteController extends Controller implements HasMiddleware
             // Generation du fichier excel
             $excel = new RapportActiviteExport($data, $periode, $annee, $date);
             $url_excel = (string) Str::uuid();
-            Excel::store($excel, 'rapports/'.$url_excel.'.xlsx', 'public');
+            Excel::store($excel, 'rapports/' . $url_excel . '.xlsx', 'public');
 
             // Generation du fichier PDF
             $pdf = PDF::loadView('rapportActivites.pdf', compact('data', 'periode', 'annee', 'date'));
             $pdf->setPaper('a4', 'landscape');
             $url_pdf = (string) Str::uuid();
-            $pdf->save(storage_path('app/public/rapports/'.$url_pdf.'.pdf'));
-            
+            $pdf->save(storage_path('app/public/rapports/' . $url_pdf . '.pdf'));
+
             $input = $request->validated();
             $input['programme_activite_id'] = $programmeActivite->id;
             $input['annee'] = $annee;
             $input['date_rapport'] = $date;
-            $input['file'] = $url_excel.'.xlsx';
-            $input['file_pdf'] = $url_pdf.'.pdf';
+            $input['file'] = $url_excel . '.xlsx';
+            $input['file_pdf'] = $url_pdf . '.pdf';
             $rapport = RapportActivite::create($input);
             DB::commit();
             if ($request->ajax()) {
@@ -111,10 +111,10 @@ class RapportActiviteController extends Controller implements HasMiddleware
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Une erreur est survenue: '.$e->getMessage()
+                    'message' => 'Une erreur est survenue: ' . $e->getMessage()
                 ]);
             }
-            return redirect()->back()->with('error', 'Une erreur est survenue'.$e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue' . $e->getMessage());
         }
     }
 
