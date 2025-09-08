@@ -11,8 +11,7 @@
 
     <div class="mb-3">
         <label for="periodes" class="form-label">Périodes</label>
-        <select name="periodes[]" id="periodes"
-            class="form-select {{ !isset($objectifSpecifique) ? 'select2' : '' }}  @error('periodes') is-invalid @enderror"
+        <select name="periodes[]" id="periodes" class="form-select select2 @error('periodes') is-invalid @enderror"
             multiple required data-placeholder="Sélectionner une ou plusieurs périodes">
             <option value="">-- Sélectionner une ou plusieurs périodes --</option>
             @foreach ($periodes as $periode)
