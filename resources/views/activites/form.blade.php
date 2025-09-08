@@ -45,6 +45,16 @@
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
+    {{-- ✅ Ajout du champ hors_programme --}}
+    <div class="mb-3 form-check">
+        <input type="checkbox" name="hors_programme" id="hors_programme" value="1"
+            class="form-check-input @error('hors_programme') is-invalid @enderror"
+            {{ old('hors_programme', $activite->hors_programme ?? false) ? 'checked' : '' }}>
+        <label class="form-check-label" for="hors_programme">Activité hors programme</label>
+        @error('hors_programme')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
     @if (!isset($objectifSpecifique))
         <div class="mb-3">
             <label for="objectif_specifique_id" class="form-label">Objectif spécifique</label>

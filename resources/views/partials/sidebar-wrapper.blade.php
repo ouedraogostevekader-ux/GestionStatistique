@@ -150,6 +150,15 @@
                             @endcan
                         </li>
                         <li class="nav-item">
+                            @can('manageActivite')
+                                <a href="{{ route('activites.hors.programme') }}"
+                                    class="nav-link {{ Route::is('activites.hors.programme*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                                    <p>Activités hors programme</p>
+                                </a>
+                            @endcan
+                        </li>
+                        <li class="nav-item">
                             @can('manageIndicateur_Programme')
                                 <a href="{{ route('indicateurs-programmes.index') }}"
                                     class="nav-link {{ Request::is('indicateurs-programmes*') ? 'active' : '' }}"

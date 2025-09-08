@@ -21,7 +21,7 @@ class ActiviteController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:activite-list', only: ['index', 'show']),
+            new Middleware('permission:activite-list', only: ['index', 'show', 'indexActivitesHorsProgramme']),
             new Middleware('permission:activite-create', only: ['create', 'store']),
             new Middleware('permission:activite-edit', only: ['edit', 'update']),
             new Middleware('permission:activite-delete', only: ['destroy']),
@@ -148,6 +148,27 @@ class ActiviteController extends Controller implements HasMiddleware
         ));
     }
 
+    /* Activité hors programmes */
+    public function indexActivitesHorsProgramme()
+    {
+        if (Auth::user()->isAdmin()) {
+            $objectifs = DB::select("SELECT * from objectifs_specifiques");
+            $activites = $this->activiteRepository->all();
+        } else {
+            // Via la table pivot structure_programme_budgetaire
+            $objectifs = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+
+            $activites = Activite::whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+        }
+        return view('activites.index-hors-programme', compact('activites', 'objectifs'));
+    }
+
     /* Create Activite */
     public function create()
     {
@@ -210,9 +231,10 @@ class ActiviteController extends Controller implements HasMiddleware
         return view('activites.edit', compact('objectifs', 'activite', 'periodes', 'activitePeriodes', 'annee'));
     }
 
-    public function update(UpdateActiviteRequest $request, Activite $activite)
+    public function update(UpdateActiviteRequest $request, $activite_id)
     {
         $validated = $request->validated();
+        $activite = Activite::findOrFail($activite_id);
         if (!$activite->activiteIsEdit()) {
             return redirect()->back()->with('error', "Cette activité n\'est pas modifiable");
         }
