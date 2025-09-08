@@ -36,7 +36,7 @@
 
         <div class="mb-3">
             <label class="form-label">Observation</label>
-            <textarea class="form-control" name="observations" value="{{$suivi->observations}}" rows="3"></textarea>
+            <textarea class="form-control" name="observations" rows="3">{{$suivi->observations}}</textarea>
         </div>
 
         <div class="modal-footer">
