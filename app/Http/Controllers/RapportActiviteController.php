@@ -24,10 +24,10 @@ class RapportActiviteController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:rapportActivite-list', only: ['index', 'show']),
-            new Middleware('permission:rapportActivite-create', only: ['create', 'store']),
-            new Middleware('permission:rapportActivite-edit', only: ['edit', 'update']),
-            new Middleware('permission:rapportActivite-delete', only: ['destroy']),
+            new Middleware('permission:rapport_Activite-list', only: ['index', 'show']),
+            new Middleware('permission:rapport_Activite-create', only: ['create', 'store']),
+            new Middleware('permission:rapport_Activite-edit', only: ['edit', 'update']),
+            new Middleware('permission:rapport_Activite-delete', only: ['destroy']),
         ];
     }
 

@@ -192,7 +192,7 @@
                     </ul>
                 </li>
             @endcan
-            @can('manageRapport')
+            @can('manageRapport_Activite')
                 <li class="nav-item {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'active' : '' }}">
@@ -203,14 +203,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        {{-- @can('manageObjectifStrategique') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('rapportActivites.index') }}"
-                                class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-journal-text"></i>
-                                <p>Rapport d'activités</p>
-                            </a>
-                        </li>
+                        @can('manageSuivi')
                         <li class="nav-item">
                             <a href="{{ route('suivis.index') }}"
                                 class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
@@ -218,6 +211,17 @@
                                 <p>Suivis</p>
                             </a>
                         </li>
+                        @endcan
+                        @can('manageRapport_Activite')
+                        <li class="nav-item">
+                            <a href="{{ route('rapportActivites.index') }}"
+                                class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-journal-text"></i>
+                                <p>Rapport d'activités</p>
+                            </a>
+                        </li>
+                        @endcan
+                        
                     </ul>
                 </li>
             @endcan
