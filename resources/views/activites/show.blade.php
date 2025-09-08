@@ -120,20 +120,26 @@
         </div>
 
         <div class="mt-3 d-flex gap-2">
-            <a href="{{ route('activites.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Retour à la liste
-            </a>
-            <a href="{{ route('activites.edit', $activite->id) }}" class="btn btn-primary">
-                <i class="fas fa-edit"></i> Modifier
-            </a>
-            <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
-                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette activité ?')">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Supprimer
-                </button>
-            </form>
+            @can('activite-list')
+                <a href="{{ route('activites.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            @endcan
+            @can('activite-edit')
+                <a href="{{ route('activites.edit', $activite->id) }}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+            @endcan
+            @can('activite-delete')
+                <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
+                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette activité ?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </form>
+            @endcan
         </div>
     </div>
     {{-- Indicateurs --}}
@@ -141,10 +147,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title mb-0">Indicateurs associés</h3>
             @can('indicateur_Programme-create')
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                data-bs-target="#addIndicateurModal">
-                <i class="fas fa-plus"></i> Ajouter un indicateur
-            </button>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#addIndicateurModal">
+                    <i class="fas fa-plus"></i> Ajouter un indicateur
+                </button>
             @endcan
         </div>
         <div class="card-body p-0">
@@ -165,8 +171,10 @@
                                 <td>{{ $indicateur->unite_mesure }}</td>
                                 <td>{{ $indicateur->valeur_cible }}</td>
                                 <td>
-                                    <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
-                                        class="btn btn-info btn-sm">Voir</a>
+                                    @can('indicateur_Programme-list')
+                                        <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
+                                            class="btn btn-info btn-sm">Voir</a>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

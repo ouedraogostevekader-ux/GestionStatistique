@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
-                        @can('objectifStrategique-create')
+                        @can('objectif_Strategique-create')
                             <a class="btn btn-primary" href="{{ route('objectifStrategiques.create') }}">
                                 <i class="bi bi-plus"></i> Ajouter
                             </a>

@@ -16,10 +16,12 @@
                     <div class="card-body">
                         @forelse($programmes as $programme)
                             <div class="btn-group me-3" onclick="event.stopPropagation();">
-                                <a href="{{ route('programme-activites.show', $programme->id) }}"
-                                    class="btn btn-success btn-sm">
-                                    <i class="fas fa-table"></i> Afficher le tableau
-                                </a>
+                                @can('programme_Activite-list')
+                                    <a href="{{ route('programme-activites.show', $programme->id) }}"
+                                        class="btn btn-success btn-sm">
+                                        <i class="fas fa-table"></i> Afficher le tableau
+                                    </a>
+                                @endcan
                             </div>
                             <div class="programme-item mb-4">
                                 <!-- Accordéon principal pour chaque programme -->
@@ -284,7 +286,8 @@
                                                                                                                             <h6 class="card-title"
                                                                                                                                 style="color: #fd7e14;">
                                                                                                                                 ⚙️
-                                                                                                                                Act :
+                                                                                                                                Act
+                                                                                                                                :
                                                                                                                                 {{ $activite->libelle }}
                                                                                                                             </h6>
 

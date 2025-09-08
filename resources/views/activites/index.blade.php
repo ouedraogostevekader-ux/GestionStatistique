@@ -13,9 +13,11 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
-                        <a class="btn btn-primary" id="btnAjouter" href="{{ route('activites.create') }}">
-                            <i class="bi bi-plus"></i> Ajouter
-                        </a>
+                        @can('activite-create')
+                            <a class="btn btn-primary" id="btnAjouter" href="{{ route('activites.create') }}">
+                                <i class="bi bi-plus"></i> Ajouter
+                            </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -81,19 +83,23 @@
                                             @csrf
                                             @method('DELETE')
                                             <div class='btn-group'>
-                                                <a href="{{ route('activites.show', $activite->id) }}"
-                                                    class="btn btn-info btn-xs" title="Voir"><i
-                                                        class="bi bi-eye-fill"></i></a>
-
-                                                <a href="{{ route('activites.edit', $activite->id) }}"
-                                                    class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
-                                                        class="bi bi-pencil-fill"></i></a>
-
-                                                <button type="submit" class="btn btn-danger btn-xs"
-                                                    onclick="return confirm('Supprimer cette activité ?')"
-                                                    title="Supprimer">
-                                                    <i class="bi bi-trash-fill"></i>
-                                                </button>
+                                                @can('activite-list')
+                                                    <a href="{{ route('activites.show', $activite->id) }}"
+                                                        class="btn btn-info btn-xs" title="Voir"><i
+                                                            class="bi bi-eye-fill"></i></a>
+                                                @endcan
+                                                @can('activite-edit')
+                                                    <a href="{{ route('activites.edit', $activite->id) }}"
+                                                        class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
+                                                            class="bi bi-pencil-fill"></i></a>
+                                                @endcan
+                                                @can('activite-delete')
+                                                    <button type="submit" class="btn btn-danger btn-xs"
+                                                        onclick="return confirm('Supprimer cette activité ?')"
+                                                        title="Supprimer">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
+                                                @endcan
                                             </div>
                                         </form>
                                     </td>

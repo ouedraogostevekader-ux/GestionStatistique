@@ -7,7 +7,6 @@
                     <th>Nom</th>
                     <th>Telephone</th>
                     <th>Structure</th>
-                    {{-- <th>Commune</th>  --}}
                     <th>Action</th>
                 </tr>
             </thead>

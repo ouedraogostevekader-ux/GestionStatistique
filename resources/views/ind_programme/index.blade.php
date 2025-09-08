@@ -12,9 +12,11 @@
                     </ol>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-primary float-right" href="{{ route('indicateurs-programmes.create') }}">
-                        Ajouter
-                    </a>
+                    @can('indicateur_Programme-create')
+                        <a class="btn btn-primary float-right" href="{{ route('indicateurs-programmes.create') }}">
+                            Ajouter
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -72,28 +74,28 @@
 
                                     <td>
                                         <div class='btn-group'>
-                                            {{-- @can('indicateur-list') --}}
-                                            <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
-                                                class="btn btn-info btn-xs" title="Voir">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </a>
-                                            {{-- @endcan --}}
+                                            @can('indicateur_Programme-list')
+                                                <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
+                                                    class="btn btn-info btn-xs" title="Voir">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                </a>
+                                            @endcan
 
-                                            {{-- @can('indicateur-edit') --}}
-                                            <a href="{{ route('indicateurs-programmes.edit', $indicateur->id) }}"
-                                                class="btn btn-primary btn-xs" title="Modifier">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </a>
-                                            {{-- @endcan --}}
+                                            @can('indicateur_Programme-edit')
+                                                <a href="{{ route('indicateurs-programmes.edit', $indicateur->id) }}"
+                                                    class="btn btn-primary btn-xs" title="Modifier">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </a>
+                                            @endcan
 
-                                            {{-- @can('indicateur-delete') --}}
-                                            <button type="button" class="btn btn-outline-danger delete-btn"
-                                                title="Supprimer"
-                                                data-url="{{ route('indicateurs-programmes.destroy', $indicateur->id) }}"
-                                                data-message="L'indicateur <strong>{{ $indicateur->libelle }}</strong> sera supprimé. Continuer ?">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-                                            {{-- @endcan --}}
+                                            @can('indicateur_Programme-delete')
+                                                <button type="button" class="btn btn-outline-danger delete-btn"
+                                                    title="Supprimer"
+                                                    data-url="{{ route('indicateurs-programmes.destroy', $indicateur->id) }}"
+                                                    data-message="L'indicateur <strong>{{ $indicateur->libelle }}</strong> sera supprimé. Continuer ?">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

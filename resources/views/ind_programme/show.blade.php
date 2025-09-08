@@ -84,10 +84,12 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0">Suivis associés</h3>
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#addSuiviModal">
-                        <i class="fas fa-plus"></i> Evaluer de nouveau
-                    </button>
+                    @can('suivi-create')
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#addSuiviModal">
+                            <i class="fas fa-plus"></i> Evaluer de nouveau
+                        </button>
+                    @endcan
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -109,8 +111,10 @@
                                         <td>{{ $suivi->resultat_atteint ?? '-' }}</td>
                                         <td>{{ $suivi->observations ?? '-' }}</td>
                                         <td>
-                                            <a href="{{ route('suivis.show', $suivi->id) }}"
-                                                class="btn btn-info btn-sm">Voir</a>
+                                            @can('suivi-list')
+                                                <a href="{{ route('suivis.show', $suivi->id) }}"
+                                                    class="btn btn-info btn-sm">Voir</a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

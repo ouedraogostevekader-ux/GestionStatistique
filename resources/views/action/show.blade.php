@@ -10,7 +10,9 @@
                 <div class="col-sm-6">
                     <div class="float-right">
                         <a class="btn btn-secondary" href="{{ route('actions.index') }}">Retour</a>
-                        <a class="btn btn-primary" href="{{ route('actions.edit', $action->id) }}">Modifier</a>
+                        @can('action-edit')
+                            <a class="btn btn-primary" href="{{ route('actions.edit', $action->id) }}">Modifier</a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -47,10 +49,12 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0">Objectifs spécifiques associés</h3>
                 <!-- Bouton qui déclenche la modal -->
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#addObjectifModal">
-                    <i class="fas fa-plus"></i> Ajouter un objectif spécifique
-                </button>
+                @can('objectif_Strategique-create')
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#addObjectifModal">
+                        <i class="fas fa-plus"></i> Ajouter un objectif spécifique
+                    </button>
+                @endcan
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -68,8 +72,10 @@
                                     <td>{{ $objectifSpecifique->libelle }}</td>
                                     <td>{{ $objectifSpecifique->activites->count() }}</td>
                                     <td>
-                                        <a href="{{ route('objectifs-specifiques.show', $objectifSpecifique->id) }}"
-                                            class="btn btn-info btn-sm">Voir</a>
+                                        @can('objectif_Specifique-list')
+                                            <a href="{{ route('objectifs-specifiques.show', $objectifSpecifique->id) }}"
+                                                class="btn btn-info btn-sm">Voir</a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty

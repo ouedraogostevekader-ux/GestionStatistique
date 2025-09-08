@@ -21,11 +21,25 @@
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
-            <!-- Mot de passe -->
+            {{-- <!-- Mot de passe -->
             <div class="mt-4">
                 <x-input-label for="password" :value="__('Mot de passe')" />
                 <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
                     autocomplete="current-password" />
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            </div> --}}
+
+
+            <div class="mt-4">
+                <x-input-label for="password" :value="__('Mot de passe')" />
+                <div class="relative">
+                    <x-text-input id="password" name="password" type="password" class="block mt-1 w-full pr-10"
+                        required autocomplete="current-password" />
+                    <button type="button" onclick="togglePassword('password', this)"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+                </div>
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
@@ -53,4 +67,15 @@
             </div>
         </form>
     </div>
+
+    <script>
+        function togglePassword(id, btn) {
+            const input = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            const isPwd = input.type === 'password';
+            input.type = isPwd ? 'text' : 'password';
+            icon.classList.toggle('bi-eye-fill', !isPwd);
+            icon.classList.toggle('bi-eye-slash-fill', isPwd);
+        }
+    </script>
 </x-guest-layout>

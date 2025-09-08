@@ -8,9 +8,11 @@
                     <h3>Ajouter un indicateur</h3>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-secondary float-right" href="{{ route('indicateurs-programmes.index') }}">
-                        Retour
-                    </a>
+                    @can('indicateur_Programme-list')
+                        <a class="btn btn-secondary float-right" href="{{ route('indicateurs-programmes.index') }}">
+                            Retour
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
