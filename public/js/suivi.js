@@ -1,3 +1,5 @@
+
+
 // Animation au chargement
 document.addEventListener('DOMContentLoaded', function() {
     // Animation des cartes statistiques
@@ -192,3 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
         modalContent.innerHTML = "";
     });
 });
+
+
+
+

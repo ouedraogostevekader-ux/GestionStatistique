@@ -44,9 +44,9 @@
                             <strong>Etat :</strong> <span
                                 class="btn btn-{{ $programmeBudgetaire->isActive ? 'success' : 'secondary' }}">{{ $programmeBudgetaire->isActive ? 'Ouvert' : 'Vérouillé' }}</span>
                         </li>
-                        <li class="list-group-item">
+                        <li class="list-group-item mt-3">
                             <strong>Statut :</strong> <span
-                                class="btn btn-{{ $programmeBudgetaire->isActive ? 'success' : 'secondary' }}">{{ $programmeBudgetaire->isActive ? 'Ouvert' : 'Vérouillé' }}</span>
+                                class="btn btn-{{ $programmeBudgetaire->statut = 0 ? 'secondary' : 'success' }}">{{ $programmeBudgetaire->statut = 0 ? 'Soumis' : 'Validé' }}</span>
                         </li>
                         <div class="mt-4 text-end">
                             <a href="{{ route('programmebudgetaire.index') }}" class="btn btn-outline-secondary">
@@ -60,7 +60,7 @@
         <div class="card-body p-2">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title mb-0">Objectifs stratégiques associés</h3>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                <button type="button" class="btn btn-primary btn-sm mb-2" data-bs-toggle="modal"
                     data-bs-target="#addObjectifStrategiqueModal">
                     <i class="fas fa-plus"></i> Ajouter un objectif stratégiques
                 </button>

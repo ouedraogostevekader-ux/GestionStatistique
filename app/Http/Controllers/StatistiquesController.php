@@ -77,30 +77,46 @@ class StatistiquesController extends Controller
             });
         }
 
-        if ($trimestre && $annee) {
-            $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
-            $query->whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
-        } elseif ($annee) {
-            $query->whereYear('created_at', $annee);
+        // Correction: Utiliser l'année de l'activité au lieu de created_at
+        if ($annee) {
+            $query->where('annee', $annee);
+        }
+
+        // Pour le trimestre, filtrer les activités qui ont cette période
+        if ($trimestre) {
+            $periodeName = 'T' . $trimestre;
+            $query->whereHas('periodes', function ($q) use ($periodeName) {
+                $q->where('libelle', $periodeName);
+            });
         }
 
         $totalActivites = $query->count();
+
         $totalProgrammes = ProgrammeBudgetaire::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->where('id', $programmeBudgetaireId);
+        })->when($annee, function ($q) use ($annee) {
+            return $q->where('annee', $annee);
         })->count();
 
         $totalIndicateurs = IndicateurProgramme::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
+        })->when($annee, function ($q) use ($annee) {
+            return $q->where('annee', $annee);
         })->count();
 
         $totalStructures = Structure::count();
         $totalUtilisateurs = User::count();
+
         $totalSuivis = Suivi::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('indicateurProgramme.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
+        })->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
+            // Format de période attendu dans la base
+            $periode = $annee . '-T' . $trimestre;
+            return $q->where('periode', 'LIKE', '%' . $periode . '%');
         })->count();
 
         return [
@@ -123,33 +139,45 @@ class StatistiquesController extends Controller
             });
         }
 
-        if ($trimestre && $annee) {
-            $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
-            $query->whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
-        } elseif ($annee) {
-            $query->whereYear('created_at', $annee);
+        if ($annee) {
+            $query->where('annee', $annee);
+        }
+
+        if ($trimestre) {
+            $periodeName = 'T' . $trimestre;
+            $query->whereHas('periodes', function ($q) use ($periodeName) {
+                $q->where('libelle', $periodeName);
+            });
         }
 
         $budgetPrevu = $query->sum('cout_previsionnel');
 
+        // Correction pour le budget exécuté
         $budgetExecute = Suivi::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('indicateurProgramme.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
+        })->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
+            $periode = $annee . '-T' . $trimestre;
+            return $q->where('periode', 'LIKE', '%' . $periode . '%');
         })->sum('cout_effectif');
 
         $budgetRestant = $budgetPrevu - $budgetExecute;
         $tauxExecution = $budgetPrevu > 0 ? round(($budgetExecute / $budgetPrevu) * 100, 2) : 0;
 
-        // Budget par trimestre
+        // Budget par trimestre pour l'année donnée
         $budgetParTrimestre = [];
         for ($t = 1; $t <= 4; $t++) {
-            $dateRange = $this->getTrimestreDateRange($t, $annee);
+            $periodeName = 'T' . $t;
             $budget = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
                 return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                     $subQ->where('id', $programmeBudgetaireId);
                 });
-            })->whereBetween('created_at', [$dateRange['start'], $dateRange['end']])
+            })
+                ->where('annee', $annee)
+                ->whereHas('periodes', function ($q) use ($periodeName) {
+                    $q->where('libelle', $periodeName);
+                })
                 ->sum('cout_previsionnel');
 
             $budgetParTrimestre["T$t"] = $budget;
@@ -166,69 +194,69 @@ class StatistiquesController extends Controller
 
     private function getAdvancementStats($programmeBudgetaireId = null, $trimestre = null, $annee = null)
     {
-        $currentYear = Carbon::now()->year;
-        $annee = $annee ?? $currentYear;
-
-        // Activités en cours (avec période pour l'année courante)
-        $activitesEnCours = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
+        $baseQuery = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })
-            ->whereHas('periodes', function ($q) use ($currentYear, $trimestre) {
-                $q->where('annee', $currentYear);
-                if ($trimestre) {
-                    //  $q->whereHas('periode', function ($subQ) use ($trimestre) {
-                    $q->where('libelle', 'T' . $trimestre);
-                    // });
+        })->when($annee, function ($q) use ($annee) {
+            return $q->where('annee', $annee);
+        })->when($trimestre, function ($q) use ($trimestre) {
+            $periodeName = 'T' . $trimestre;
+            return $q->whereHas('periodes', function ($subQ) use ($periodeName) {
+                $subQ->where('libelle', $periodeName);
+            });
+        });
+
+        // Activités avec des suivis (en cours ou terminées)
+        $activitesAvecSuivis = (clone $baseQuery)
+            ->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) use ($trimestre, $annee) {
+                if ($trimestre && $annee) {
+                    $periode = $annee . '-T' . $trimestre;
+                    $q->where('periode', 'LIKE', '%' . $periode . '%');
+                }
+            })
+            ->distinct()
+            ->count();
+
+        // Activités terminées (résultat >= 100%)
+        $activitesTerminees = (clone $baseQuery)
+            ->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) use ($trimestre, $annee) {
+                $q->whereNotNull('resultat_atteint')
+                    ->where('resultat_atteint', '>=', 100);
+                if ($trimestre && $annee) {
+                    $periode = $annee . '-T' . $trimestre;
+                    $q->where('periode', 'LIKE', '%' . $periode . '%');
+                }
+            })
+            ->distinct()
+            ->count();
+
+        // Activités en cours (avec suivis mais pas terminées)
+        $activitesEnCours = $activitesAvecSuivis - $activitesTerminees;
+
+        // Activités non commencées (sans suivis)
+        $activitesNonCommencees = (clone $baseQuery)
+            ->whereDoesntHave('objectifSpecifique.indicateursProgrammes.suivis', function ($q) use ($trimestre, $annee) {
+                if ($trimestre && $annee) {
+                    $periode = $annee . '-T' . $trimestre;
+                    $q->where('periode', 'LIKE', '%' . $periode . '%');
                 }
             })
             ->count();
 
-        // Activités terminées (avec suivis complets)
-        $activitesTerminees = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
-            return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
-                $subQ->where('id', $programmeBudgetaireId);
-            });
-        })
-            ->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) {
-                $q->whereNotNull('resultat_atteint')->where('resultat_atteint', '>=', 100);
-            })
-            ->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
-                return $q->whereHas('periodes', function ($subQ) use ($trimestre, $annee) {
-                    $subQ->where('annee', $annee) // Champ 'annee' de la table pivot
-                        ->where('libelle', 'T' . $trimestre); // Champ 'libelle' de la table periodes
-                });
-            })
-            ->count();
-
-        // Activités non commencées (sans suivis)
-        $activitesNonCommencees = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
-            return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
-                $subQ->where('id', $programmeBudgetaireId);
-            });
-        })
-            ->whereDoesntHave('objectifSpecifique.indicateursProgrammes.suivis')
-            ->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
-                return $q->whereHas('periodes', function ($subQ) use ($trimestre, $annee) {
-                    $subQ->where('annee', $annee)->where('libelle', 'T' . $trimestre);
-
-                });
-            })
-            ->count();
-
-        // Activités en retard
-        $activitesEnRetard = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
-            return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
-                $subQ->where('id', $programmeBudgetaireId);
-            });
-        })
-            ->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) {
+        // Activités en retard (résultat < 50%)
+        $activitesEnRetard = (clone $baseQuery)
+            ->whereHas('objectifSpecifique.indicateursProgrammes.suivis', function ($q) use ($trimestre, $annee) {
                 $q->where('resultat_atteint', '<', 50);
+                if ($trimestre && $annee) {
+                    $periode = $annee . '-T' . $trimestre;
+                    $q->where('periode', 'LIKE', '%' . $periode . '%');
+                }
             })
+            ->distinct()
             ->count();
 
-        $totalActivites = $activitesEnCours + $activitesTerminees + $activitesNonCommencees;
+        $totalActivites = $baseQuery->count();
 
         return [
             'activites_en_cours' => $activitesEnCours,
@@ -281,12 +309,21 @@ class StatistiquesController extends Controller
             return $q->whereHas('objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->whereHas('suivis')->count();
+        })->when($annee, function ($q) use ($annee) {
+            return $q->where('annee', $annee);
+        })->whereHas('suivis', function ($q) use ($trimestre, $annee) {
+            if ($trimestre && $annee) {
+                $periode = $annee . '-T' . $trimestre;
+                $q->where('periode', 'LIKE', '%' . $periode . '%');
+            }
+        })->count();
 
         $totalIndicateurs = IndicateurProgramme::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
+        })->when($annee, function ($q) use ($annee) {
+            return $q->where('annee', $annee);
         })->count();
 
         $tauxSuiviIndicateurs = $totalIndicateurs > 0 ? round(($indicateursAvecSuivi / $totalIndicateurs) * 100, 1) : 0;
@@ -300,9 +337,7 @@ class StatistiquesController extends Controller
                     $subQ->where('id', $programmeBudgetaireId);
                 });
             })
-                ->whereHas('indicateurProgramme.activite.periodes', function ($q) use ($periode) {
-                    $q->where('libelle', $periode);
-                })
+                ->where('periode', 'LIKE', '%' . $periode . '%')
                 ->whereNotNull('resultat_atteint')
                 ->avg('resultat_atteint');
 
@@ -326,9 +361,13 @@ class StatistiquesController extends Controller
             return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
-            $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
-            return $q->whereBetween('created_at', [$dateRange['start'], $dateRange['end']]);
+        })->when($annee, function ($q) use ($annee) {
+            return $q->where('annee', $annee);
+        })->when($trimestre, function ($q) use ($trimestre) {
+            $periodeName = 'T' . $trimestre;
+            return $q->whereHas('periodes', function ($subQ) use ($periodeName) {
+                $subQ->where('libelle', $periodeName);
+            });
         })->orderBy('cout_previsionnel', 'desc')
             ->with(['objectifSpecifique.action.objectifStrategique.programmeBudgetaire'])
             ->take(10)->get();
@@ -336,17 +375,25 @@ class StatistiquesController extends Controller
 
     private function getChartData($programmeBudgetaireId = null, $trimestre = null, $annee = null)
     {
-        // Evolution mensuelle des activités
+        // Evolution mensuelle des activités (basée sur l'année de l'activité)
         $evolutionActivites = [];
         for ($mois = 1; $mois <= 12; $mois++) {
+            // Approximation: répartir les activités du trimestre sur les mois
+            $trimestreCorrespondant = ceil($mois / 3);
+            $periodeName = 'T' . $trimestreCorrespondant;
+
             $count = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
                 return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                     $subQ->where('id', $programmeBudgetaireId);
                 });
-            })->whereYear('created_at', $annee)
-                ->whereMonth('created_at', $mois)->count();
+            })
+                ->where('annee', $annee)
+                ->whereHas('periodes', function ($q) use ($periodeName) {
+                    $q->where('libelle', $periodeName);
+                })
+                ->count();
 
-            $evolutionActivites[] = $count;
+            $evolutionActivites[] = round($count / 3, 1); // Répartition approximative sur les 3 mois
         }
 
         // Répartition par statut
@@ -357,24 +404,36 @@ class StatistiquesController extends Controller
             $advancementStats['activites_terminees']
         ];
 
-        // Budget par programme
-        $budgetProgrammes = ProgrammeBudgetaire::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
+        // Budget par programme - Méthode alternative plus simple
+        $budgetProgrammesQuery = ProgrammeBudgetaire::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->where('id', $programmeBudgetaireId);
         })
-            ->with([
-                'activites' => function ($q) use ($trimestre, $annee) {
-                    if ($trimestre && $annee) {
-                        $dateRange = $this->getTrimestreDateRange($trimestre, $annee);
-                        $q->whereBetween('activites.created_at', [$dateRange['start'], $dateRange['end']]);
-                    }
-                }
-            ])
-            ->get()
-            ->map(function ($programme) {
-                $programme->cout_previsionnel_sum = $programme->activites->sum('cout_previsionnel');
-                return $programme;
+            ->when($annee, function ($q) use ($annee) {
+                return $q->where('annee', $annee);
             })
-            ->take(10);
+            ->take(10)
+            ->get();
+
+        // Calculer le budget total pour chaque programme
+        $budgetProgrammes = $budgetProgrammesQuery->map(function ($programme) use ($trimestre, $annee) {
+            $budgetQuery = Activite::whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($q) use ($programme) {
+                $q->where('id', $programme->id);
+            });
+
+            if ($annee) {
+                $budgetQuery->where('annee', $annee);
+            }
+
+            if ($trimestre) {
+                $periodeName = 'T' . $trimestre;
+                $budgetQuery->whereHas('periodes', function ($q) use ($periodeName) {
+                    $q->where('libelle', $periodeName);
+                });
+            }
+
+            $programme->budget_total = $budgetQuery->sum('cout_previsionnel');
+            return $programme;
+        });
 
         return [
             'evolution_activites' => $evolutionActivites,
@@ -382,7 +441,7 @@ class StatistiquesController extends Controller
             'labels_statut' => ['Non commencées', 'En cours', 'Terminées'],
             'budget_programmes' => [
                 'labels' => $budgetProgrammes->pluck('libelle')->toArray(),
-                'data' => $budgetProgrammes->pluck('objectifs_strategiques_sum_cout_previsionnel')->toArray()
+                'data' => $budgetProgrammes->pluck('budget_total')->toArray()
             ],
             'mois' => ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
         ];
@@ -392,35 +451,52 @@ class StatistiquesController extends Controller
     {
         $alerts = [];
 
-        // Activités sans suivi
+        // Activités sans suivi pour la période donnée
         $activitesSansSuivi = Activite::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->whereDoesntHave('objectifSpecifique.indicateursProgrammes.suivis')->count();
+        })
+            ->when($annee, function ($q) use ($annee) {
+                return $q->where('annee', $annee);
+            })
+            ->when($trimestre, function ($q) use ($trimestre) {
+                $periodeName = 'T' . $trimestre;
+                return $q->whereHas('periodes', function ($subQ) use ($periodeName) {
+                    $subQ->where('libelle', $periodeName);
+                });
+            })
+            ->whereDoesntHave('objectifSpecifique.indicateursProgrammes.suivis', function ($q) use ($trimestre, $annee) {
+                if ($trimestre && $annee) {
+                    $periode = $annee . '-T' . $trimestre;
+                    $q->where('periode', 'LIKE', '%' . $periode . '%');
+                }
+            })
+            ->count();
 
         if ($activitesSansSuivi > 0) {
             $alerts[] = [
                 'type' => 'warning',
                 'icon' => 'bi bi-exclamation-triangle',
                 'title' => 'Attention!',
-                'message' => "$activitesSansSuivi activité(s) n'ont aucun suivi."
+                'message' => "$activitesSansSuivi activité(s) n'ont aucun suivi pour cette période."
             ];
         }
 
-        // Budget dépassé
+        // Budget dépassé - requête simplifiée
         $budgetDepasse = Suivi::when($programmeBudgetaireId, function ($q) use ($programmeBudgetaireId) {
             return $q->whereHas('indicateurProgramme.objectifStrategique.programmeBudgetaire', function ($subQ) use ($programmeBudgetaireId) {
                 $subQ->where('id', $programmeBudgetaireId);
             });
-        })->whereRaw('cout_effectif > (
-    SELECT a.cout_previsionnel 
-    FROM activites a
-    JOIN objectifs_specifiques os ON os.id = a.objectif_specifique_id
-    JOIN indicateurs_programmes ip ON ip.objectif_specifique_id = os.id
-    WHERE ip.id = suivis.indicateur_programme_id
-    LIMIT 1
-)')->count();
+        })
+            ->when($trimestre && $annee, function ($q) use ($trimestre, $annee) {
+                $periode = $annee . '-T' . $trimestre;
+                return $q->where('periode', 'LIKE', '%' . $periode . '%');
+            })
+            ->whereHas('indicateurProgramme.activite', function ($q) {
+                $q->whereRaw('suivis.cout_effectif > activites.cout_previsionnel');
+            })
+            ->count();
 
         if ($budgetDepasse > 0) {
             $alerts[] = [

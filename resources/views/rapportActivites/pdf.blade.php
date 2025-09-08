@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    @php
+        $periodeModel = App\Models\Periode::find($periode);
+    @endphp
     <meta charset="utf-8">
-    <title>Rapport d'activités de {{$periode}} {{$annee}}</title>
+    <title>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible" }} {{$annee}}</title>
     <style>
         /* body {
             font-family: DejaVu Sans, sans-serif;
@@ -51,7 +54,7 @@
     </style>
 </head>
 <body>
-    <h3>Rapport d'activités de {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
+    <h3>Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible" }} {{$periode}} {{$annee}} {{$date->format('d-m-Y')}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
     <table>
         <thead>
             <tr>
@@ -79,7 +82,7 @@
                 @if($objectifStrategique->indicateurs->count() > 0)
                     <tr>
                         <td rowspan="{{$objectifStrategique->indicateurs->count()}}" class="objectif-strategique">
-                            {{$objectifStrategique->libelle}}
+                            Objectif stratégique : {{$objectifStrategique->libelle}}
                         </td>
                         @php
                             // Obtenir le premier indicateur de l'objectif stratégique
@@ -90,7 +93,7 @@
                         <td class="center">{{$firstIndicateur->unite_mesure ?? 'N/A'}}</td>
                         <td class="center">{{$firstIndicateur->valeur_cible ?? 'N/A'}}</td>
                         <td class="center">{{$lastSuivi->resultat_atteint ?? 'N/E'}}</td>
-                        <td class="center">{{ number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($firstIndicateur->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                        <td class="center">@if(isset($lastSuivi) && is_numeric($firstIndicateur->valeur_cible)){{ number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($firstIndicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                         <td class="center">{{$lastSuivi->cout_effectif ?? '-'}}</td>
                         <td class="center">{{$lastSuivi->observations ?? '-'}}</td>
                     </tr>
@@ -104,7 +107,7 @@
                             <td class="center">{{$indicateur->unite_mesure}}</td>
                             <td class="center">{{$indicateur->valeur_cible}}</td>
                             <td class="center">{{$lastSuiv->resultat_atteint ?? 'N/E'}}</td>
-                            <td class="center">{{number_format( ($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                            <td class="center">@if(isset($lastSuiv) && is_numeric($indicateur->valeur_cible)){{number_format( ($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                             <td class="center">{{$lastSuiv->cout_effectif ?? '-'}}</td>
                             <td class="center">{{$lastSuiv->observations ?? '-'}}</td>
                         </tr>
@@ -114,15 +117,15 @@
                     @foreach($objectifStrategique->actions as $action)
                         <tr>
                             <td colspan="8" class="action-title">
-                                {{$action->libelle}}
+                                Action : {{$action->libelle}}
                             </td>
                         </tr>
-                        <!-- Objectif specifique -->
+                        <!-- Objectif spécifique -->
                         @foreach($action->objectifsSpecifiques as $objectifsSpecifique)
                         @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                             <tr>
                                 <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
-                                    {{$objectifsSpecifique->libelle}}
+                                    Objectif spécifique : {{$objectifsSpecifique->libelle}}
                                 </td>
                                 @php
                                     // Obtenir le premier indicateur de l'objectif opérationnel
@@ -133,7 +136,7 @@
                                 <td class="center">{{$firstIndi->unite_mesure ?? 'N/A' }}</td>
                                 <td class="center">{{$firstIndi->valeur_cible ?? 'N/A'}}</td>
                                 <td class="center">{{$lastSuiv->resultat_atteint ?? 'N/E'}}</td>
-                                <td class="center">{{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($firstIndi->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                                <td class="center">@if(isset($lastSuiv) && is_numeric($firstIndi->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($firstIndi->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                                 <td class="center">{{$lastSuiv->cout_effectif ?? '-'}}</td>
                                 <td class="center">{{$lastSuiv->observations ?? '-'}}</td>
                             </tr>
@@ -147,7 +150,7 @@
                                     <td class="center">{{$indicateur->unite_mesure}}</td>
                                     <td class="center">{{$indicateur->valeur_cible}}</td>
                                     <td class="center">{{$lastSuiv->resultat_atteint ?? 'N/E'}}</td>
-                                    <td class="center">{{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                                    <td class="center">@if(isset($lastSuiv) && is_numeric($indicateur->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                                     <td class="center">{{$lastSuiv->cout_effectif ?? '-'}}</td>
                                     <td class="center">{{$lastSuiv->observations ?? '-'}}</td>
                                 </tr>
@@ -158,19 +161,25 @@
                             @if($activite->indicateursProgrammes->count() > 0)
                                 <tr>
                                     <td >
-                                        {{$activite->libelle}}
+                                        Activité : {{$activite->libelle}}
                                     </td>
                                     @php
                                         // Obtenir le premier indicateur de l'activité
                                         $firstI = $activite->indicateursProgrammes->first();
                                         $lastS = $firstI ? $firstI->suivis()->where('periode', $periode)->first() : null;
+                                        if($periodeModel->libelle == "T4"){
+                                            // recuperer le dernier suivis ordonné par le libellé de la relation période du suivi
+                                            $lastS = $firstI ? $firstI->suivis()
+                                            ->join('periodes', 'suivis.periode', '=', 'periodes.id')
+                                            ->orderBy('periodes.libelle', 'desc')->first() : null;
+                                        }
                                     @endphp
                                     <td class="center">{{$firstI->libelle ?? 'N/A'}}</td>
                                     <td class="center">{{$firstI->unite_mesure ?? 'N/A'}}</td>
                                     <td class="center">{{$firstI->valeur_cible ?? 'N/A'}}</td>
                                     <td class="center">{{$lastS->resultat_atteint ?? 'N/E'}}</td>
-                                    <td class="center">{{ number_format(($lastS->resultat_atteint ?? 0) *100 / ($firstI->valeur_cible ?? 1) , 2, ',', ' ')}} %</td>
-                                    <td class="center">{{isset($lastS) & isset($lastS->cout_effectif) ? number_format($lastS->cout_effectif, 2, ',', ' ') : 'N/E'}}</td>
+                                    <td class="center">@if(isset($lastS) && is_numeric($firstI->valeur_cible)){{ number_format(($lastS->resultat_atteint ?? 0) *100 / ($firstI->valeur_cible ?? 1) , 2, ',', ' ')}} % @else N/A @endif</td>
+                                    <td class="center">@if(isset($lastS) && is_numeric($lastS->resultat_atteint)){{isset($lastS->cout_effectif) ? number_format($lastS->cout_effectif, 2, ',', ' ') : 'N/E'}} @else N/E @endif</td>
                                     <td class="center">{{$lastS->observations ?? '-'}}</td>                                    
                                 </tr>
                             @endif 

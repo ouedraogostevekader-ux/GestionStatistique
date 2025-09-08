@@ -57,7 +57,30 @@ class ObjectifStrategiqueController extends Controller implements HasMiddleware
     public function create()
     {
         // Selectionner les programmes budgétaires dans la table programme_budgetaires pour le formulaire
-        $programmeBudgetaires = ProgrammeBudgetaire::all();
+        $user = Auth::user();
+
+        if (Auth::user()->isAdmin()) {
+            // Charger les programmes avec structures + responsable actif
+            $programmeBudgetaires = ProgrammeBudgetaire::with([
+                'structures',
+                'responsables' => function ($q) {
+                    $q->wherePivotNull('date_fin'); // uniquement responsables actifs
+                }
+
+            ])->get();
+        } else {
+            $programmeBudgetaires = ProgrammeBudgetaire::whereHas('structures', function ($q) use ($user) {
+                $q->where('structures.id', $user->structure_id);
+            })
+                ->with([
+                    'structures',
+                    'responsables' => function ($q) {
+                        $q->wherePivotNull('date_fin'); // uniquement responsables actifs
+                    }
+                ])
+                ->get();
+        }
+        // $programmeBudgetaires = ProgrammeBudgetaire::all();
         return view('objectifStrategiques.create', compact('programmeBudgetaires'));
     }
 
@@ -74,7 +97,18 @@ class ObjectifStrategiqueController extends Controller implements HasMiddleware
     public function edit($id)
     {
         $objectifStrategique = ObjectifsStrategique::findOrFail($id);
-        $programmeBudgetaires = ProgrammeBudgetaire::all();
+        // Selectionner les programmes budgétaires dans la table programme_budgetaires pour le formulaire
+        $user = Auth::user();
+
+        if (Auth::user()->isAdmin()) {
+            // Charger les programmes avec structures + responsable actif
+            $programmeBudgetaires = ProgrammeBudgetaire::all();
+        } else {
+            $programmeBudgetaires = ProgrammeBudgetaire::whereHas('structures', function ($q) use ($user) {
+                $q->where('structures.id', $user->structure_id);
+            })->get();
+        }
+        // $programmeBudgetaires = ProgrammeBudgetaire::all();
         return view('objectifStrategiques.edit', compact('objectifStrategique', 'programmeBudgetaires'));
     }
 

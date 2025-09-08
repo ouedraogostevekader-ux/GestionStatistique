@@ -14,7 +14,7 @@ class StoreActiviteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'libelle' => 'required|string|max:255',
+            'libelle' => 'required|string|max:455',
             'periodes' => 'required|array',
             'periodes.*' => 'exists:periodes,id',
             'annee' => 'required|integer|min:2000|max:2100',

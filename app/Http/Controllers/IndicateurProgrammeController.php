@@ -12,7 +12,9 @@ use Illuminate\Routing\Controllers\Middleware;
 
 class IndicateurProgrammeController extends Controller implements HasMiddleware
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public static function middleware(): array
     {
@@ -28,41 +30,39 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-public function index(Request $request)
-{
-    $filterType  = $request->input('filter_type');   // objectif_strategique | objectif_specifique | activite
-    $filterValue = $request->input('filter_value');  // id de la valeur choisie
+    public function index(Request $request)
+    {
+        $query = IndicateurProgramme::with(['objectifSpecifique', 'objectifStrategique', 'activite']);
 
-    // Base de la requête
-    $query = IndicateurProgramme::with(['objectifStrategique', 'objectifSpecifique', 'activite']);
-
-    // Application du filtre dynamique
-    if ($filterType && $filterValue) {
-        if ($filterType === 'objectif_strategique') {
-            $query->where('objectif_strategique_id', $filterValue);
-        } elseif ($filterType === 'objectif_specifique') {
-            $query->where('objectif_specifique_id', $filterValue);
-        } elseif ($filterType === 'activite') {
-            $query->where('activites_id', $filterValue);
+        // Filtrer par objectif spécifique
+        if ($request->filled('objectif_specifique_id')) {
+            $query->where('objectif_specifique_id', $request->objectif_specifique_id);
         }
+
+        // Filtrer par objectif stratégique
+        if ($request->filled('objectif_strategique_id')) {
+            $query->where('objectif_strategique_id', $request->objectif_strategique_id);
+        }
+
+        // Filtrer par activité
+        if ($request->filled('activites_id')) {
+            $query->where('activites_id', $request->activites_id);
+        }
+
+        $indicateurs = $query->get();
+
+        // Pour alimenter les selects
+        $objectifsSpecifiques = ObjectifSpecifique::all();
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        $activites = Activite::all();
+
+        return view('ind_programme.index', compact(
+            'indicateurs',
+            'objectifsSpecifiques',
+            'objectifsStrategiques',
+            'activites'
+        ));
     }
-
-    $indicateurs = $query->get();
-
-    // Préparation des données pour le filtre
-    $objectifsStrategiques = ObjectifsStrategique::all();
-    $objectifsSpecifiques  = ObjectifSpecifique::all();
-    $activites             = Activite::all();
-
-    return view('ind_programme.index', compact(
-        'indicateurs',
-        'filterType',
-        'filterValue',
-        'objectifsStrategiques',
-        'objectifsSpecifiques',
-        'activites'
-    ));
-}
 
 
 
@@ -97,7 +97,7 @@ public function index(Request $request)
             return redirect()->back()
                 ->with('success', 'L\'Objet est créé avec succès.');
         }
-        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur created successfully.');
+        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur créée avec succès.');
     }
 
     /**
@@ -132,7 +132,7 @@ public function index(Request $request)
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, IndicateurProgramme $indicateurProgramme)
+    public function update(Request $request, $indicateurProgramme_id)
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
@@ -143,10 +143,11 @@ public function index(Request $request)
             'objectif_strategique_id' => 'nullable|exists:objectifs_strategiques,id',
             'activites_id' => 'nullable|exists:activites,id',
         ]);
-
+        $indicateurProgramme = IndicateurProgramme::findOrFail($indicateurProgramme_id);
+        //        dd($validatedData);
         $indicateurProgramme->update($validatedData);
 
-        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur updated successfully.');
+        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur mise à jour avec succès.');
     }
 
     /**
@@ -157,6 +158,6 @@ public function index(Request $request)
         $indicateur = IndicateurProgramme::findOrFail($id);
         $indicateur->delete();
 
-        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur deleted successfully.');
+        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur supprimé avec succès.');
     }
 }

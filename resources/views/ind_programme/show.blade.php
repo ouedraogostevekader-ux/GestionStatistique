@@ -9,7 +9,9 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
-                        <a class="btn btn-secondary" href="{{ route('indicateurs-programmes.index') }}">Retour</a>
+                        <a class="btn btn-secondary" href="javascript:history.back()">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
                         <a class="btn btn-primary"
                             href="{{ route('indicateurs-programmes.edit', $indicateur->id) }}">Modifier</a>
                     </div>
@@ -19,10 +21,6 @@
     </section>
 
     <div class="content px-3">
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Informations générales</h3>

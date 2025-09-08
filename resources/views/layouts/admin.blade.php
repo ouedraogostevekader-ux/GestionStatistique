@@ -98,7 +98,21 @@
             </div>
             <!--end::App Content Header-->
             <!--begin::App Content-->
+            <div class="col-sm-10 offset-sm-1"> {{-- Décalage à gauche avec offset --}}
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                @endif
 
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                @endif
+            </div>
             @yield('content')
             @yield('styles')
 
@@ -158,11 +172,8 @@
     <script src="{{ asset('dist/js/delete-modal.js') }}"></script>
     <script src="{{ asset('dist/js/logout.js') }}"></script>
 
-
-    
     @stack('page_scripts')
     <!--end::Script-->
-    
 </body>
 <!--end::Body-->
 

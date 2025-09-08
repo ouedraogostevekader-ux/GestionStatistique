@@ -11,8 +11,8 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">
-                        <a class="btn btn-info float-right" href="{{ route('users.index') }}">
-                            Retour
+                        <a class="btn btn-secondary" href="javascript:history.back()">
+                            <i class="bi bi-arrow-left"></i> Retour
                         </a>
                     </div>
 
@@ -20,19 +20,6 @@
             </div>
         </div>
     </section>
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
     <!-- Message erreur -->
 @section('scripts')
     <script>

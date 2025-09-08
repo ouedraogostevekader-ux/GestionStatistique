@@ -9,7 +9,9 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
-                        <a class="btn btn-secondary" href="{{ route('actions.index') }}">Retour</a>
+                        <a class="btn btn-secondary" href="javascript:history.back()">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
                         <a class="btn btn-primary" href="{{ route('actions.edit', $action->id) }}">Modifier</a>
                     </div>
                 </div>
@@ -18,10 +20,6 @@
     </section>
 
     <div class="content px-3">
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Informations générales</h3>
@@ -34,7 +32,8 @@
                             <dd class="col-sm-8">{{ $action->libelle }}</dd>
 
                             <dt class="col-sm-4">Objectif stratégique :</dt>
-                            <dd class="col-sm-8">{{ $action->objectifStrategique->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $action->objectifStrategique ? $action->objectifStrategique->libelle : '-' }}</dd>
 
                             <dt class="col-sm-4">Créé le :</dt>
                             <dd class="col-sm-8">{{ $action->created_at->format('d/m/Y à H:i') }}</dd>

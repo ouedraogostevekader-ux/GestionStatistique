@@ -7,7 +7,7 @@
 .card {
     border: none;
     border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.95);
@@ -15,25 +15,33 @@
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .table-container {
     border-radius: 15px;
     overflow: hidden;
     background: white;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .table thead th {
-    background: #0d6efd;
+    /* background: #5d6167;
     color: white;
     font-weight: 600;
     border: none;
     padding: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-size: 0.85rem;
+    font-size: 0.85rem; */
+    background: linear-gradient(90deg, var(--burkina-green), var(--burkina-dark));
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
 }
 
 .table tbody tr {
@@ -48,7 +56,7 @@
 .table td {
     padding: 1rem;
     vertical-align: middle;
-    border-color: rgba(0,0,0,0.05);
+    border-color: rgba(0, 0, 0, 0.05);
 }
 
 .sub-table {
@@ -64,7 +72,7 @@
 }
 
 .sub-table .table thead th {
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
     color: #2d3436;
     font-size: 0.75rem;
     padding: 0.75rem;
@@ -73,7 +81,7 @@
 .sub-table .table td {
     padding: 0.6rem 0.75rem;
     font-size: 0.85rem;
-    border-color: rgba(0,0,0,0.05);
+    border-color: rgba(0, 0, 0, 0.05);
 }
 
 .badge-custom {
@@ -116,8 +124,29 @@
     margin-top: 0.5rem;
 }
 
-.voirvisible{
+.voirvisible {
     visibility: visible;
+}
+
+.dt-control {
+    cursor: pointer;
+    text-align: center;
+}
+.dt-control:before {
+    content: '►';
+    color: #6c757d;
+}
+tr.shown .dt-control:before {
+    content: '▼';
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+}
+.loading-spinner i {
+    font-size: 24px;
+    margin-right: 10px;
 }
 
 
@@ -125,7 +154,7 @@
     .table-responsive {
         border-radius: 10px;
     }
-    
+
     .stats-number {
         font-size: 2rem;
     }

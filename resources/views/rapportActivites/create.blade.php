@@ -11,7 +11,7 @@
         <div class="mb-3">
             <label class="form-label">Programme d'activité *</label>
             <select class="form-select" name="programme_activite_id" required disabled>
-                <option value="{{$programmeActivite->id}}">{{$programmeActivite->libelle}}</option>
+                <option value="{{$programmeActivite->id ?? null}}">{{$programmeActivite->libelle ?? "Aucun programme d'activité pour l\'année ".now()->year}}</option>
             </select>
         </div>
 

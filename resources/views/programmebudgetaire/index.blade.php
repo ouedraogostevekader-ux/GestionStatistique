@@ -24,9 +24,9 @@
                 </div>
             </div>
             <div class="col-md-12">
-                <div class="card shadow-sm border-0 px-3">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                        <h5 class="form-label fw-bold" >Liste des Programmes Budgétaires</h5>
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Liste des Programmes Budgétaires</h5>
                         <a href="{{ route('programmebudgetaire.create') }}" id="nouveauPB" class="btn btn-success btn-sm">
                             + Nouveau
                         </a>
@@ -68,16 +68,8 @@
                         </div>
                     </form>
 
-                    <div class="card-body px-3">
-                        @if (session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
-                        @endif
-
+                    <div class="card-body">
                         <div class="card-body">
-                            @if (session('success'))
-                                <div class="alert alert-success">{{ session('success') }}</div>
-                            @endif
-
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle" id="example2">
                                     <thead class="table-light">
@@ -119,12 +111,8 @@
                                                         <span class="badge bg-secondary">Verrouillé</span>
                                                     @endif
                                                 </td>
-
-
                                                 <td class="text-end">
-
                                                     <div class="btn-group">
-
                                                         <!-- Voir toujours accessible -->
                                                         @can('programme_Budgetaire-list')
                                                             <a href="{{ route('programmebudgetaire.show', $programme->id) }}"
@@ -165,8 +153,6 @@
                                                             <i
                                                                 class="fas {{ $programme->isActive ? 'bi-unlock' : 'bi-lock' }}"></i>
                                                         </button>
-
-
                                                         <form id="toggle-form-{{ $programme->id }}"
                                                             action="{{ route('programmebudgetaire.toggleEditable', $programme->id) }}"
                                                             method="POST" class="d-none">
@@ -174,20 +160,12 @@
                                                             @method('PATCH')
                                                         </form>
                                                     </div>
-
-
                                                 </td>
-
-
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
-
-                            {{-- <div class="mt-3">
-                                {{ $programmes->links() }}
-                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -195,21 +173,21 @@
         </div>
     </div>
     <div class="modal fade" id="lockModal" tabindex="-1" aria-labelledby="lockModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-      </div>
-      <div class="modal-body" id="lockModalMessage">
-        <!-- Message dynamique -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
-      </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lockModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body" id="lockModalMessage">
+                    <!-- Message dynamique -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-warning" id="confirmLockBtn">Confirmer</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-<script src="{{ asset('dist/js/lock-programme.js') }}"></script>
+    <script src="{{ asset('dist/js/lock-programme.js') }}"></script>
 @endsection

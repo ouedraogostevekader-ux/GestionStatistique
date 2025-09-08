@@ -27,15 +27,26 @@ body {
     min-height: 100vh;
 }
 
+main.app-main {
+    margin: 2%;
+}
+
+.navbar-expand {
+    margin-left: 2%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
 .sidebar-brand {
     background: linear-gradient(180deg, var(--burkina-green) 0%, var(--burkina-dark) 100%);
     /* background: #006233; */
+    width: 280px;
     box-shadow: var(--shadow-lg);
 }
 
 .sidebar-wrapper {
     /* background: #019e48; */
-    width: auto;
+    width: 280px;
     background: linear-gradient(180deg, var(--burkina-green) 100%, var(--burkina-dark) 10%);
     color: white;
     box-shadow: var(--shadow-lg);
@@ -84,6 +95,7 @@ li.nav-item.dropdown.user-menu {
     display: flex;
     align-items: center;
     gap: 1rem;
+    z-index: 1050;
     background: rgba(255, 255, 255, 0.1);
     padding: 0.5rem 1rem;
     border-radius: 25px;
@@ -130,7 +142,7 @@ nav.app-header.navbar.navbar-expand.bg-body {
     padding: 1rem 2rem;
     box-shadow: var(--shadow-lg);
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .custom-navbar::before {
@@ -350,7 +362,7 @@ ul.pagination a {
     color: white;
     border: none;
     font-weight: 600;
-    padding: 1rem;
+    padding: 0.6rem;
     text-transform: uppercase;
     font-size: 0.9rem;
     letter-spacing: 0.5px;
@@ -366,4 +378,8 @@ ul.pagination a {
     background: var(--burkina-light-green);
     transform: scale(1.01);
     transition: var(--transition);
+}
+
+#maxHeightStatistique {
+    max-height: 400px;
 }
