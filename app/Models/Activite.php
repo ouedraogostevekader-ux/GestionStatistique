@@ -42,14 +42,14 @@ class Activite extends Model
 
         // Lors de la mise à jour
         static::updating(function ($model) {
-            if ($model->created_by !== Auth::id()) {
+            /* if ($model->created_by !== Auth::id()) {
                 // Redirection avec message
                 Session::flash('error', "Vous n'êtes pas autorisé à modifier cette activité.");
                 throw new \Illuminate\Validation\ValidationException(
                     validator: \Illuminate\Support\Facades\Validator::make([], []),
                     response: redirect()->back()
                 );
-            }
+            } */
             $model->updated_by = Auth::id();
         });
 
