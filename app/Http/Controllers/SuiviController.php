@@ -42,19 +42,20 @@ class SuiviController extends Controller implements HasMiddleware
         $activites = collect();
         $objectifSpecifiques = collect();
         $objectifStrategiques = collect();
+        $annee = date('Y');
         // si l'utilisateur n'est pas admin, on filtre les indicateurs par la structure de l'utilisateur
         if (!Auth::user()->hasRole('Super-Admin')) {
-            $objectifSpecifiques = ObjectifSpecifique::with('action.objectifStrategique')->whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+            $objectifSpecifiques = ObjectifSpecifique::with('action.objectifStrategique')->where('annee', $annee)->whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
                 $query->where('structure_id', Auth::user()->structure_id);
             })->orderBy('libelle')->get();
-            $objectifStrategiques = ObjectifsStrategique::whereHas('programmeBudgetaire.structures', function ($query) {
+            $objectifStrategiques = ObjectifsStrategique::where('annee', $annee)->whereHas('programmeBudgetaire.structures', function ($query) {
                 $query->where('structure_id', Auth::user()->structure_id);
             })->orderBy('libelle')->get();
-            $activites = Activite::with('objectifSpecifique')->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+            $activites = Activite::with('objectifSpecifique')->where('annee', $annee)->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
                 $query->where('structure_id', Auth::user()->structure_id);
             })->orderBy('libelle')->get();
 
-            $actions = Action::with('objectifStrategique')->whereHas('objectifStrategique.programmeBudgetaire.structures', function ($query) {
+            $actions = Action::with('objectifStrategique')->where('annee', $annee)->whereHas('objectifStrategique.programmeBudgetaire.structures', function ($query) {
                 $query->where('structure_id', Auth::user()->structure_id);
             })->orderBy('libelle')->get();
             
@@ -75,12 +76,11 @@ class SuiviController extends Controller implements HasMiddleware
                 'objectifSpecifique', 
                 'activite',
                 'suivis.getPeriode'
-            ])->get();
-            $activites = Activite::with('objectifSpecifique')->orderBy('libelle')->get();
-            $objectifSpecifiques = ObjectifSpecifique::with('action.objectifStrategique')->orderBy('libelle')->get();
-            $objectifStrategiques = ObjectifsStrategique::all();
-            $actions = Action::with('objectifStrategique')
-            ->orderBy('libelle')->get();
+            ])->where('annee', $annee)->get();
+            $activites = Activite::with('objectifSpecifique')->where('annee', $annee)->orderBy('libelle')->get();
+            $objectifSpecifiques = ObjectifSpecifique::with('action.objectifStrategique')->where('annee', $annee)->orderBy('libelle')->get();
+            $objectifStrategiques = ObjectifsStrategique::where('annee', $annee)->get();
+            $actions = Action::with('objectifStrategique')->where('annee', $annee)->orderBy('libelle')->get();
         }
         
         
@@ -108,6 +108,32 @@ class SuiviController extends Controller implements HasMiddleware
     public function store(StoreSuiviRequest $request)
     {
         //
+        // si le suivi existe déjà pour la même période, on retourne une erreur
+        if (Suivi::where('indicateur_programme_id', $request->indicateur_programme_id)->where('periode', $request->periode)->exists()) {
+            if ($request->ajax()) {
+                throw new \Exception('Un suivi pour cet indicateur et cette periode existe déjà');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Un suivi pour cet indicateur et cette periode existe déjà'
+                ]);
+            }
+            return redirect()->back()->with('error', 'Un suivi pour cet indicateur et cette periode existe deja');
+        }
+        // si l'indicateur est lié à une activité, on vérifie que la période du suivi est cohérente avec les périodes de l'activité
+        $indicateur = IndicateurProgramme::find($request->indicateur_programme_id);
+        if ($indicateur && $indicateur->activite) {
+            if (!in_array($request->periode, $indicateur->activite->periodes->pluck('id')->toArray())) {
+                if ($request->ajax()) {
+                    throw new \Exception('La periode du suivi doit correspondre aux periodes de l\'activité');
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'La periode du suivi doit correspondre aux periodes de l\'activité'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'La periode du suivi doit correspondre aux periodes de l\'activité');
+            }
+        }
+
         $suivi =Suivi::create($request->validated());
         if ($request->ajax()) {
             return response()->json([
@@ -151,6 +177,35 @@ class SuiviController extends Controller implements HasMiddleware
     {
         //
         $suivi = Suivi::findOrFail($id);
+
+        $suiviExi = Suivi::where('indicateur_programme_id', $request->indicateur_programme_id)->where('periode', $request->periode)->first();
+
+        if ($suiviExi && $suiviExi->id != $id) {
+            if ($request->ajax()) {
+                throw new \Exception('Un suivi pour cet indicateur et cette periode existe déjà');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Un suivi pour cet indicateur et cette periode existe déjà'
+                ]);
+            }
+            return redirect()->back()->with('error', 'Un suivi pour cet indicateur et cette periode existe deja');
+        }
+        // si l'indicateur est lié à une activité, on vérifie que la période du suivi est cohérente avec les périodes de l'activité
+        $indicateur = IndicateurProgramme::find($request->indicateur_programme_id);
+        if ($indicateur && $indicateur->activite) {
+            if (!in_array($request->periode, $indicateur->activite->periodes->pluck('id')->toArray())) {
+                if ($request->ajax()) {
+                    throw new \Exception('La periode du suivi doit correspondre aux periodes de l\'activité');
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'La periode du suivi doit correspondre aux periodes de l\'activité'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'La periode du suivi doit correspondre aux periodes de l\'activité');
+            }
+        }
+
+
         $suivi->update($request->validated());
         if ($request->ajax()) {
             return response()->json([

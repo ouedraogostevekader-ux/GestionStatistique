@@ -57,7 +57,9 @@ class RapportActiviteController extends Controller implements HasMiddleware
             //$programmeActivite = ProgrammesActivite::findOrFail($request->programme_activite_id);
             $programmeActivite = ProgrammesActivite::where('annee', now()->year)->latest()->first();
             if (!$programmeActivite) {
+                
                 if ($request->ajax()) {
+                    throw new \Exception('Aucun programme d\'activité trouvé pour l\'annee en cours ' . now()->year);
                     return response()->json([
                         'success' => false,
                         'message' => 'Aucun programme d\'activité trouvé pour l\'année en cours ' . now()->year
@@ -67,7 +69,9 @@ class RapportActiviteController extends Controller implements HasMiddleware
             }
             $rapport = RapportActivite::where('annee', now()->year)->count();
             if ($rapport > 2) {
+                
                 if ($request->ajax()) {
+                    throw new \Exception('Deux (02) rapports d\'activité pour l\'annee en cours ' . now()->year . ' ont deja ete genere.');
                     return response()->json([
                         'success' => false,
                         'message' => 'Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont été déjà générés.'
