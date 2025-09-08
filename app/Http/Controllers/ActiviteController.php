@@ -231,9 +231,10 @@ class ActiviteController extends Controller implements HasMiddleware
         return view('activites.edit', compact('objectifs', 'activite', 'periodes', 'activitePeriodes', 'annee'));
     }
 
-    public function update(UpdateActiviteRequest $request, Activite $activite)
+    public function update(UpdateActiviteRequest $request, $activite_id)
     {
         $validated = $request->validated();
+        $activite = Activite::findOrFail($activite_id);
         if (!$activite->activiteIsEdit()) {
             return redirect()->back()->with('error', "Cette activité n\'est pas modifiable");
         }
