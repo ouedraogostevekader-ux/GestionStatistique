@@ -9,7 +9,9 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
-                        <a class="btn btn-secondary" href="{{ route('objectifs-specifiques.index') }}">Retour</a>
+                        <a class="btn btn-secondary" href="javascript:history.back()">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
                         @can('objectif_Specifique-edit')
                             <a class="btn btn-primary"
                                 href="{{ route('objectifs-specifiques.edit', $objectifSpecifique->id) }}">Modifier</a>

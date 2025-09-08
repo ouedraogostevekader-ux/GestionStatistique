@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,12 +18,12 @@ return new class extends Migration
         });
 
         // Table pivot
-        Schema::create('programme_activite_programme_budgetaire', function (Blueprint $table) {
+/*         Schema::create('programme_activite_programme_budgetaire', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->foreignUlid('programme_activite_id')->constrained('programmes_activites')->cascadeOnDelete();
             $table->foreignUlid('programme_budgetaire_id')->constrained('programmes_budgetaires')->cascadeOnDelete();
             $table->timestamps();
-        });
+        }); */
     }
 
     /**
