@@ -38,8 +38,8 @@
                     </div>
                     <div class="collapse show" id="filtersCollapse">
                         <div class="card-body">
-                            <form method="GET" id="filterForm" class="row g-3">
-                                <div class="col-md-4">
+                            <form method="GET" id="filterForm" class="d-flex flex-wrap align-items-end gap-2">
+                                <div class="col-auto">
                                     <label for="programme_budgetaire_id" class="form-label">Programme budgétaire</label>
                                     <select name="programme_budgetaire_id" id="programme_budgetaire_id" class="form-select">
                                         <option value="">Tous les programmes</option>
@@ -51,7 +51,8 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-auto">
                                     <label for="trimestre" class="form-label">Trimestre</label>
                                     <select name="trimestre" id="trimestre" class="form-select">
                                         <option value="">Tous les trimestres</option>
@@ -65,18 +66,21 @@
                                             (Oct-Déc)</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-auto">
                                     <label for="annee" class="form-label">Année</label>
                                     <select name="annee" id="annee" class="form-select">
                                         @for ($year = date('Y'); $year >= date('Y') - 5; $year--)
                                             <option value="{{ $year }}" {{ $annee == $year ? 'selected' : '' }}>
-                                                {{ $year }}</option>
+                                                {{ $year }}
+                                            </option>
                                         @endfor
                                     </select>
                                 </div>
-                                <div class="col-12">
+
+                                <div class="col-auto d-flex gap-2">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-funnel"></i> Appliquer les filtres
+                                        <i class="bi bi-funnel"></i> Appliquer
                                     </button>
                                     <a href="{{ route('statistiques.index') }}" class="btn btn-outline-secondary">
                                         <i class="bi bi-arrow-clockwise"></i> Réinitialiser
@@ -88,7 +92,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Alertes -->
         @if (!empty($alerts))
             <div class="row mb-3">

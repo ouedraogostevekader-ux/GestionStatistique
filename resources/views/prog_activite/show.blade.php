@@ -54,7 +54,7 @@
                                 <tr>
                                     @if ($indIndex == 0)
                                         <td rowspan="{{ $objectif->indicateurs->count() }}" class="objectif-strategique">
-                                            OS{{ $objIndex + 1 }} : {{ $objectif->libelle }}
+                                            {{ $objectif->libelle }}
                                         </td>
                                     @endif
                                     <td>{{ $indicateur->libelle }}</td>
@@ -71,7 +71,7 @@
                         @else
                             <tr>
                                 <td class="objectif-strategique">
-                                    OS{{ $objIndex + 1 }} : {{ $objectif->libelle }}
+                                    {{ $objectif->libelle }}
                                 </td>
                                 <td>-</td>
                                 <td>-</td>
@@ -89,7 +89,7 @@
                         @foreach ($objectif->actions as $actionIndex => $action)
                             <tr>
                                 <td class="action">
-                                    Action {{ $objIndex + 1 }}.{{ $actionIndex + 1 }} : {{ $action->libelle }}
+                                    {{ $action->libelle }}
                                 </td>
                                 <td>-</td>
                                 <td>-</td>
@@ -111,8 +111,6 @@
                                             @if ($indIndex == 0)
                                                 <td rowspan="{{ $objSpec->indicateurs->count() }}"
                                                     class="objectif-specifique">
-                                                    OSp
-                                                    {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }} :
                                                     {{ $objSpec->libelle }}
                                                 </td>
                                             @endif
@@ -130,7 +128,6 @@
                                 @else
                                     <tr>
                                         <td class="objectif-specifique">
-                                            OSp {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }} :
                                             {{ $objSpec->libelle }}
                                         </td>
                                         <td>-</td>
@@ -152,9 +149,7 @@
                                             <tr>
                                                 @if ($indIndex == 0)
                                                     <td rowspan="{{ $activite->indicateurs->count() }}" class="activite">
-                                                        Act
-                                                        {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }}.{{ $activiteIndex + 1 }}
-                                                        : {{ $activite->libelle }}
+                                                        {{ $activite->libelle }}
                                                     </td>
                                                 @endif
                                                 <td>{{ $indicateur->libelle }}</td>
@@ -202,9 +197,7 @@
                                     @else
                                         <tr>
                                             <td class="activite">
-                                                Act
-                                                {{ $objIndex + 1 }}.{{ $actionIndex + 1 }}.{{ $objSpecIndex + 1 }}.{{ $activiteIndex + 1 }}
-                                                : {{ $activite->libelle }}
+                                                {{ $activite->libelle }}
                                             </td>
                                             <td>-</td>
                                             <td>-</td>
@@ -252,15 +245,4 @@
             </table>
         </div>
     </div>
-
-    {{-- <script>
-        function exportTableToExcel() {
-            const table = document.getElementById('programmeTable');
-            const ws = XLSX.utils.table_to_sheet(table);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Programme");
-            XLSX.writeFile(wb, `Programme_${document.querySelector('.programme-header').textContent.trim()}.xlsx`);
-        }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> --}}
 @endsection

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -101,6 +102,8 @@ return new class extends Migration {
             $table->string('libelle', 500);
             $table->year('annee')->default(date('Y'));
             $table->foreignUlid('objectif_specifique_id')->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('created_by')->nullable()->constrained('users')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignUlid('updated_by')->nullable()->constrained('users')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
         });

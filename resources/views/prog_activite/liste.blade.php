@@ -65,7 +65,7 @@
                                 <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
                                 <h4 class="text-muted">Aucun programme d'activité</h4>
                                 <p class="text-muted">Commencez par créer votre premier programme d'activité.</p>
-                                <a href="{{ route('programmes.tableau') }}" class="btn btn-primary">
+                                <a href="" class="btn btn-primary">
                                     <i class="fas fa-plus"></i> Créer un programme
                                 </a>
                             </div>

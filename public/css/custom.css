@@ -27,15 +27,26 @@ body {
     min-height: 100vh;
 }
 
+main.app-main {
+    margin: 2%;
+}
+
+.navbar-expand {
+    margin-left: 2%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
 .sidebar-brand {
     background: linear-gradient(180deg, var(--burkina-green) 0%, var(--burkina-dark) 100%);
     /* background: #006233; */
+    width: 280px;
     box-shadow: var(--shadow-lg);
 }
 
 .sidebar-wrapper {
     /* background: #019e48; */
-    width: auto;
+    width: 280px;
     background: linear-gradient(180deg, var(--burkina-green) 100%, var(--burkina-dark) 10%);
     color: white;
     box-shadow: var(--shadow-lg);

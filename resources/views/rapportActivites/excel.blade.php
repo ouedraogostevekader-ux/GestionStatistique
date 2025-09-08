@@ -40,7 +40,7 @@
                     <td>{{$firstIndicateur->unite_mesure ?? 'N/A'}}</td>
                     <td>{{$firstIndicateur->valeur_cible ?? 'N/A'}}</td>
                     <td>{{$lastSuivi->resultat_atteint ?? 'N/A'}}</td>
-                    <td >{{ number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($firstIndicateur->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                    <td >@if(is_numeric($firstIndicateur->valeur_cible)){{ number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($firstIndicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                     
                     <td >{{$lastSuivi->cout_effectif ?? '-'}}</td>
                     <td>{{$lastSuivi->observations ?? 'N/A'}}</td>
@@ -55,7 +55,7 @@
                         <td>{{$indicateur->unite_mesure}}</td>
                         <td>{{$indicateur->valeur_cible}}</td>
                         <td>{{$lastSuivi->resultat_atteint ?? 'N/A'}}</td>
-                        <td >{{number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                        <td >@if(is_numeric($indicateur->valeur_cible)){{number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif </td>
                         <td >{{$lastSuivi->cout_effectif ?? '-'}}</td>
                         <td>{{$lastSuivi->observations ?? 'N/A'}}</td>
                     </tr>
@@ -84,7 +84,7 @@
                             <td>{{$firstIndi->unite_mesure ?? 'N/A' }}</td>
                             <td>{{$firstIndi->valeur_cible ?? 'N/A'}}</td>
                             <td>{{$lastSuiv->resultat_atteint ?? 'N/A'}}</td>
-                            <td >{{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($firstIndi->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                            <td>@if(is_numeric($firstIndi->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($firstIndi->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                             <td >{{$lastSuiv->cout_effectif ?? '-'}}</td>
                             <td>{{$lastSuiv->observations ?? 'N/A'}}</td>
                         </tr>
@@ -98,7 +98,7 @@
                                 <td>{{$indicateur->unite_mesure}}</td>
                                 <td>{{$indicateur->valeur_cible}}</td>
                                 <td>{{$lastSuiv->resultat_atteint ?? 'N/A'}}</td>
-                                <td>{{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} %</td>
+                                <td>@if(is_numeric($indicateur->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                                 <td>{{$lastSuiv->cout_effectif ?? '-'}}</td>
                                 <td>{{$lastSuiv->observations ?? 'N/A'}}</td>
                             </tr>
@@ -120,8 +120,8 @@
                                 <td class="center">{{$firstI->unite_mesure ?? 'N/A'}}</td>
                                 <td class="center">{{$firstI->valeur_cible ?? 'N/A'}}</td>
                                 <td class="center">{{$lastS->resultat_atteint ?? 'N/A'}}</td>
-                                <td class="center">{{ number_format(($lastS->resultat_atteint ?? 0) *100 / ($firstI->valeur_cible ?? 1) , 2, ',', ' ')}} %</td>
-                                <td class="center">{{isset($lastS) & isset($lastS->cout_effectif) ? number_format($lastS->cout_effectif, 2, ',', ' ') : 'N/E'}}</td>
+                                <td class="center">@if(is_numeric($firstI->valeur_cible)){{ number_format(($lastS->resultat_atteint ?? 0) *100 / ($firstI->valeur_cible ?? 1) , 2, ',', ' ')}} % @else N/A @endif</td>
+                                <td class="center">@if(isset($lastS) && is_numeric($lastS->resultat_atteint)){{isset($lastS->cout_effectif) ? number_format($lastS->cout_effectif, 2, ',', ' ') : 'N/E'}} @else N/E @endif</td>
                                 <td class="center">{{$lastS->observations ?? 'N/A'}}</td>
                                
                             </tr>

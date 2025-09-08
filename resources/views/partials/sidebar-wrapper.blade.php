@@ -93,9 +93,9 @@
 
             @can('manageDeProgramme')
                 <li
-                    class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('programme-activites*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
+                    class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
                     <a href="#"
-                        class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('programme-activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
+                        class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-folder-fill"></i>
                         <p>
                             Programmation
@@ -196,7 +196,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('programme-activites.liste') }}"
-                                class="nav-link {{ Request::is('programme-activites.liste*') ? 'active' : '' }}">
+                                class="nav-link {{ Route::is('programme-activites.liste*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-eye-fill"></i>
                                 <p>Programmes d'activités</p>
                             </a>

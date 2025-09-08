@@ -110,6 +110,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
         ->name('programmebudgetaire.store');
     //Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
         ->name('programmes-budgetaires.create-duplicate');
@@ -131,7 +132,7 @@ Route::middleware('auth')->group(function () {
     Route::post('rapportActivites/visualiser', [App\Http\Controllers\RapportActiviteController::class, 'visualiser'])->name('rapportActivites.visualiser');
     Route::resource('programme-activites', App\Http\Controllers\ProgrammeActiviteController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
-    //Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
+    Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
     Route::get('programme-activites/{id}/suivi', [ProgrammeActiviteController::class, 'suiviTableau'])->name('programme-activites.suivi');
     Route::get('programme-liste', [ProgrammeActiviteController::class, 'tableProgrammeActivite'])->name('programme.liste');
     Route::get('/programmes/export-excel', [ProgrammeActiviteController::class, 'exportExcel'])->name('programmes.export-excel');

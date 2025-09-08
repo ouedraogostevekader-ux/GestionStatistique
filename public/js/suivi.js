@@ -1,3 +1,5 @@
+
+
 // Animation au chargement
 document.addEventListener('DOMContentLoaded', function() {
     // Animation des cartes statistiques
@@ -194,68 +196,5 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    let table = new DataTable("#example1", {
-        paging: true,
-        searching: true,
-        ordering: true,
-        info: true,
-        lengthMenu: [
-            [10, 40, 50, 100, 200, -1],
-            [10, 40, 50, 100, 200, "Tous"],
-        ],
-        pageLength: 10,
-        dom: "Bfrtip", // <-- ajoute la barre de boutons
-        buttons: [
-        ],
-        language: {
-            // url: "",
-            decimal: ",",
-            thousands: " ",
-            search: "Rechercher :",
-            lengthMenu: "Afficher _MENU_ enregistrements",
-            info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-            infoEmpty: "Aucune donnée disponible",
-            infoFiltered: "(filtré à partir de _MAX_ entrées totales)",
-            loadingRecords: "Chargement...",
-            zeroRecords: "Aucun enregistrement correspondant trouvé",
-            paginate: {
-                first: "Premier",
-                last: "Dernier",
-                next: "Suivant",
-                previous: "Précédent",
-            },
-        },
-    });
 
-    // 🔹 Filtre par Activite
-    document
-        .getElementById("filterActivite")
-        .addEventListener("change", function () {
-            table
-                .column(6)
-                .search(this.value)
-                .draw();
-        });
-
-    // Filtre par Objectif
-    document
-        .getElementById("filterObjectif")
-        .addEventListener("change", function () {
-            table
-                .column(4)
-                .search(this.value)
-                .draw();
-        });
-    
-    // Filtre par ObjStrat
-    document
-        .getElementById("filterObjStrat")
-        .addEventListener("change", function () {
-            table
-                .column(5)
-                .search(this.value)
-                .draw();
-        });
-});
 
