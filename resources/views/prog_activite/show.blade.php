@@ -15,6 +15,18 @@
                     {{-- <button onclick="exportTableToExcel()" class="btn btn-success">
                         <i class="fas fa-file-excel"></i> Excel
                     </button> --}}
+                    @can('programme_Bugetaire-validate')
+                        @if ($programme->statut == 0)
+                            <span class="ml-3 text-warning">Votre programme n'est pas encore validé</span>
+                            <button id="ValidationModal" type="button" class="btn btn-outline-success ml-3"
+                                title="Valider le programme budgetaire" data-bs-toggle="modal"
+                                data-bs-target="#ValidationModal">
+                                <i class="bi bi-check"></i> Valider ce programme
+                            </button>
+                        @else
+                            <div class="alert alert-info">Votre programme est déjà validé</div>
+                        @endif
+                    @endcan
                 </div>
             </div>
         </div>
@@ -257,3 +269,23 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> --}}
 @endsection
+{{-- Valider un programme --}}
+<div class="modal fade" id="ValidationModal" tabindex="-1" aria-labelledby="ValidationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ValidationModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body" id="validateModalMessage">
+                <p class="alert alert-warning">Vous souhaitez valider ce programme budgétaire en tant que responsable ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <a href="{{ route('programmebudgetaire.validate', $programme->id) }}" class="btn btn-warning"
+                    id="confirmLockBtn">Confirmer</a>
+            </div>
+        </div>
+    </div>
+</div>
