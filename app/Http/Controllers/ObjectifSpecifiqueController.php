@@ -3,17 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\ObjectifSpecifique;
+use App\Models\Action;
+use App\Models\Periode;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ObjectifSpecifiqueController extends Controller
+class ObjectifSpecifiqueController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:objectif_Specifique-list', only: ['index', 'show']),
+            new Middleware('permission:objectif_Specifique-create', only: ['create', 'store']),
+            new Middleware('permission:objectif_Specifique-edit', only: ['edit', 'update']),
+            new Middleware('permission:objectif_Specifique-delete', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $objectifs = ObjectifSpecifique::all();
-        return view('obj_specifique.index', compact('objectifs'));
+        $objectifsSpecifiques = ObjectifSpecifique::with(['action.objectifStrategique', 'activites'])->get();
+        return view('obj_specifique.index', compact('objectifsSpecifiques'));
     }
 
     /**
@@ -21,7 +37,8 @@ class ObjectifSpecifiqueController extends Controller
      */
     public function create()
     {
-        return view('objectifs.create');
+        $actions = Action::all();
+        return view('obj_specifique.create', compact('actions'));
     }
 
     /**
@@ -31,52 +48,65 @@ class ObjectifSpecifiqueController extends Controller
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
+            'action_id' => 'required|exists:actions,id',
         ]);
 
         $objectif = ObjectifSpecifique::create($validatedData);
-
-        return redirect()->route('objectifs.index')->with('success', 'Objectif created successfully.');
+        if ($request->os) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
+        return redirect()->route('objectifs-specifiques.index')
+            ->with('success', 'Objectif spécifique créé avec succès.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ObjectifSpecifique $objectifSpecifique)
+    public function show(string $id)
     {
-        return view('objectifs.show', compact('objectifSpecifique'));
+        $objectifSpecifique = ObjectifSpecifique::findOrFail($id);
+        $objectifSpecifique->load(['action.objectifStrategique', 'activites', 'indicateursProgrammes']);
+        $periodes = Periode::all();
+        return view('obj_specifique.show', compact('objectifSpecifique', 'periodes'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ObjectifSpecifique $objectifSpecifique)
+    public function edit(string $id)
     {
-        return view('objectifs.edit', compact('objectifSpecifique'));
+        $objectifSpecifique = ObjectifSpecifique::findOrFail($id);
+        $actions = Action::all();
+        return view('obj_specifique.edit', compact('objectifSpecifique', 'actions'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ObjectifSpecifique $objectifSpecifique)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
+            'action_id' => 'required|exists:actions,id',
         ]);
+
+        $objectifSpecifique = ObjectifSpecifique::findOrFail($id);
 
         $objectifSpecifique->update($validatedData);
 
-        return redirect()->route('objectifs.index')->with('success', 'Objectif updated successfully.');
+        return redirect()->route('objectifs-specifiques.index')
+            ->with('success', 'Objectif spécifique mis à jour avec succès.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ObjectifSpecifique $objectifSpecifique)
+    public function destroy($id)
     {
+        $objectifSpecifique = ObjectifSpecifique::findOrFail($id);
         $objectifSpecifique->delete();
 
-        return redirect()->route('objectifs.index')->with('success', 'Objectif deleted successfully.');
+        return redirect()->route('objectifs-specifiques.index')->with('success', 'Objectif spécifique supprimé avec succès.');
     }
 }

@@ -18,9 +18,7 @@
                         <td>{{ $user->name }} </td>
                         <td>{{ $user->telephone }}</td>
                         <td>{{ $user->structure->sigle }}</td>
-                        {{-- <td>{{ $user->commune->libelle ?? '' }}</td>  --}}
-
-                        <td style="width: 120px">
+                        <td>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
@@ -31,7 +29,6 @@
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
                                     @endcan
-
                                     @can('user-edit')
                                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-xs"
                                             title="Modifier">

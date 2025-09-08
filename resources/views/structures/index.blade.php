@@ -13,9 +13,11 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
-                        <a class="btn btn-primary" id="btnAjouter" href="{{ route('structures.create') }}">
-                            <i class="bi bi-plus"></i> Ajouter
-                        </a>
+                        @can('structure-create')
+                            <a class="btn btn-primary" id="btnAjouter" href="{{ route('structures.create') }}">
+                                <i class="bi bi-plus"></i> Ajouter
+                            </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -71,19 +73,25 @@
                                             @csrf
                                             @method('DELETE')
                                             <div class='btn-group'>
-                                                <a href="{{ route('structures.show', $structure->id) }}"
-                                                    class="btn btn-info btn-xs" title="Voir"><i
-                                                        class="bi bi-eye-fill"></i></a>
+                                                @can('structure-list')
+                                                    <a href="{{ route('structures.show', $structure->id) }}"
+                                                        class="btn btn-info btn-xs" title="Voir"><i
+                                                            class="bi bi-eye-fill"></i></a>
+                                                @endcan
 
-                                                <a href="{{ route('structures.edit', $structure->id) }}"
-                                                    class="btn btn-primary btn-xs" title="Modifier"><i
-                                                        class="bi bi-pencil-fill"></i></a>
+                                                @can('structure-edit')
+                                                    <a href="{{ route('structures.edit', $structure->id) }}"
+                                                        class="btn btn-primary btn-xs" title="Modifier"><i
+                                                            class="bi bi-pencil-fill"></i></a>
+                                                @endcan
 
-                                                <button type="submit" class="btn btn-danger btn-xs"
-                                                    onclick="return confirm('Supprimer cette structure ?')"
-                                                    title="Supprimer">
-                                                    <i class="bi bi-trash-fill"></i>
-                                                </button>
+                                                @can('structure-delete')
+                                                    <button type="submit" class="btn btn-danger btn-xs"
+                                                        onclick="return confirm('Supprimer cette structure ?')"
+                                                        title="Supprimer">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
+                                                @endcan
                                             </div>
                                         </form>
                                     </td>

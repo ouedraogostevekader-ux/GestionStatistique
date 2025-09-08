@@ -24,7 +24,7 @@ class UserMaillable extends Mailable
     {
         return new Envelope(
             subject: 'Confirmation et activation du compte',
-            from: config('mail.from.address', 'dsi-dgess@mid.gov.bf')
+            from: config('mail.from.address', 'dsi.dgess@gmail.com')
         );
     }
 
@@ -34,7 +34,7 @@ class UserMaillable extends Mailable
             markdown: 'emails.compte-user',
             with: [
                 'user' => $this->user,
-                'url' => route('login')
+                'url' => route('edit.compte', $this->user->id)
             ]
         );
     }

@@ -3,7 +3,7 @@
 
         <!-- Titre -->
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-3">
-            Connexion - GESTION
+            CONNEXION
         </h2>
 
         <!-- Session Status -->

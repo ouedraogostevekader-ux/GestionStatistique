@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class ProgrammesActivite extends Model
 {
     use HasFactory, SoftDeletes;
     use HasUlids, LogsActivity;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +24,8 @@ class ProgrammesActivite extends Model
     protected $fillable = [
         'libelle',
         'annee',
-        'file',
+        'file_pdf',
+        'file_excel',
         'date_generation',
     ];
 
@@ -35,21 +38,34 @@ class ProgrammesActivite extends Model
         'date_generation' => 'datetime',
     ];
 
-    public function programmeBudgetaires()
+    public function programmesBudgetaires()
     {
-        //return $this->hasMany(ProgrammeBudgetaire::class);
+        return $this->belongsToMany(
+            ProgrammeBudgetaire::class,
+            'programme_activite_programme_budgetaire',
+            'programme_activite_id',
+            'programme_budgetaire_id'
+        );
+    }
+
+    public function rapportsActivites()
+    {
+        return $this->hasMany(RapportActivite::class);
     }
 
     public function getDescriptionForEvent(string $eventName): string
     {
-        if ($eventName == 'created')
-        { return 'Creation';}
+        if ($eventName == 'created') {
+            return 'Creation';
+        }
 
-        if ($eventName == 'updated')
-        {return 'Modification';}
+        if ($eventName == 'updated') {
+            return 'Modification';
+        }
 
-        if ($eventName == 'deleted')
-        {return 'Suppression';}
+        if ($eventName == 'deleted') {
+            return 'Suppression';
+        }
 
         return "{$eventName}";
     }

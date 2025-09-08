@@ -1,13 +1,13 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Objectifs stratégiques')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-12">
-                    <h1>
+                    <h3>
                         Modifier objectif strategique
-                    </h1>
+                    </h3>
                 </div>
             </div>
         </div>

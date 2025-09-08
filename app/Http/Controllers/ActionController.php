@@ -3,18 +3,73 @@
 namespace App\Http\Controllers;
 
 use App\Models\Action;
+use App\Models\ObjectifsStrategique;
+use App\Models\ProgrammeBudgetaire;
+use App\Models\Structure;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 
-class ActionController extends Controller
+class ActionController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:action-list', only: ['index', 'show']),
+            new Middleware('permission:action-create', only: ['create', 'store']),
+            new Middleware('permission:action-edit', only: ['edit', 'update']),
+            new Middleware('permission:action-delete', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $actions = Action::all();
-        //dd($actions);
-        return view('action.index', compact('actions'));
+        $user = Auth::user();
+
+        if (Auth::user()->isAdmin()) {
+            $query = Action::with(['objectifStrategique.programmeBudgetaire.structures']);
+            $programmes = ProgrammeBudgetaire::all();
+            $structures = Structure::all();
+        } else {
+            $query = Action::with(['objectifStrategique.programmeBudgetaire.structures'])
+                ->whereHas('objectifStrategique.programmeBudgetaire.structures', function ($q) {
+                    $q->where('structures.id', Auth::user()->structure_id);
+                });
+
+            $programmes = ProgrammeBudgetaire::whereHas('structures', function ($q) use ($user) {
+                $q->where('structures.id', Auth::user()->structure_id);
+            })->get();
+            $structures = Structure::where('id', Auth::user()->structure_id)->get();
+        }
+
+        // Filtre par année
+        if ($request->filled('annee')) {
+            $query->whereYear('created_at', $request->annee);
+        }
+
+        // Filtre par structure
+        if ($request->filled('programme_budgetaire_id')) {
+            $query->whereHas('objectifStrategique', function ($q) use ($request) {
+                $q->where('programme_budgetaire_id', $request->programme_budgetaire_id);
+            });
+        }
+
+        // Filtre par responsable actif
+        if ($request->filled('structure_id')) {
+            $query->whereHas('objectifStrategique.programmeBudgetaire.structures', function ($q) use ($request) {
+                $q->where('structures.id', $request->structure_id);
+            });
+        }
+
+        $actions = $query->get();
+
+        return view('action.index', compact('actions', 'structures', 'programmes'));
     }
 
     /**
@@ -22,7 +77,8 @@ class ActionController extends Controller
      */
     public function create()
     {
-        return view('actions.create');
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        return view('action.create', compact('objectifsStrategiques'));
     }
 
     /**
@@ -32,11 +88,14 @@ class ActionController extends Controller
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
+            'objectif_strategique_id' => 'required|exists:objectifs_strategiques,id',
         ]);
 
         $action = Action::create($validatedData);
-
+        if ($request->action) {
+            return redirect()->back()
+                ->with('success', 'Objectif spécifique créé avec succès.');
+        }
         return redirect()->route('actions.index')->with('success', 'Action created successfully.');
     }
 
@@ -45,7 +104,7 @@ class ActionController extends Controller
      */
     public function show(Action $action)
     {
-        return view('actions.show', compact('action'));
+        return view('action.show', compact('action'));
     }
 
     /**
@@ -53,7 +112,8 @@ class ActionController extends Controller
      */
     public function edit(Action $action)
     {
-        return view('actions.edit', compact('action'));
+        $objectifsStrategiques = ObjectifsStrategique::all();
+        return view('action.edit', compact('action', 'objectifsStrategiques'));
     }
 
     /**
@@ -63,7 +123,7 @@ class ActionController extends Controller
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
-            'objectif_strategique_id' => 'required|exists:objectif_strategiques,id',
+            'objectif_strategique_id' => 'required|exists:objectifs_strategiques,id',
         ]);
 
         $action->update($validatedData);
@@ -74,8 +134,9 @@ class ActionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Action $action)
+    public function destroy($id)
     {
+        $action = Action::findOrFail($id);
         $action->delete();
 
         return redirect()->route('actions.index')->with('success', 'Action deleted successfully.');

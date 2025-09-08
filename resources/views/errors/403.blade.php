@@ -1,22 +1,20 @@
-@extends('errors::layout')
+@extends('layouts.admin')
 
-@section('title', __('Accès Refusé'))
-@section('code', '403')
-@section('message')
-Accès Refusé
-@endsection
-@section('message_body')
-Désolé, vous n'avez pas l'autorisation d'accéder à cette page.<br><br>
+@section('title', 'Accès refusé')
 
-Cela peut être dû à l'une des raisons suivantes :<br>
-<ol>
-    <li>Vous n'êtes pas connecté avec un compte autorisé.</li>
-    <li>Votre compte ne dispose pas des permissions nécessaires pour accéder à cette fonctionnalité.</li>
-    <li>L'accès à cette page est limité à un groupe spécifique d'utilisateurs.</li>
-</ol>
+@section('content')
+    <div class="flex items-center justify-center h-screen bg-gray-100">
+        <div class="bg-white shadow-lg rounded-2xl p-8 text-center">
+            <h1 class="text-6xl font-bold text-red-600">403</h1>
+            <h2 class="text-2xl font-semibold mt-4">Accès refusé</h2>
+            <p class="mt-2 text-gray-600">
+                Désolé, vous n'avez pas les autorisations nécessaires pour accéder à cette page.
+            </p>
 
-Si vous pensez qu'il s'agit d'une erreur ou si vous avez besoin d'accéder à cette page pour une raison légitime,<br>
-veuillez contacter l'administrateur du système ou l'équipe de support à l'adresse st.trhimo@infrastructures.gov.bf.<br>
-<br><br>
-Merci pour votre compréhension.
+            <a href="{{ url()->previous() }}"
+                class="btn btn-success inline-block mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+                ⬅ Retour
+            </a>
+        </div>
+    </div>
 @endsection

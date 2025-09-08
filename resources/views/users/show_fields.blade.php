@@ -1,49 +1,76 @@
 <!-- Name Field -->
 <div class="col-sm-6">
-    <label class="form-label">Nom & prénom</label>:
+    <label class="form-label">Nom & prénom</label> :
     {{ $user->name }}
 </div>
 
 <!-- Email Field -->
 <div class="col-sm-6">
-    <label class="form-label">Email</label>:
+    <label class="form-label">Email</label> :
     {{ $user->email }}
 </div>
 <!-- Email Field -->
 <div class="col-sm-6">
-    <label class="form-label">Téléphone</label>:
+    <label class="form-label">Téléphone</label> :
     {{ $user->telephone }}
 </div>
 
 <div class="col-sm-6">
-    <label class="form-label">Matricule</label>:
+    <label class="form-label">Matricule</label> :
     {{ $user->matricule }}
 </div>
 
 <div class="col-sm-6">
-    <label class="form-label">Fonction</label>:
+    <label class="form-label">Fonction</label> :
     {{ $user->fonction }}
 </div>
 
 <div class="col-sm-6">
-    <label class="form-label">Structure</label>:
-    {{ $user->structure->sigle }} : {{ $user->structure->nom }}
+    <label class="form-label">Structure</label> :
+    {{ $user->structure->sigle }} = {{ $user->structure->nom }}
 </div>
 
 <div class="form-group col-sm-12">
-    <label class="form-label">Role</label>: |
+    <label class="form-label">Role</label> : |
     @foreach ($user->roles as $role)
         {{ $role->name }} |
     @endforeach
 </div>
 
 <div class="col-sm-6">
-    <label class="form-label">Photo de profile</label>:
+    <label class="form-label">Photo de profile</label> :
     <div class="avatar-preview">
         @if ($user->photo != null)
             <img src="{{ asset('storage/' . $user->photo) }}" alt="PHOTO PROFIL">
         @else
             Pas de photo
+        @endif
+    </div>
+</div>
+<div class="col-sm-6">
+    <div>
+        <label for="form-label">Status</label> : <span
+            class="badge bg-warning">{{ $user->is_active ? 'Actif' : 'Désactivé' }}</span>
+        @if ($user->is_active)
+            <!-- Bouton désactiver -->
+            <form action="{{ route('users.deactivate', $user->id) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('PATCH')
+                <button type="submit" title="désactiver ce compte" class="btn btn-danger btn-sm"
+                    onclick="return confirm('Voulez-vous vraiment désactiver ce compte ?')">
+                    Désactiver
+                </button>
+            </form>
+        @else
+            <!-- Bouton activer -->
+            <form action="{{ route('users.activate', $user->id) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('PATCH')
+                <button type="submit" title="activer ce compte" class="btn btn-success btn-sm"
+                    onclick="return confirm('Voulez-vous vraiment réactiver ce compte ?')">
+                    Activer
+                </button>
+            </form>
         @endif
     </div>
 </div>

@@ -17,10 +17,10 @@ class DataSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('fr_FR');
-        
+
         // Désactiver les contraintes de clés étrangères temporairement
         //DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        
+
         // Vider les tables dans l'ordre inverse des dépendances
         $tables = [
             'suivis',
@@ -36,11 +36,11 @@ class DataSeeder extends Seeder
             'programmes_activites',
             'structures'
         ];
-        
+
         foreach ($tables as $table) {
             DB::table($table)->truncate();
         }
-        
+
         // Réactiver les contraintes
         //DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
@@ -61,7 +61,7 @@ class DataSeeder extends Seeder
         foreach ($nomsStructures as $index => $struct) {
             $structureId = (string) Str::ulid();
             $structures[] = $structureId;
-            
+
             DB::table('structures')->insert([
                 'id' => $structureId,
                 'nom' => $struct['nom'],
@@ -75,11 +75,11 @@ class DataSeeder extends Seeder
         // 2. Utilisateurs (modification de la table users existante)
         $users = [];
         $fonctions = ['Directeur', 'Chef de Service', 'Responsable Programme', 'Coordinateur', 'Chargé de Mission'];
-        
-        for ($i = 0; $i < 20; $i++) {
+
+        for ($i = 0; $i < 5; $i++) {
             $userId = (string) Str::ulid();
             $users[] = $userId;
-            
+
             DB::table('users')->insert([
                 'id' => $userId,
                 'name' => $faker->name,
@@ -111,12 +111,13 @@ class DataSeeder extends Seeder
         foreach ($libellesProgrammes as $index => $libelle) {
             $programmeActiviteId = (string) Str::ulid();
             $programmesActivites[] = $programmeActiviteId;
-            
+
             DB::table('programmes_activites')->insert([
                 'id' => $programmeActiviteId,
                 'libelle' => $libelle,
                 'annee' => $faker->randomElement($annees),
-                'file' => $faker->optional()->word . '.pdf',
+                'file_pdf' => $faker->optional()->word . '.pdf',
+                'file_excel' => $faker->optional()->word . '.xlsx',
                 'date_generation' => $faker->dateTimeBetween('-1 year', 'now'),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -125,15 +126,15 @@ class DataSeeder extends Seeder
 
         // 4. Programmes budgétaires
         $programmesBudgetaires = [];
-        for ($i = 0; $i < 15; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $programmeBudgetaireId = (string) Str::ulid();
             $programmesBudgetaires[] = $programmeBudgetaireId;
-            
+
             DB::table('programmes_budgetaires')->insert([
                 'id' => $programmeBudgetaireId,
                 'libelle' => $faker->sentence(6),
                 'numero_programme' => 'P' . str_pad($i + 1, 3, '0', STR_PAD_LEFT),
-                'programme_activite_id' => $faker->randomElement($programmesActivites),
+                // 'programme_activite_id' => $faker->randomElement($programmesActivites),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -144,7 +145,7 @@ class DataSeeder extends Seeder
         for ($i = 0; $i < 30; $i++) {
             $objectifStrategiqueId = (string) Str::ulid();
             $objectifsStrategiques[] = $objectifStrategiqueId;
-            
+
             DB::table('objectifs_strategiques')->insert([
                 'id' => $objectifStrategiqueId,
                 'libelle' => 'Objectif stratégique : ' . $faker->sentence(8),
@@ -159,7 +160,7 @@ class DataSeeder extends Seeder
         for ($i = 0; $i < 60; $i++) {
             $actionId = (string) Str::ulid();
             $actions[] = $actionId;
-            
+
             DB::table('actions')->insert([
                 'id' => $actionId,
                 'libelle' => 'Action : ' . $faker->sentence(6),
@@ -174,7 +175,7 @@ class DataSeeder extends Seeder
         for ($i = 0; $i < 100; $i++) {
             $objectifSpecifiqueId = (string) Str::ulid();
             $objectifsSpecifiques[] = $objectifSpecifiqueId;
-            
+
             DB::table('objectifs_specifiques')->insert([
                 'id' => $objectifSpecifiqueId,
                 'libelle' => 'Objectif spécifique : ' . $faker->sentence(7),
@@ -186,37 +187,47 @@ class DataSeeder extends Seeder
 
         // 8. Activités
         $activites = [];
-        $periodes = ['T1 2024', 'T2 2024', 'T3 2024', 'T4 2024', 'S1 2024', 'S2 2024', 'Annuel 2024'];
-        
+        $periodes = DB::table('periodes')->pluck('id')->toArray(); // récupérer les id des périodes existantes
+
         for ($i = 0; $i < 150; $i++) {
             $activiteId = (string) Str::ulid();
             $activites[] = $activiteId;
-            
+
+            // Insertion dans la table activites
             DB::table('activites')->insert([
                 'id' => $activiteId,
                 'libelle' => 'Activité : ' . $faker->sentence(5),
                 'cout_previsionnel' => $faker->randomFloat(2, 10000, 1000000),
-                'periode' => $faker->randomElement($periodes),
                 'objectif_specifique_id' => $faker->randomElement($objectifsSpecifiques),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Attacher entre 1 et 4 périodes aléatoires à cette activité
+            $periodesChoisies = $faker->randomElements($periodes, rand(1, count($periodes)));
+
+            foreach ($periodesChoisies as $periodeId) {
+                DB::table('activite_periode')->insert([
+                    'activite_id' => $activiteId,
+                    'periode_id' => $periodeId,
+                ]);
+            }
         }
 
         // 9. Indicateurs programmes
         $indicateursProgrammes = [];
         $unitesMesure = ['%', 'Nombre', 'Km', 'Unité', 'Pourcentage', 'Ratio', 'Index'];
-        
+
         for ($i = 0; $i < 200; $i++) {
             $indicateurId = (string) Str::ulid();
             $indicateursProgrammes[] = $indicateurId;
-            
+
             // Déterminer aléatoirement quel type d'entité lier
             $linkType = $faker->randomElement(['objectif_specifique', 'objectif_strategique', 'activite']);
             $objectifSpecifiqueId = null;
             $objectifStrategiqueId = null;
             $activiteId = null;
-            
+
             switch ($linkType) {
                 case 'objectif_specifique':
                     $objectifSpecifiqueId = $faker->randomElement($objectifsSpecifiques);
@@ -228,7 +239,7 @@ class DataSeeder extends Seeder
                     $activiteId = $faker->randomElement($activites);
                     break;
             }
-            
+
             DB::table('indicateurs_programmes')->insert([
                 'id' => $indicateurId,
                 'libelle' => 'Indicateur : ' . $faker->sentence(4),
@@ -259,7 +270,7 @@ class DataSeeder extends Seeder
 
         // 11. Rapports d'activités
         $periodesRapport = ['Mensuel', 'Trimestriel', 'Semestriel', 'Annuel'];
-        
+
         for ($i = 0; $i < 25; $i++) {
             DB::table('rapports_activites')->insert([
                 'id' => (string) Str::ulid(),
@@ -279,7 +290,7 @@ class DataSeeder extends Seeder
             $structureId = $faker->randomElement($structures);
             $programmeBudgetaireId = $faker->randomElement($programmesBudgetaires);
             $key = $structureId . '|' . $programmeBudgetaireId;
-            
+
             if (!in_array($key, $pivotPairs)) {
                 $pivotPairs[] = $key;
                 DB::table('programme_budgetaire_structure')->insert([
@@ -295,11 +306,11 @@ class DataSeeder extends Seeder
             $userId = $faker->randomElement($users);
             $programmeBudgetaireId = $faker->randomElement($programmesBudgetaires);
             $key = $userId . '|' . $programmeBudgetaireId;
-            
+
             if (!in_array($key, $responsablePairs)) {
                 $responsablePairs[] = $key;
                 $dateDebut = $faker->dateTimeBetween('-2 years', '-6 months');
-                
+
                 DB::table('responsables')->insert([
                     'user_id' => $userId,
                     'programme_budgetaire_id' => $programmeBudgetaireId,
@@ -308,13 +319,6 @@ class DataSeeder extends Seeder
                 ]);
             }
         }
-
-        $structure = Structure::create(['nom' => 'DGESS', 'sigle' => 'DGESS', 'type_structure' => 'Direction generale']);
-        $user = User::create(['name' => 'admin', 'nom' => 'admin', 'prenom' => 'admin', 'telephone' => '77000000', 'matricule' => 'K983', 'fonction' => 'admin', 'email' => 'admin@admin.bf', 'password' => Hash::make('password'), 'structure_id' => $structure->id]);
-
-        $user->assignRole('Admin');
-        
-        $user->assignRole('Super-Admin');
 
         $this->command->info('Base de données seedée avec succès !');
         $this->command->info('Structures créées: ' . count($structures));

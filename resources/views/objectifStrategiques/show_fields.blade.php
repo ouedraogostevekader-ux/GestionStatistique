@@ -1,11 +1,13 @@
-<!-- Name Field -->
-<div class="form-group col-sm-12">
-    <label for="libelle">Libelle</label>:
-    {{ $objectifStrategique->libelle }}
-</div>
-<!-- Programme Budgetaire Id Field -->
-<div class="form-group col-sm-12">
-    <label for="programme_budgetaire_id">Programme Budgetaire</label>:
-    {{-- {{ $objectifStrategique->programmeBudgetaire->libelle ?? "Indisponible" }} --}}
-    {{ $objectifStrategique->programme_budgetaire_id }}
-</div>
+<dl class="row ">
+    <dt class="col-sm-4">Libellé :</dt>
+    <dd class="col-sm-8">{{ $objectifStrategique->libelle }}</dd>
+
+    <dt class="col-sm-4">Programme Budgetaire :</dt>
+    <dd class="col-sm-8">{{ $objectifStrategique->programmeBudgetaire->libelle ?? 'Indisponible' }}</dd>
+
+    <dt class="col-sm-4">Créé le :</dt>
+    <dd class="col-sm-8">{{ $objectifStrategique->created_at->format('d/m/Y à H:i') }}</dd>
+
+    <dt class="col-sm-4">Modifié le :</dt>
+    <dd class="col-sm-8">{{ $objectifStrategique->updated_at->format('d/m/Y à H:i') }}</dd>
+</dl>

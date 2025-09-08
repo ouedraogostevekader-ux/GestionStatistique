@@ -1,17 +1,19 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Roles')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Utilisateurs</h1>
+                    <h3>Utilisateurs : <span class="btn btn-info">({{ $users->count() }})</span></h3>
                 </div>
                 <div class="col-sm-6">
                     @can('user-create')
-                        <a class="btn btn-primary float-right" href="{{ route('users.create') }}">
-                            Ajouter
-                        </a>
+                        <div class="d-flex justify-content-end">
+                            <a class="btn btn-primary float-right" href="{{ route('users.create') }}">
+                                Ajouter
+                            </a>
+                        </div>
                     @endcan
                 </div>
             </div>
@@ -20,19 +22,7 @@
 
     <div class="content px-3">
         <div class="col-sm-10">
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
 
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
             <!-- Message erreur -->
         @section('scripts')
             <script>
@@ -47,12 +37,7 @@
                 }, 5000);
             </script>
         @endsection
-        {{-- @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif --}}
+
     </div>
     <div class="clearfix"></div>
 

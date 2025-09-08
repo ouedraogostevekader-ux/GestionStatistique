@@ -20,7 +20,6 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-
                         @can('manageUser')
                             <li class="nav-item">
                                 <a href="{{ route('users.index') }}"
@@ -30,15 +29,15 @@
                                 </a>
                             </li>
                         @endcan
-                        {{-- @can('manageRole') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('roles.index') }}"
-                                class="nav-link {{ Request::is('roles*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-person-check-fill"></i>
-                                <p>Roles</p>
-                            </a>
-                        </li>
-                        {{-- @endcan --}}
+                        @can('manageRole')
+                            <li class="nav-item">
+                                <a href="{{ route('roles.index') }}"
+                                    class="nav-link {{ Request::is('roles*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-person-check-fill"></i>
+                                    <p>Roles</p>
+                                </a>
+                            </li>
+                        @endcan
 
                         {{-- @can('managePermission') --}}
                         <li class="nav-item">
@@ -62,58 +61,8 @@
                 </li>
             @endcan
 
-            {{-- @can('manageRecrutementCommune')
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-house-fill"></i>
-                        <p>
-                            Commune
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-
-                    <ul class="nav nav-treeview">
-                        @can('recrutementCommune-list')
-                            <li class="nav-item">
-                                <a href="{{ route('recrutements.mesures-sociales') }}"
-                                    class="nav-link {{ Request::is('recrutements.mesures-sociales*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-clipboard-data-fill"></i>
-                                    <p>Mesures sociales</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('recrutementCommune-create')
-                            <li class="nav-item">
-                                <a href="{{ route('recrutements.commune') }}"
-                                    class="nav-link {{ Request::is('recrutements.commune*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>Recrutement</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('manageVeillecitoyenne')
-                            <li class="nav-item">
-                                <a href="{{ route('veillecitoyennes.index') }}"
-                                    class="nav-link {{ Request::is('veillecitoyennes*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>Veille citoyenne</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('managePdi')
-                            <li class="nav-item">
-                                <a href="{{ route('pdis.index') }}"
-                                    class="nav-link {{ Request::is('pdis*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>PDI</p>
-                                </a>
-                            </li>
-                        @endcan
-                    </ul>
-                </li>
-            @endcan --}}
             @can('manageParametre')
-                <li class="nav-item {{ Route::is('structures*') ? 'menu-open' : '' }}">
+                <li class="nav-item {{ Route::is('structures*') || Route::is('imports*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-gear-fill"></i>
                         <p>
@@ -126,78 +75,160 @@
                         <li class="nav-item">
                             <a href="{{ route('structures.index') }}"
                                 class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-house-gear"></i>
+                                <i class="nav-icon bi bi-building"></i>
                                 <p>Structures</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('imports.index') }}"
+                                class="nav-link {{ Route::is('imports*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <p>Imports</p>
                             </a>
                         </li>
                         {{-- @endcan --}}
                     </ul>
                 </li>
             @endcan
-            <li
-                class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
-                <a href="#"
-                    class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-folder-fill"></i>
-                    <p>
-                        Programmation
-                        <i class="nav-arrow bi bi-chevron-right"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="{{ route('programmebudgetaire.index') }}"
-                            class="nav-link {{ Request::is('programmebudgetaire*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-journal-text"></i>
-                            <p>Programme budgetaire</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('objectifStrategiques.index') }}"
-                            class="nav-link {{ Request::is('objectifStrategiques*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-bullseye"></i>
-                            <p>Objectifs Strategiques</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('actions.index') }}"
-                            class="nav-link {{ Request::is('actions*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-lightning-charge-fill"></i>
-                            <p>Actions</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('objectifs-specifiques.index') }}"
-                            class="nav-link {{ Request::is('objectifs-specifiques*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-bullseye"></i>
-                            <p>Objectifs spécifiques</p>
-                        </a>
-                    </li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('indicateurs-programmes.index') }}"
-                            class="nav-link {{ Request::is('indicateurs-programmes*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-graph-up"></i>
-                            <p>Indicateurs programme</p>
-                        </a>
-                    </li>
+            @can('manageDeProgramme')
+                <li
+                    class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-folder-fill"></i>
+                        <p>
+                            Programmation
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            @can('manageProgramme_Budgetaire')
+                                <a href="{{ route('programmebudgetaire.index') }}"
+                                    class="nav-link {{ Request::is('programmebudgetaire*') ? 'active' : '' }}"
+                                    title="Programme budgetaire">
+                                    <i class="nav-icon bi bi-journal-text"></i>
+                                    <p>Programme budgetaire</p>
+                                </a>
+                            @endcan
+                        </li>
+                        <li class="nav-item">
+                            @can('manageObjectif_Strategique')
+                                <a href="{{ route('objectifStrategiques.index') }}"
+                                    class="nav-link {{ Request::is('objectifStrategiques*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-bullseye"></i>
+                                    <p>Objectifs Strategiques</p>
+                                </a>
+                            @endcan
+                        </li>
+                        <li class="nav-item">
+                            @can('manageAction')
+                                <a href="{{ route('actions.index') }}"
+                                    class="nav-link {{ Request::is('actions*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-lightning-charge-fill"></i>
+                                    <p>Actions</p>
+                                </a>
+                            @endcan
+                        </li>
+                        <li class="nav-item">
+                            @can('manageObjectif_Specifique')
+                                <a href="{{ route('objectifs-specifiques.index') }}"
+                                    class="nav-link {{ Request::is('objectifs-specifiques*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-bullseye"></i>
+                                    <p>Objectifs spécifiques</p>
+                                </a>
+                            @endcan
+                        </li>
+                        <li class="nav-item">
+                            @can('manageActivite')
+                                <a href="{{ route('activites.index') }}"
+                                    class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                                    <p>Activités</p>
+                                </a>
+                            @endcan
+                        </li>
+                        <li class="nav-item">
+                            @can('manageIndicateur_Programme')
+                                <a href="{{ route('indicateurs-programmes.index') }}"
+                                    class="nav-link {{ Request::is('indicateurs-programmes*') ? 'active' : '' }}"
+                                    title="Indicateurs programme">
+                                    <i class="nav-icon bi bi-graph-up"></i>
+                                    <p>Indicateurs programme</p>
+                                </a>
+                            @endcan
+                        </li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('activites.index') }}"
-                            class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-clipboard-check-fill"></i>
-                            <p>Activités</p>
-                        </a>
-                    </li>
-                </ul>
+                    </ul>
+                </li>
+            @endcan
+
+            @can('manageProgramme_Activite')
+                <li class="nav-item {{ Route::is('programme-activites*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('programme-activites*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-journal-text"></i>
+                        <p>
+                            Programmes d'activités
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        {{-- @can('manageObjectifStrategique') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('programme-activites.index') }}"
+                                class="nav-link {{ Route::is('programme-activites.index*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-journal-text"></i>
+                                <p>Programmes budgétaires</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('programme-activites.liste') }}"
+                                class="nav-link {{ Route::is('programme-activites.liste*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-eye-fill"></i>
+                                <p>Programmes d'activités</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endcan
+            @can('manageRapport')
+                <li class="nav-item {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-journal-text"></i>
+                        <p>
+                            Rapports
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        {{-- @can('manageObjectifStrategique') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('rapportActivites.index') }}"
+                                class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-journal-text"></i>
+                                <p>Rapport d'activités</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('suivis.index') }}"
+                                class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-eye-fill"></i>
+                                <p>Suivis</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endcan
             <li class="nav-item">
-                <a href="{{ route('admin.statistique') }}"
-                    class="nav-link {{ Route::is('admin.statistique') ? 'active' : '' }}">
+                <a href="{{ route('statistiques.index') }}"
+                    class="nav-link {{ Request::is('*statistique*') ? 'active' : '' }}">
                     <i class="nav-icon bi bi-bar-chart-fill"></i>
                     <p>Statistiques</p>
                 </a>
             </li>
-            </li>
+
         </ul>
         <!--end::Sidebar Menu-->
     </nav>

@@ -34,7 +34,8 @@ class User extends Authenticatable
         'nom',
         'prenom',
         'fonction',
-        'structure_id'
+        'structure_id',
+        'is_active'
 
     ];
 
@@ -91,5 +92,15 @@ class User extends Authenticatable
             ->useLogName('User')
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+    public function programmesBudgetaires()
+    {
+        return $this->belongsToMany(ProgrammeBudgetaire::class, 'responsables')->withPivot('date_debut', 'date_fin');
+    }
+
+    /* Role administrateur */
+    public function isAdmin()
+    {
+        return $this->hasRole('admin') || $this->hasRole('Super-Admin');
     }
 }
