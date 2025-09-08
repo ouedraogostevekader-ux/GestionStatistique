@@ -143,7 +143,7 @@
                         <li class="nav-item">
                             @can('manageActivite')
                                 <a href="{{ route('activites.index') }}"
-                                    class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
+                                    class="nav-link {{ Request::is('activites.index*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-clipboard-check-fill"></i>
                                     <p>Activités</p>
                                 </a>
@@ -213,24 +213,24 @@
                     </a>
                     <ul class="nav nav-treeview">
                         @can('manageSuivi')
-                        <li class="nav-item">
-                            <a href="{{ route('suivis.index') }}"
-                                class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-eye-fill"></i>
-                                <p>Suivis</p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="{{ route('suivis.index') }}"
+                                    class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-eye-fill"></i>
+                                    <p>Suivis</p>
+                                </a>
+                            </li>
                         @endcan
                         @can('manageRapport_Activite')
-                        <li class="nav-item">
-                            <a href="{{ route('rapportActivites.index') }}"
-                                class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-journal-text"></i>
-                                <p>Rapport d'activités</p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="{{ route('rapportActivites.index') }}"
+                                    class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-journal-text"></i>
+                                    <p>Rapport d'activités</p>
+                                </a>
+                            </li>
                         @endcan
-                        
+
                     </ul>
                 </li>
             @endcan

@@ -153,7 +153,7 @@ class ActiviteController extends Controller implements HasMiddleware
     {
         if (Auth::user()->isAdmin()) {
             $objectifs = DB::select("SELECT * from objectifs_specifiques");
-            $activites = $this->activiteRepository->all();
+            $activites = Activite::onlyHorsProgramme()->get();
         } else {
             // Via la table pivot structure_programme_budgetaire
             $objectifs = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
@@ -164,7 +164,7 @@ class ActiviteController extends Controller implements HasMiddleware
             $activites = Activite::whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
                 $query->where('structure_id', Auth::user()->structure_id);
             })
-                ->get();
+                ->onlyHorsProgramme()->get();
         }
         return view('activites.index-hors-programme', compact('activites', 'objectifs'));
     }
