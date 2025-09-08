@@ -30,37 +30,41 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
      */
 public function index(Request $request)
 {
-    $query = IndicateurProgramme::with(['objectifSpecifique', 'objectifStrategique', 'activite']);
+    $filterType  = $request->input('filter_type');   // objectif_strategique | objectif_specifique | activite
+    $filterValue = $request->input('filter_value');  // id de la valeur choisie
 
-    // Filtrer par objectif spécifique
-    if ($request->filled('objectif_specifique_id')) {
-        $query->where('objectif_specifique_id', $request->objectif_specifique_id);
-    }
+    // Base de la requête
+    $query = IndicateurProgramme::with(['objectifStrategique', 'objectifSpecifique', 'activite']);
 
-    // Filtrer par objectif stratégique
-    if ($request->filled('objectif_strategique_id')) {
-        $query->where('objectif_strategique_id', $request->objectif_strategique_id);
-    }
-
-    // Filtrer par activité
-    if ($request->filled('activites_id')) {
-        $query->where('activites_id', $request->activites_id);
+    // Application du filtre dynamique
+    if ($filterType && $filterValue) {
+        if ($filterType === 'objectif_strategique') {
+            $query->where('objectif_strategique_id', $filterValue);
+        } elseif ($filterType === 'objectif_specifique') {
+            $query->where('objectif_specifique_id', $filterValue);
+        } elseif ($filterType === 'activite') {
+            $query->where('activites_id', $filterValue);
+        }
     }
 
     $indicateurs = $query->get();
 
-    // Pour alimenter les selects
-   $objectifsSpecifiques = ObjectifSpecifique::all();
-        $objectifsStrategiques = ObjectifsStrategique::all();
-        $activites = Activite::all();
+    // Préparation des données pour le filtre
+    $objectifsStrategiques = ObjectifsStrategique::all();
+    $objectifsSpecifiques  = ObjectifSpecifique::all();
+    $activites             = Activite::all();
 
     return view('ind_programme.index', compact(
         'indicateurs',
-        'objectifsSpecifiques',
+        'filterType',
+        'filterValue',
         'objectifsStrategiques',
+        'objectifsSpecifiques',
         'activites'
     ));
 }
+
+
 
 
     /**
