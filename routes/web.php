@@ -110,7 +110,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
         ->name('programmebudgetaire.store');
     //Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
-    Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
+    //Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
         ->name('programmes-budgetaires.create-duplicate');

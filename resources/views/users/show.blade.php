@@ -11,8 +11,8 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">
-                        <a class="btn btn-info float-right" href="{{ route('users.index') }}">
-                            Retour
+                        <a class="btn btn-secondary" href="javascript:history.back()">
+                            <i class="bi bi-arrow-left"></i> Retour
                         </a>
                     </div>
 

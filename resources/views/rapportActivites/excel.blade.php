@@ -40,7 +40,7 @@
                     <td>{{$firstIndicateur->unite_mesure ?? 'N/A'}}</td>
                     <td>{{$firstIndicateur->valeur_cible ?? 'N/A'}}</td>
                     <td>{{$lastSuivi->resultat_atteint ?? 'N/A'}}</td>
-                    <td >@if(is_numeric($firstIndicateur->valeur_cible)){{ number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($firstIndicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
+                    <td >@if(isset($lastSuivi) && is_numeric($firstIndicateur->valeur_cible)){{ number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($firstIndicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                     
                     <td >{{$lastSuivi->cout_effectif ?? '-'}}</td>
                     <td>{{$lastSuivi->observations ?? 'N/A'}}</td>
@@ -55,7 +55,7 @@
                         <td>{{$indicateur->unite_mesure}}</td>
                         <td>{{$indicateur->valeur_cible}}</td>
                         <td>{{$lastSuivi->resultat_atteint ?? 'N/A'}}</td>
-                        <td >@if(is_numeric($indicateur->valeur_cible)){{number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif </td>
+                        <td >@if(isset($lastSuivi) && is_numeric($indicateur->valeur_cible)){{number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif </td>
                         <td >{{$lastSuivi->cout_effectif ?? '-'}}</td>
                         <td>{{$lastSuivi->observations ?? 'N/A'}}</td>
                     </tr>
@@ -73,7 +73,7 @@
                     @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                         <tr>
                             <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" style="text-align: center; vertical-align: middle; font-weight: bold;">
-                                Objectif Spécifique {{$objectifsSpecifique->libelle}}
+                                Objectif spécifique {{$objectifsSpecifique->libelle}}
                             </td>
                             @php
                                 // Obtenir le premier indicateur de l'objectif opérationnel
@@ -84,7 +84,7 @@
                             <td>{{$firstIndi->unite_mesure ?? 'N/A' }}</td>
                             <td>{{$firstIndi->valeur_cible ?? 'N/A'}}</td>
                             <td>{{$lastSuiv->resultat_atteint ?? 'N/A'}}</td>
-                            <td>@if(is_numeric($firstIndi->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($firstIndi->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
+                            <td>@if(isset($lastSuiv) && is_numeric($firstIndi->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($firstIndi->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                             <td >{{$lastSuiv->cout_effectif ?? '-'}}</td>
                             <td>{{$lastSuiv->observations ?? 'N/A'}}</td>
                         </tr>
@@ -98,7 +98,7 @@
                                 <td>{{$indicateur->unite_mesure}}</td>
                                 <td>{{$indicateur->valeur_cible}}</td>
                                 <td>{{$lastSuiv->resultat_atteint ?? 'N/A'}}</td>
-                                <td>@if(is_numeric($indicateur->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
+                                <td>@if(isset($lastSuiv) && is_numeric($indicateur->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
                                 <td>{{$lastSuiv->cout_effectif ?? '-'}}</td>
                                 <td>{{$lastSuiv->observations ?? 'N/A'}}</td>
                             </tr>
@@ -115,6 +115,12 @@
                                     // Obtenir le premier indicateur de l'activité
                                     $firstI = $activite->indicateursProgrammes->first();
                                     $lastS = $firstI ? $firstI->suivis()->where('periode', $periode)->first() : null;
+                                    if($periodeModel->libelle == "T4"){
+                                        // recuperer le dernier suivis ordonné par le libellé de la relation période du suivi
+                                        $lastS = $firstI ? $firstI->suivis()
+                                        ->join('periodes', 'suivis.periode', '=', 'periodes.id')
+                                        ->orderBy('periodes.libelle', 'desc')->first() : null;
+                                    }
                                 @endphp
                                 <td class="center">{{$firstI->libelle ?? 'N/A'}}</td>
                                 <td class="center">{{$firstI->unite_mesure ?? 'N/A'}}</td>

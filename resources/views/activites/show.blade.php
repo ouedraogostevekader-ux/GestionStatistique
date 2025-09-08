@@ -120,8 +120,8 @@
         </div>
 
         <div class="mt-3 d-flex gap-2">
-            <a href="{{ route('activites.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Retour à la liste
+            <a class="btn btn-secondary" href="javascript:history.back()">
+                <i class="bi bi-arrow-left"></i> Retour
             </a>
             <a href="{{ route('activites.edit', $activite->id) }}" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Modifier
@@ -141,10 +141,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title mb-0">Indicateurs associés</h3>
             @can('indicateur_Programme-create')
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                data-bs-target="#addIndicateurModal">
-                <i class="fas fa-plus"></i> Ajouter un indicateur
-            </button>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#addIndicateurModal">
+                    <i class="fas fa-plus"></i> Ajouter un indicateur
+                </button>
             @endcan
         </div>
         <div class="card-body p-0">
