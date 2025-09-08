@@ -28,6 +28,11 @@ class Structure extends Model
         'type_structure',
     ];
 
+    public function tableaus()
+    {
+        return $this->hasMany(Tableau::class);
+    }
+
     public function users()
     {
         return $this->hasMany(User::class);

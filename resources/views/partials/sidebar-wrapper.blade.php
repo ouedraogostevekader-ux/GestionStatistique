@@ -176,6 +176,53 @@
                 </li>
             @endcan
 
+            {{-- @can('manageTableau') --}}
+            <li class="nav-item {{ Route::is('tableaus*') || Route::is('tableaus*') ? 'menu-open' : '' }}">
+                <a href="#"
+                    class="nav-link {{ Route::is('tableaus*') || Route::is('tableaus*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-journal-text"></i>
+                    <p>
+                        Tableaux
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {{-- @can('manageObjectifStrategique') --}}
+                    <li class="nav-item">
+                        <a href="{{ route('colonnes.index') }}"
+                            class="nav-link {{ Route::is('colonnes*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-journal-text"></i>
+                            <p>Colonnes</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('lignes.index') }}"
+                            class="nav-link {{ Request::is('lignes*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-eye-fill"></i>
+                            <p>lignes</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('tableaus.index') }}"
+                            class="nav-link {{ Request::is('tableaus*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-eye-fill"></i>
+                            <p>Elabore Tab</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('tableaus.index') }}"
+                            class="nav-link {{ Request::is('tableaus*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-eye-fill"></i>
+                            <p>Renseigne Tab</p>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+            {{-- @endcan --}}
+
             @can('manageRapport')
                 <li class="nav-item {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'menu-open' : '' }}">
                     <a href="#"
@@ -205,6 +252,7 @@
                     </ul>
                 </li>
             @endcan
+
             <li class="nav-item">
                 <a href="{{ route('statistiques.index') }}"
                     class="nav-link {{ Request::is('*statistique*') ? 'active' : '' }}">

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ActiviteController;
+use App\Http\Controllers\ColonneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\LigneController;
 use App\Http\Controllers\ObjectifStrategiqueController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -11,6 +13,7 @@ use App\Http\Controllers\StatistiquesController;
 use App\Http\Controllers\StructureController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
+use App\Http\Controllers\TableauController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -133,6 +136,10 @@ Route::middleware('auth')->group(function () {
     //Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
     Route::get('programme-activites/{id}/suivi', [App\Http\Controllers\ProgrammeActiviteController::class, 'suiviTableau'])->name('programme-activites.suivi');
     Route::get('programme-liste', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableProgrammeActivite'])->name('programme.liste');
+
+    Route::resource('tableaus', TableauController::class);
+    Route::resource('lignes', LigneController::class);
+    Route::resource('colonnes', ColonneController::class);
 });
 
 
