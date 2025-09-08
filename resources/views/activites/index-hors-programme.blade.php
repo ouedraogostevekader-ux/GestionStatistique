@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <ol class="breadcrumb mb-2">
-                        <li class="breadcrumb-item active">Liste des activités<span
+                        <li class="breadcrumb-item active">Liste des activités hors programme<span
                                 class="btn btn-success">({{ $activites->count() }})</span>
                         </li>
                     </ol>
