@@ -257,17 +257,6 @@
             </table>
         </div>
     </div>
-
-    {{-- <script>
-        function exportTableToExcel() {
-            const table = document.getElementById('programmeTable');
-            const ws = XLSX.utils.table_to_sheet(table);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Programme");
-            XLSX.writeFile(wb, `Programme_${document.querySelector('.programme-header').textContent.trim()}.xlsx`);
-        }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> --}}
 @endsection
 {{-- Valider un programme --}}
 <div class="modal fade" id="ValidationModal" tabindex="-1" aria-labelledby="ValidationModalLabel" aria-hidden="true">
