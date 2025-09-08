@@ -26,6 +26,7 @@ class Activite extends Model
         'created_by',
         'updated_by',
         'objectif_specifique_id',
+        'hors_programme'
     ];
 
     protected static function boot()
@@ -119,6 +120,9 @@ class Activite extends Model
 
     protected static function booted()
     {
+        static::addGlobalScope('nonHorsProgramme', function ($builder) {
+            $builder->where('hors_programme', false);
+        });
         static::deleting(function ($activite) {
             if ($activite->isForceDeleting()) {
                 $activite->indicateursProgrammes()->withTrashed()->forceDelete();
@@ -131,5 +135,15 @@ class Activite extends Model
         static::restoring(function ($activite) {
             $activite->indicateursProgrammes()->withTrashed()->restore();
         });
+    }
+    public function scopeWithHorsProgramme($query)
+    {
+        return $query->withoutGlobalScope('nonHorsProgramme');
+    }
+
+    public function scopeOnlyHorsProgramme($query)
+    {
+        return $query->withoutGlobalScope('nonHorsProgramme')
+            ->where('hors_programme', true);
     }
 }

@@ -52,13 +52,6 @@
                             <a href="{{ route('programmebudgetaire.index') }}" class="btn btn-outline-secondary">
                                 Retour à la liste
                             </a>
-                            {{-- @can('programme_Bugetaire-delete') --}}
-                            <button id="ValidationModal" type="button" class="btn btn-outline-success"
-                                title="Valider le programme budgetaire" data-bs-toggle="modal"
-                                data-bs-target="#ValidationModal">
-                                <i class="bi bi-check"></i> Valider ce programme
-                            </button>
-                            {{-- @endcan --}}
                         </div>
                     </div>
                 </div>
@@ -127,27 +120,6 @@
                 </div>
 
             </form>
-        </div>
-    </div>
-</div>
-
-{{-- Valider un programme --}}
-<div class="modal fade" id="ValidationModal" tabindex="-1" aria-labelledby="ValidationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ValidationModalLabel">Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-            </div>
-            <div class="modal-body" id="validateModalMessage">
-                <p class="alert alert-warning">Vous souhaitez valider ce programme budgétaire en tant que responsable ?
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <a href="{{ route('programmebudgetaire.validate', $programmeBudgetaire->id) }}" class="btn btn-warning"
-                    id="confirmLockBtn">Confirmer</a>
-            </div>
         </div>
     </div>
 </div>

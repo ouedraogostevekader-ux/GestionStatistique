@@ -187,9 +187,7 @@
                                         </td>
                                         <td class="text-center">
                                             @php
-                                                $indicateursCount = $activite->objectifSpecifique
-                                                    ? $activite->objectifSpecifique->indicateursProgrammes->count()
-                                                    : 0;
+                                                $indicateursCount = $activite->indicateursProgrammes->count();
                                             @endphp
                                             @if ($indicateursCount > 0)
                                                 <span class="badge bg-primary">{{ $indicateursCount }}</span>

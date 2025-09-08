@@ -15,7 +15,9 @@ use Carbon\Carbon;
 
 class ProgrammeActiviteController extends Controller implements HasMiddleware
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public static function middleware(): array
     {
@@ -168,7 +170,7 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
 
             // Attacher les programmes à ce programme d'activité
             $programmeActivite->programmesBudgetaires()->attach($request->programmes);
-            dd($programmeActivite->programmesBudgetaires);
+            // dd($programmeActivite->programmesBudgetaires);
             // Verrouiller les programmes (isActive = false)
             ProgrammeBudgetaire::whereIn('id', $request->programmes)->update(['isActive' => false]);
             // Attacher les programmes à ce programme d'activité

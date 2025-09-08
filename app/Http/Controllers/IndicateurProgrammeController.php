@@ -156,6 +156,6 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
         $indicateur = IndicateurProgramme::findOrFail($id);
         $indicateur->delete();
 
-        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur deleted successfully.');
+        return redirect()->route('indicateurs-programmes.index')->with('success', 'Indicateur supprimé avec succès.');
     }
 }

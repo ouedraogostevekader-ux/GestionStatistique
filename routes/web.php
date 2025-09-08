@@ -89,6 +89,7 @@ Route::middleware('auth')->group(function () {
 
     // Activites
     Route::resource('activites', ActiviteController::class);
+    Route::get('activites/hors-programme', [ActiviteController::class, 'indexActivitesHorsProgramme'])->name('activites.hors.programme');
     route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
     // Routes index (toujours accessible)
     Route::get('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'index'])
