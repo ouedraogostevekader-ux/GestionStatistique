@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h5 class="modal-title">Modifier le suivi</h5>
+    <h5 class="modal-title">Modifier une evaluation</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
