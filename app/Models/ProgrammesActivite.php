@@ -45,9 +45,9 @@ class ProgrammesActivite extends Model
             'programme_activite_programme_budgetaire',
             'programme_activite_id',
             'programme_budgetaire_id'
-        );
+        )->using(ProgrammeActiviteProgrammeBudgetaire::class)
+            ->withTimestamps();
     }
-
     public function rapportsActivites()
     {
         return $this->hasMany(RapportActivite::class);
