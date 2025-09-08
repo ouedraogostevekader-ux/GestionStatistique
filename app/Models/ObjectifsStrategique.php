@@ -34,7 +34,7 @@ class ObjectifsStrategique extends Model
     {
         return $this->hasMany(Action::class, 'objectif_strategique_id', 'id');
     }
-    
+
     public function indicateursProgrammes()
     {
         return $this->hasMany(IndicateurProgramme::class, 'objectif_strategique_id', 'id');
@@ -69,5 +69,26 @@ class ObjectifsStrategique extends Model
             ->useLogName('Objectif Strategique')
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+    protected static function booted()
+    {
+        static::deleting(function ($objectifStrategique) {
+            // Suppression logique en cascade pour les relations
+            if ($objectifStrategique->isForceDeleting()) {
+                // Suppression définitive
+                $objectifStrategique->actions()->withTrashed()->forceDelete();
+                $objectifStrategique->indicateursProgrammes()->withTrashed()->forceDelete();
+            } else {
+                // Suppression logique
+                $objectifStrategique->actions()->delete();
+                $objectifStrategique->indicateursProgrammes()->delete();
+            }
+        });
+
+        static::restoring(function ($objectifStrategique) {
+            // Restauration en cascade
+            $objectifStrategique->actions()->withTrashed()->restore();
+            $objectifStrategique->indicateursProgrammes()->withTrashed()->restore();
+        });
     }
 }

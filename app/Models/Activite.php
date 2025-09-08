@@ -89,4 +89,20 @@ class Activite extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($activite) {
+            if ($activite->isForceDeleting()) {
+                $activite->indicateursProgrammes()->withTrashed()->forceDelete();
+                $activite->periodes()->detach();
+            } else {
+                $activite->indicateursProgrammes()->delete();
+            }
+        });
+
+        static::restoring(function ($activite) {
+            $activite->indicateursProgrammes()->withTrashed()->restore();
+        });
+    }
 }

@@ -94,6 +94,13 @@ class ProgrammeBudgetaire extends Model
             // Supprimer relations pivot car cascadesondelete n'a pas ete fait sur les migrations
             $programme->structures()->detach();
             $programme->responsables()->detach();
+            if ($programme->isForceDeleting()) {
+                // Suppression définitive
+                $programme->objectifsStrategiques()->withTrashed()->forceDelete();
+            } else {
+                // Suppression logique
+                $programme->objectifsStrategiques()->delete();
+            }
         });
     }
 }

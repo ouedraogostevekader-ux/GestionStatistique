@@ -98,7 +98,7 @@ return new class extends Migration {
         Schema::create('activites', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->decimal('cout_previsionnel', 15, 2);
-            $table->string('libelle');
+            $table->string('libelle', 500);
             $table->year('annee')->default(date('Y'));
             $table->foreignUlid('objectif_specifique_id')->constrained('objectifs_specifiques')->restrictOnDelete()->cascadeOnUpdate();
             $table->softDeletes();

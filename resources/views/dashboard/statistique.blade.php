@@ -395,7 +395,7 @@
                         <h3 class="card-title">Top 10 - Activités les plus coûteuses</h3>
                     </div>
                     <div class="card-body p-0">
-                        <div class="table-responsive" style="max-height: 400px;">
+                        <div class="table-responsive" id="maxHeightStatistique">
                             <table class="table table-sm">
                                 <thead>
                                     <tr>
