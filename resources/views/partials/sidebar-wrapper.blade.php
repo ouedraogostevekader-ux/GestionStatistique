@@ -140,7 +140,15 @@
                                 </a>
                             @endcan
                         </li>
-
+                        <li class="nav-item">
+                            @can('manageActivite')
+                                <a href="{{ route('activites.index') }}"
+                                    class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                                    <p>Activités</p>
+                                </a>
+                            @endcan
+                        </li>
                         <li class="nav-item">
                             @can('manageIndicateur_Programme')
                                 <a href="{{ route('indicateurs-programmes.index') }}"
@@ -152,26 +160,6 @@
                             @endcan
                         </li>
 
-                        <li class="nav-item">
-                            @can('manageActivite')
-                                <a href="{{ route('activites.index') }}"
-                                    class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
-                                    <p>Activités</p>
-                                </a>
-                            @endcan
-                        </li>
-
-                        <li class="nav-item">
-                            @can('manageProgramme_Activite')
-                                <a href="{{ route('programme-activites.index') }}"
-                                    class="nav-link {{ Request::is('programme-activites*') ? 'active' : '' }}"
-                                    title="Programme d'activité">
-                                    <i class="nav-icon bi bi-journal"></i>
-                                    <p>Programmes d'activités</p>
-                                </a>
-                            @endcan
-                        </li>
                     </ul>
                 </li>
             @endcan
@@ -189,7 +177,7 @@
                         {{-- @can('manageObjectifStrategique') --}}
                         <li class="nav-item">
                             <a href="{{ route('programme-activites.index') }}"
-                                class="nav-link {{ Route::is('programme-activites*') ? 'active' : '' }}">
+                                class="nav-link {{ Route::is('programme-activites.index*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-journal-text"></i>
                                 <p>Programmes budgétaires</p>
                             </a>

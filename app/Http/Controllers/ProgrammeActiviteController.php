@@ -7,6 +7,7 @@ use App\Models\ProgrammesActivite;
 use App\Models\ProgrammeBudgetaire;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use App\Exports\ProgrammeTableauExport;
@@ -14,7 +15,9 @@ use Carbon\Carbon;
 
 class ProgrammeActiviteController extends Controller implements HasMiddleware
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public static function middleware(): array
     {
@@ -113,8 +116,19 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
             'programmes' => 'required|array',
             'programmes.*' => 'exists:programmes_budgetaires,id' // Corrigé ici
         ]);
-
+        DB::beginTransaction();
         try {
+            // Vérifier que tous les programmes sont validés (statut > 0)
+            $programmesNonValides = ProgrammeBudgetaire::whereIn('id', $request->programmes)
+                ->where('statut', '<=', 0)
+                ->get();
+
+            if ($programmesNonValides->isNotEmpty()) {
+                $nomsProgrammes = $programmesNonValides->pluck('libelle')->implode(', ');
+                return redirect()->back()
+                    ->with('error', 'Certains programmes ne sont pas validés : ' . $nomsProgrammes)
+                    ->withInput();
+            }
             // Récupérer les programmes sélectionnés
             $programmes = ProgrammeBudgetaire::with([
                 'objectifsStrategiques.indicateurs',
@@ -153,11 +167,17 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
                 'file_excel' => 'programme-activites/' . $excelFilename,
                 'date_generation' => Carbon::now(),
             ]);
+            // Attacher les programmes à ce programme d'activité
+            $programmeActivite->programmesBudgetaires()->attach($request->programmes);
 
+            // Verrouiller les programmes (isActive = false)
+            ProgrammeBudgetaire::whereIn('id', $request->programmes)->update(['isActive' => false]);
             // Attacher les programmes à ce programme d'activité
             //$programmeActivite->programmesBudgetaires()->attach($request->programmes);
+            DB::commit();
             return redirect()->route('programme-activites.liste')->with('success', 'Programme d\'activité généré avec succès !');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', 'Erreur lors de la génération : ' . $e->getMessage());
         }
     }
