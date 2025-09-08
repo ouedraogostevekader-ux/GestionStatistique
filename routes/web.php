@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
 use App\Http\Controllers\TableauController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProgrammeActiviteController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
@@ -91,6 +92,7 @@ Route::middleware('auth')->group(function () {
 
     // Activites
     Route::resource('activites', ActiviteController::class);
+    Route::get('activites-hors-programme', [ActiviteController::class, 'indexActivitesHorsProgramme'])->name('activites.hors.programme');
     route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
     // Routes index (toujours accessible)
     Route::get('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'index'])
@@ -111,6 +113,7 @@ Route::middleware('auth')->group(function () {
         ->name('programmebudgetaire.show');
     Route::post('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'store'])
         ->name('programmebudgetaire.store');
+    //Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Route::resource('programmebudgetaire', ProgrammeBudgetaireController::class);
     //Dupication programme budgétaires
     Route::get('/programmes-budgetaires/duplicate', [ProgrammeBudgetaireController::class, 'createDuplicate'])
@@ -133,13 +136,12 @@ Route::middleware('auth')->group(function () {
     Route::post('rapportActivites/visualiser', [App\Http\Controllers\RapportActiviteController::class, 'visualiser'])->name('rapportActivites.visualiser');
     Route::resource('programme-activites', App\Http\Controllers\ProgrammeActiviteController::class);
     Route::resource('rapportActivites', App\Http\Controllers\RapportActiviteController::class);
-    //Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
-    Route::get('programme-activites/{id}/suivi', [App\Http\Controllers\ProgrammeActiviteController::class, 'suiviTableau'])->name('programme-activites.suivi');
-    Route::get('programme-liste', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableProgrammeActivite'])->name('programme.liste');
-
-    Route::resource('tableaus', TableauController::class);
-    Route::resource('lignes', LigneController::class);
-    Route::resource('colonnes', ColonneController::class);
+    Route::get('programme-activites/{id}/tableau', [App\Http\Controllers\ProgrammeActiviteController::class, 'tableau'])->name('programme-activites.tableau');
+    Route::get('programme-activites/{id}/suivi', [ProgrammeActiviteController::class, 'suiviTableau'])->name('programme-activites.suivi');
+    Route::get('programme-liste', [ProgrammeActiviteController::class, 'tableProgrammeActivite'])->name('programme.liste');
+    Route::get('/programmes/export-excel', [ProgrammeActiviteController::class, 'exportExcel'])->name('programmes.export-excel');
+    Route::get('/programmes/export-pdf', [ProgrammeActiviteController::class, 'exportPDF'])->name('programmes.export-pdf');
+    Route::get('/programme-activites-liste', [ProgrammeActiviteController::class, 'listeProgrammeActivite'])->name('programme-activites.liste');
 });
 
 

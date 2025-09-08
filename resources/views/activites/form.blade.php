@@ -11,11 +11,12 @@
 
     <div class="mb-3">
         <label for="periodes" class="form-label">Périodes</label>
-        <select name="periodes[]" id="periodes" class="form-select @error('periodes') is-invalid @enderror" multiple
-            required>
+        <select name="periodes[]" id="periodes"
+            class="form-select {{ !isset($objectifSpecifique) ? 'select2' : '' }}  @error('periodes') is-invalid @enderror"
+            multiple required data-placeholder="Sélectionner une ou plusieurs périodes">
             <option value="">-- Sélectionner une ou plusieurs périodes --</option>
             @foreach ($periodes as $periode)
-                <option value="{{ $periode->id }}"
+                <option value="{{ $periode->id }}" class="select2-selection__choice"
                     {{ in_array($periode->id, old('periodes', $activitePeriodes ?? [])) ? 'selected' : '' }}>
                     {{ $periode->libelle }}
                 </option>
@@ -41,6 +42,16 @@
             class="form-control @error('cout_previsionnel') is-invalid @enderror"
             value="{{ old('cout_previsionnel', $activite->cout_previsionnel ?? '') }}" required>
         @error('cout_previsionnel')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+    {{-- ✅ Ajout du champ hors_programme --}}
+    <div class="mb-3 form-check">
+        <input type="checkbox" name="hors_programme" id="hors_programme" value="1"
+            class="form-check-input @error('hors_programme') is-invalid @enderror"
+            {{ old('hors_programme', $activite->hors_programme ?? false) ? 'checked' : '' }}>
+        <label class="form-check-label" for="hors_programme">Activité hors programme</label>
+        @error('hors_programme')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>

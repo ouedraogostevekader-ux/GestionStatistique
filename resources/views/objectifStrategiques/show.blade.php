@@ -11,7 +11,8 @@
                     </h3>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-default float-right" href="{{ route('objectifStrategiques.index') }}"> Retour
+                    <a class="btn btn-secondary" href="javascript:history.back()">
+                        <i class="bi bi-arrow-left"></i> Retour
                     </a>
                 </div>
             </div>

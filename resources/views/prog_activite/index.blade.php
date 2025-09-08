@@ -1,5 +1,8 @@
 @extends('layouts.admin')
-@section('breadcrumb', 'Programme d\'activités')
+@section('breadcrumb', 'Programme d\' activités')
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('dist/css/pg_budgetaire.css') }}">
+@endsection
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -36,12 +39,7 @@
                                                 <div class="d-flex justify-content-between align-items-center w-100">
                                                     <span>Programme {{ $programme->numero_programme }} :
                                                         {{ $programme->libelle }}</span>
-                                                    {{-- <div class="btn-group me-3" onclick="event.stopPropagation();">
-                                                        <a href="{{ route('programme-activites.tableau', $programme->id) }}"
-                                                            class="btn btn-success btn-sm">
-                                                            <i class="fas fa-table"></i> Tableau
-                                                        </a>
-                                                    </div> --}}
+
                                                 </div>
                                             </button>
                                         </h2>
@@ -57,7 +55,8 @@
                                                             <span class="info-box-icon"><i
                                                                     class="fas fa-bullseye"></i></span>
                                                             <div class="info-box-content">
-                                                                <span class="info-box-text">Objectifs Stratégiques</span>
+                                                                <span class="info-box-text">Objectifs
+                                                                    Stratégiques</span>
                                                                 <span
                                                                     class="info-box-number">{{ $programme->objectifsStrategiques->count() }}</span>
                                                             </div>
@@ -132,7 +131,7 @@
                                                                     aria-expanded="false"
                                                                     aria-controls="objectifContent{{ $programme->id }}_{{ $objIndex }}"
                                                                     style="background-color: #28a745; color: white; font-weight: bold;">
-                                                                    🎯 OS : {{ $objectif->libelle }}
+                                                                    {{ $objectif->libelle }}
                                                                 </button>
                                                             </h2>
                                                             <div id="objectifContent{{ $programme->id }}_{{ $objIndex }}"
@@ -190,7 +189,7 @@
                                                                                         aria-expanded="false"
                                                                                         aria-controls="actionContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}"
                                                                                         style="background-color: #17a2b8; color: white; margin-left: 20px;">
-                                                                                        📋 Action : {{ $action->libelle }}
+                                                                                        {{ $action->libelle }}
                                                                                     </button>
                                                                                 </h2>
                                                                                 <div id="actionContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}"
@@ -216,7 +215,6 @@
                                                                                                             aria-expanded="false"
                                                                                                             aria-controls="objSpecContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}_{{ $objSpecIndex }}"
                                                                                                             style="background-color: #ffc107; color: #212529; margin-left: 20px;">
-                                                                                                            🎯 OSp :
                                                                                                             {{ $objSpec->libelle }}
                                                                                                         </button>
                                                                                                     </h2>
@@ -285,9 +283,7 @@
                                                                                                                             class="card-body p-3">
                                                                                                                             <h6 class="card-title"
                                                                                                                                 style="color: #fd7e14;">
-                                                                                                                                ⚙️
-                                                                                                                                Act
-                                                                                                                                :
+
                                                                                                                                 {{ $activite->libelle }}
                                                                                                                             </h6>
 
@@ -404,43 +400,4 @@
             </div>
         </div>
     </div>
-
-    <style>
-        .info-box {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-radius: 5px;
-            color: white;
-        }
-
-        .info-box-icon {
-            font-size: 30px;
-            margin-right: 15px;
-        }
-
-        .info-box-content {
-            flex: 1;
-        }
-
-        .info-box-text {
-            display: block;
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .info-box-number {
-            display: block;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .accordion-button:not(.collapsed) {
-            background-color: var(--bs-accordion-active-bg) !important;
-        }
-
-        .accordion-button:focus {
-            box-shadow: none;
-        }
-    </style>
 @endsection

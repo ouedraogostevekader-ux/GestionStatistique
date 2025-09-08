@@ -22,7 +22,7 @@
         <div class="clearfix"></div>
 
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-body px-3">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="example2">
                         <thead>

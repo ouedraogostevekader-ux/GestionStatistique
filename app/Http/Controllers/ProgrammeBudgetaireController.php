@@ -19,7 +19,6 @@ use Illuminate\Support\Str;
 
 class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 {
-
     public function __construct()
     {
     }
@@ -31,6 +30,7 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
             new Middleware('permission:programme_Budgetaire-create', only: ['create', 'store']),
             new Middleware('permission:programme_Budgetaire-edit', only: ['edit', 'update']),
             new Middleware('permission:programme_Budgetaire-delete', only: ['destroy']),
+            // new Middleware('role:Correspondant', only: ['index', 'show']), // Au lieu de isAdminMiddleware
         ];
     }
 

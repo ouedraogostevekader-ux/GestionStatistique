@@ -9,7 +9,9 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="float-right">
-                        <a class="btn btn-secondary" href="{{ route('objectifs-specifiques.index') }}">Retour</a>
+                        <a class="btn btn-secondary" href="javascript:history.back()">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
                         @can('objectif_Specifique-edit')
                             <a class="btn btn-primary"
                                 href="{{ route('objectifs-specifiques.edit', $objectifSpecifique->id) }}">Modifier</a>
@@ -33,10 +35,13 @@
                             <dd class="col-sm-8">{{ $objectifSpecifique->libelle }}</dd>
 
                             <dt class="col-sm-4">Action :</dt>
-                            <dd class="col-sm-8">{{ $objectifSpecifique->action->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $objectifSpecifique->action ? $objectifSpecifique->action->libelle : 'N/A' }}</dd>
 
                             <dt class="col-sm-4">Objectif stratégique :</dt>
-                            <dd class="col-sm-8">{{ $objectifSpecifique->action->objectifStrategique->libelle }}</dd>
+                            <dd class="col-sm-8">
+                                {{ $objectifSpecifique->action ? $objectifSpecifique->action->objectifStrategique->libelle : 'N/A' }}
+                            </dd>
 
                             <dt class="col-sm-4">Créé le :</dt>
                             <dd class="col-sm-8">{{ $objectifSpecifique->created_at->format('d/m/Y à H:i') }}</dd>
@@ -94,7 +99,9 @@
         {{-- Activités --}}
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title mb-0">Activités associées</h3>
+                <h3 class="card-title mb-0">Activités associées <span
+                        class="text-success">({{ $objectifSpecifique->activites->count() }})</span>
+                </h3>
                 @can('activite-create')
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                         data-bs-target="#addActiviteModal">
@@ -103,37 +110,63 @@
                 @endcan
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Activité</th>
-                                <th>Période</th>
-                                <th>Coût prévisionnel</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($objectifSpecifique->activites as $activite)
+                @if ($objectifSpecifique->activites->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="example1">
+                            <thead>
                                 <tr>
-                                    <td>{{ $activite->libelle }}</td>
-                                    <td>{{ $activite->periode }}</td>
-                                    <td>{{ number_format($activite->cout_previsionnel, 0, ',', ' ') }} F CFA</td>
-                                    <td>
-                                        @can('activite-list')
+                                    <th>Activité</th>
+                                    <th>Période</th>
+                                    <th>Coût prévisionnel</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($objectifSpecifique->activites as $activite)
+                                    <tr>
+                                        <td>{{ $activite->libelle }}</td>
+                                        <td>
+                                            @foreach ($activite->periodes as $periode)
+                                                {{ $periode->libelle }},
+                                            @endforeach
+                                        </td>
+                                        <td>{{ number_format($activite->cout_previsionnel, 0, ',', ' ') }} F CFA</td>
+                                        <td>
+                                            {{--  @can('activite-list')
                                             <a href="{{ route('activites.show', $activite->id) }}"
                                                 class="btn btn-info btn-sm">Voir</a>
-                                        @endcan
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">Aucune activité associée</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                        @endcan --}}
+                                            <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <div class='btn-group'>
+                                                    <a href="{{ route('activites.show', $activite->id) }}"
+                                                        class="btn btn-info btn-xs" title="Voir"><i
+                                                            class="bi bi-eye-fill"></i></a>
+
+                                                    {{-- <a href="" class="btn btn-warning btn-xs" id="btnEdit"
+                                                        title="Modifier"><i class="bi bi-pencil-fill"></i></a>
+ --}}
+                                                    <button type="submit" class="btn btn-danger btn-xs"
+                                                        onclick="return confirm('Supprimer cette activité ?')"
+                                                        title="Supprimer">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">Aucune activité associée</td>
+                    </tr>
+                @endif
             </div>
         </div>
 
@@ -143,8 +176,12 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <form action="{{ route('activites.store') }}" method="POST">
-                        <input type="hidden" name="objectif" value="{{ $objectifSpecifique->id }}">
-                        @include('activites.form')
+                        <input type="hidden" name="activite" value="{{ $objectifSpecifique->id }}">
+                        @include('activites.form-create-modal')
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -203,4 +240,5 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/activites-table.js') }}"></script>
 @endsection

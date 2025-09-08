@@ -66,13 +66,14 @@
         <div class="clearfix"></div>
 
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-body px-3">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="example2">
                         <thead>
                             <tr>
                                 <th>Action</th>
                                 <th>Objectif strategique</th>
+                                <th>Objectifs spécifique</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -80,7 +81,9 @@
                             @foreach ($actions as $action)
                                 <tr>
                                     <td>{{ $action->libelle }}</td>
-                                    <td>{{ $action->objectifStrategique->libelle }}</td>
+                                    <td>{{ $action->objectifStrategique ? $action->objectifStrategique->libelle : '-' }}
+                                    </td>
+                                    <td>{{ $action->objectifsSpecifiques->count() }}</td>
                                     <td>
 
                                         <div class='btn-group'>

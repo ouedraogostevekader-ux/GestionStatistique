@@ -151,6 +151,10 @@
                     data-bs-target="#addIndicateurModal">
                     <i class="fas fa-plus"></i> Ajouter un indicateur
                 </button>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#addIndicateurModal">
+                    <i class="fas fa-plus"></i> Ajouter un indicateur
+                </button>
             @endcan
         </div>
         <div class="card-body p-0">

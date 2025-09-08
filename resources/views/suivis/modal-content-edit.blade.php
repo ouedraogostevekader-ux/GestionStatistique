@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h5 class="modal-title">Modifier le suivi</h5>
+    <h5 class="modal-title">Modifier une evaluation</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
@@ -36,7 +36,7 @@
 
         <div class="mb-3">
             <label class="form-label">Observation</label>
-            <textarea class="form-control" name="observations" value="{{$suivi->observations}}" rows="3"></textarea>
+            <textarea class="form-control" name="observations" rows="3">{{$suivi->observations}}</textarea>
         </div>
 
         <div class="modal-footer">
