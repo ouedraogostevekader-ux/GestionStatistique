@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
-
+use Illuminate\Support\Facades\Session;
 class Activite extends Model
 {
     use HasFactory, SoftDeletes;
@@ -22,6 +23,8 @@ class Activite extends Model
     protected $fillable = [
         'cout_previsionnel',
         'libelle',
+        'created_by',
+        'updated_by',
         'objectif_specifique_id',
     ];
 
@@ -32,6 +35,30 @@ class Activite extends Model
         static::creating(function ($model) {
             if (empty($model->id)) {
                 $model->id = Str::ulid();
+                $model->created_by = Auth::user()->id;
+            }
+        });
+
+        // Lors de la mise à jour
+        static::updating(function ($model) {
+            if ($model->created_by !== Auth::id()) {
+                // Redirection avec message
+                Session::flash('error', "Vous n'êtes pas autorisé à modifier cette activité.");
+                throw new \Illuminate\Validation\ValidationException(
+                    validator: \Illuminate\Support\Facades\Validator::make([], []),
+                    response: redirect()->back()
+                );
+            }
+            $model->updated_by = Auth::id();
+        });
+
+        static::deleting(function ($model) {
+            if ($model->created_by !== Auth::id()) {
+                Session::flash('error', "Vous n'êtes pas autorisé à supprimer cette activité.");
+                throw new \Illuminate\Validation\ValidationException(
+                    validator: \Illuminate\Support\Facades\Validator::make([], []),
+                    response: redirect()->back()
+                );
             }
         });
     }

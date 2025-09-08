@@ -7,11 +7,13 @@ use App\Http\Requests\UpdateActiviteRequest;
 use App\Models\Activite;
 use App\Models\ObjectifSpecifique;
 use App\Models\Periode;
+use App\Models\ProgrammeBudgetaire;
 use App\Repositories\ActiviteRepository;
 use DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ActiviteController extends Controller implements HasMiddleware
 {
@@ -32,25 +34,118 @@ class ActiviteController extends Controller implements HasMiddleware
         $this->activiteRepository = $activiteRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // dd(Auth::user()->structure->programmesBudgetaires[0]->objectifsStrategiques);
+        $annee = $request->get('annee', date('Y'));
+        $trimestre = $request->get('trimestre');
+        $objectifSpecifiqueId = $request->get('objectif_specifique_id');
+        $programmeBudgetaireId = $request->get('programme_budgetaire_id');
+        $coutMin = $request->get('cout_min');
+        $coutMax = $request->get('cout_max');
+
+        // Base query selon les permissions de l'utilisateur
         if (Auth::user()->isAdmin()) {
-            $objectifs = DB::select("SELECT * from objectifs_specifiques");
-            $activites = $this->activiteRepository->all();
-        } else {
-            // Via la table pivot structure_programme_budgetaire
-            $objectifs = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
-                $query->where('structure_id', Auth::user()->structure_id);
-            })
+            $activitesQuery = Activite::with([
+                'objectifSpecifique.action.objectifStrategique.programmeBudgetaire',
+                'periodes',
+                'objectifSpecifique.indicateursProgrammes'
+            ]);
+
+            $objectifs = ObjectifSpecifique::with('action.objectifStrategique.programmeBudgetaire')
+                ->orderBy('libelle')
                 ->get();
 
-            $activites = Activite::whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+            $programmes = ProgrammeBudgetaire::orderBy('libelle')->get();
+        } else {
+            $activitesQuery = Activite::with([
+                'objectifSpecifique.action.objectifStrategique.programmeBudgetaire',
+                'periodes',
+                'objectifSpecifique.indicateursProgrammes'
+            ])->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            });
+
+            $objectifs = ObjectifSpecifique::with('action.objectifStrategique.programmeBudgetaire')
+                ->whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                    $query->where('structure_id', Auth::user()->structure_id);
+                })
+                ->orderBy('libelle')
+                ->get();
+
+            $programmes = ProgrammeBudgetaire::whereHas('structures', function ($query) {
                 $query->where('structure_id', Auth::user()->structure_id);
             })
+                ->orderBy('libelle')
                 ->get();
         }
-        return view('activites.index', compact('activites', 'objectifs'));
+
+        // Filtrage par année
+        if ($annee) {
+            $activitesQuery->where('annee', $annee);
+        }
+
+        // Filtrage par trimestre
+        if ($trimestre) {
+            $periodeName = 'T' . $trimestre;
+            $activitesQuery->whereHas('periodes', function ($q) use ($periodeName) {
+                $q->where('libelle', $periodeName);
+            });
+        }
+
+        // Filtrage par objectif spécifique
+        if ($objectifSpecifiqueId) {
+            $activitesQuery->where('objectif_specifique_id', $objectifSpecifiqueId);
+        }
+
+        // Filtrage par programme budgétaire
+        if ($programmeBudgetaireId) {
+            $activitesQuery->whereHas('objectifSpecifique.action.objectifStrategique.programmeBudgetaire', function ($q) use ($programmeBudgetaireId) {
+                $q->where('id', $programmeBudgetaireId);
+            });
+        }
+
+        // Filtrage par coût
+        if ($coutMin) {
+            $activitesQuery->where('cout_previsionnel', '>=', $coutMin);
+        }
+        if ($coutMax) {
+            $activitesQuery->where('cout_previsionnel', '<=', $coutMax);
+        }
+
+        // Récupération des activités avec pagination
+        $activites = $activitesQuery->orderBy('created_at', 'desc')->paginate(1000);
+
+        // Données pour les filtres
+        $periodes = collect([
+            (object) ['id' => 1, 'libelle' => 'T1'],
+            (object) ['id' => 2, 'libelle' => 'T2'],
+            (object) ['id' => 3, 'libelle' => 'T3'],
+            (object) ['id' => 4, 'libelle' => 'T4']
+        ]);
+
+        $annees = range(date('Y') - 2, date('Y') + 2);
+
+        // Statistiques rapides
+        $stats = [
+            'total' => $activites->total(),
+            'budget_total' => $activitesQuery->sum('cout_previsionnel'),
+            'moyenne_cout' => $activitesQuery->avg('cout_previsionnel')
+        ];
+
+        return view('activites.index', compact(
+            'activites',
+            'objectifs',
+            'programmes',
+            'periodes',
+            'annees',
+            'stats',
+            'annee',
+            'trimestre',
+            'objectifSpecifiqueId',
+            'programmeBudgetaireId',
+            'coutMin',
+            'coutMax'
+        ));
     }
 
     /* Create Activite */
