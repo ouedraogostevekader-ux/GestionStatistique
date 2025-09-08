@@ -12,6 +12,7 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\CausesActivity;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -109,6 +110,24 @@ class User extends Authenticatable
     /* Role administrateur */
     public function isAdmin()
     {
-        return $this->hasRole('admin') || $this->hasRole('Super-Admin');
+        return $this->hasRole('Admin') || $this->hasRole('Super-Admin');
+    }
+
+    public function roleLabels(): string
+    {
+        if ($this->roles->isEmpty()) {
+            return 'Aucun rôle';
+        }
+
+        return $this->roles->map(function ($role) {
+            if (!empty($role->name)) {
+                return $role->name;
+            }
+
+            return Str::of($role->name)
+                ->replace(['-', '_'], ' ')
+                ->title()
+                ->toString();
+        })->implode(', ');
     }
 }
