@@ -177,7 +177,7 @@
                                     <td class="center">{{$lastS->resultat_atteint ?? 'N/E'}}</td>
                                     <td class="center">@if(isset($lastS) && is_numeric($firstI->valeur_cible)){{ number_format(($lastS->resultat_atteint ?? 0) *100 / ($firstI->valeur_cible ?? 1) , 2, ',', ' ')}} % @else N/A @endif</td>
                                     <td class="center">@if(isset($lastS) && is_numeric($lastS->resultat_atteint)){{isset($lastS->cout_effectif) ? number_format($lastS->cout_effectif, 2, ',', ' ') : 'N/E'}} @else N/E @endif</td>
-                                    <td class="center">{{isset($lastS) ? $lastS->getPeriode->libelle : ''}} : {{$lastS->observations ?? '-'}}</td>                                    
+                                    <td class="center">{{$lastS->observations ?? '-'}}</td>                                    
                                 </tr>
                             @endif 
                             @endforeach
