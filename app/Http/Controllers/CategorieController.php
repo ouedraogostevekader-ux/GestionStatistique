@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Str;
+
 
 use App\Models\Categorie;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class CategorieController extends Controller
 {

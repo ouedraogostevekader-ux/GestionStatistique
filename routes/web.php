@@ -16,6 +16,7 @@ use App\Http\Controllers\ProgrammeActiviteController;
 use App\Http\Controllers\TableauController;
 use App\Http\Controllers\LigneTableauController;
 use App\Http\Controllers\ColonneTableauController;
+use App\Http\Controllers\CategorieController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
@@ -176,6 +177,9 @@ Route::middleware('auth')->group(function () {
         // Routes pour supprimer lignes et colonnes
         Route::delete('/lignes/{id}', [LigneTableauController::class, 'destroy'])->name('lignes.destroy');
         Route::delete('/colonnes/{id}', [ColonneTableauController::class, 'destroy'])->name('colonnes.destroy');
+
+        // Routes categories de tableaux
+        route::resource('categories', App\Http\Controllers\CategorieController::class);
     });
 });
 

@@ -235,9 +235,10 @@
                 </li>
             @endcan
             @can('manageRapport_Activite')
-                <li class="nav-item {{ Route::is('tableau*') || Route::is('saisi*') ? 'menu-open' : '' }}">
+                <li
+                    class="nav-item {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('saisi*') ? 'menu-open' : '' }}">
                     <a href="#"
-                        class="nav-link {{ Route::is('tableau*') || Route::is('tableau*') ? 'active' : '' }}">
+                        class="nav-link {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('tableau*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-list"></i>
                         <p>
                             Tableaux
@@ -247,8 +248,8 @@
                     <ul class="nav nav-treeview">
                         @can('manageSuivi')
                             <li class="nav-item">
-                                <a href="{{ route('tableaux.index') }}"
-                                    class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
+                                <a href="{{ route('categories.index') }}"
+                                    class="nav-link {{ Route::is('categorie*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-eye-fill"></i>
                                     <p>Catégories</p>
                                 </a>
@@ -257,7 +258,7 @@
                         @can('manageRapport_Activite')
                             <li class="nav-item">
                                 <a href="{{ route('tableaux.index') }}"
-                                    class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                                    class="nav-link {{ Route::is('tableaux.index') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-journal-text"></i>
                                     <p>Liste des tableaux</p>
                                 </a>
