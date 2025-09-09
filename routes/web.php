@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProgrammeActiviteController;
+use App\Http\Controllers\TableauController;
+use App\Http\Controllers\LigneTableauController;
+use App\Http\Controllers\ColonneTableauController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
@@ -139,6 +142,32 @@ Route::middleware('auth')->group(function () {
     Route::get('/programmes/export-excel', [ProgrammeActiviteController::class, 'exportExcel'])->name('programmes.export-excel');
     Route::get('/programmes/export-pdf', [ProgrammeActiviteController::class, 'exportPDF'])->name('programmes.export-pdf');
     Route::get('/programme-activites-liste', [ProgrammeActiviteController::class, 'listeProgrammeActivite'])->name('programme-activites.liste');
+
+    // Routes pour les tableaux
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    
+    // Routes principales pour tableaux
+    Route::get('/tableaux', [TableauController::class, 'index'])->name('tableaux.index');
+    Route::get('/tableaux/create', [TableauController::class, 'create'])->name('tableaux.create');
+    Route::post('/tableaux', [TableauController::class, 'store'])->name('tableaux.store');
+    Route::get('/tableaux/{id}', [TableauController::class, 'show'])->name('tableaux.show');
+    Route::get('/tableaux/{id}/edit', [TableauController::class, 'edit'])->name('tableaux.edit');
+    Route::put('/tableaux/{id}', [TableauController::class, 'update'])->name('tableaux.update');
+    Route::delete('/tableaux/{id}', [TableauController::class, 'destroy'])->name('tableaux.destroy');
+    
+    // Routes pour la structure des tableaux
+    Route::get('/tableaux/{id}/structure', [TableauController::class, 'structureTableau'])->name('tableaux.structure');
+    Route::post('/tableaux/{id}/add-ligne', [TableauController::class, 'addLigne'])->name('tableaux.add-ligne');
+    Route::post('/tableaux/{id}/add-colonne', [TableauController::class, 'addColonne'])->name('tableaux.add-colonne');
+    
+    // Routes pour la saisie de données
+    Route::get('/tableaux/{id}/saisie', [TableauController::class, 'saisirDonnees'])->name('tableaux.saisie');
+    Route::post('/tableaux/{id}/save-donnees', [TableauController::class, 'saveDonnees'])->name('tableaux.save-donnees');
+    
+    // Routes pour supprimer lignes et colonnes
+    Route::delete('/lignes/{id}', [LigneTableauController::class, 'destroy'])->name('lignes.destroy');
+    Route::delete('/colonnes/{id}', [ColonneTableauController::class, 'destroy'])->name('colonnes.destroy');
+});
 });
 
 
