@@ -32,7 +32,7 @@
             </div>
 
             <!-- Section des filtres -->
-            <div class="card mb-3" id="filters-section" style="display: none;">
+            <div class="card mb-3" id="filters-section">
                 <div class="card-header">
                     <h6 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtres de recherche</h6>
                 </div>
@@ -139,13 +139,13 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Activité</th>
-                                    <th style="width: 100px;">Année</th>
-                                    <th style="width: 120px;">Périodes</th>
-                                    <th style="width: 140px;">Coût prévisionnel</th>
+                                    <th>Année</th>
+                                    <th>Périodes</th>
+                                    <th>Coût prévisionnel</th>
                                     <th>Objectif spécifique</th>
-                                    <th style="width: 80px;">Indicateurs</th>
-                                    <th style="width: 120px;">Date création</th>
-                                    <th style="width: 120px;">Action</th>
+                                    <th>Indicateurs</th>
+                                    <th>Date création</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -153,7 +153,7 @@
                                     <tr>
                                         <td class="text-center">{{ $activites->firstItem() + $key }}</td>
                                         <td>
-                                            <div class="fw-semibold">{{ Str::limit($activite->libelle, 60) }}</div>
+                                            <div class="fw-semibold">{{ Str::limit($activite->libelle, 320) }}</div>
                                             @if ($activite->objectifSpecifique && $activite->objectifSpecifique->action)
                                                 <small class="text-muted">
                                                     {{ Str::limit($activite->objectifSpecifique->action->objectifStrategique->programmeBudgetaire->libelle ?? '', 40) }}

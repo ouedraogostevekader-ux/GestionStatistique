@@ -34,3 +34,25 @@
 .accordion-button:focus {
     box-shadow: none;
 }
+
+#tabBudgetaire {
+    background-color: #194f2d;
+    color: white;
+    font-weight: bold;
+}
+
+#actionColapse {
+    background-color: #444309;
+    color: white;
+    margin-left: 20px;
+}
+
+#osColapse {
+    background-color: #ffc107;
+    color: #212529;
+    margin-left: 20px;
+}
+
+#activiteColapse {
+    border-left: 4px solid #fd7e14;
+}

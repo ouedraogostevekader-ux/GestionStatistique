@@ -18,10 +18,11 @@
                     </div>
                     <div class="card-body">
                         @forelse($programmes as $programme)
+                            <hr>
                             <div class="btn-group me-3" onclick="event.stopPropagation();">
                                 <a href="{{ route('programme-activites.show', $programme->id) }}"
-                                    class="btn btn-success btn-sm">
-                                    <i class="fas fa-table"></i> Afficher le tableau
+                                    class="btn btn-danger btn-sm">
+                                    <i class="bi bi-file"></i> Visualiser le programme
                                 </a>
                             </div>
                             <div class="programme-item mb-4">
@@ -32,8 +33,7 @@
                                             <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#programmeContent{{ $programme->id }}" aria-expanded="false"
-                                                aria-controls="programmeContent{{ $programme->id }}"
-                                                style="background-color: #007bff; color: white; font-weight: bold;">
+                                                aria-controls="programmeContent{{ $programme->id }}" id="tabBudgetaire">
                                                 <div class="d-flex justify-content-between align-items-center w-100">
                                                     <span>Programme {{ $programme->numero_programme }} :
                                                         {{ $programme->libelle }}</span>
@@ -127,8 +127,7 @@
                                                                     data-bs-toggle="collapse"
                                                                     data-bs-target="#objectifContent{{ $programme->id }}_{{ $objIndex }}"
                                                                     aria-expanded="false"
-                                                                    aria-controls="objectifContent{{ $programme->id }}_{{ $objIndex }}"
-                                                                    style="background-color: #28a745; color: white; font-weight: bold;">
+                                                                    aria-controls="objectifContent{{ $programme->id }}_{{ $objIndex }}">
                                                                     {{ $objectif->libelle }}
                                                                 </button>
                                                             </h2>
@@ -186,7 +185,7 @@
                                                                                         data-bs-target="#actionContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}"
                                                                                         aria-expanded="false"
                                                                                         aria-controls="actionContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}"
-                                                                                        style="background-color: #17a2b8; color: white; margin-left: 20px;">
+                                                                                        id="actionColapse">
                                                                                         {{ $action->libelle }}
                                                                                     </button>
                                                                                 </h2>
@@ -194,8 +193,7 @@
                                                                                     class="accordion-collapse collapse"
                                                                                     aria-labelledby="actionHeader{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}"
                                                                                     data-bs-parent="#actionAccordion{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}">
-                                                                                    <div class="accordion-body"
-                                                                                        style="margin-left: 20px;">
+                                                                                    <div class="accordion-body">
 
                                                                                         <!-- Objectifs Spécifiques -->
                                                                                         @foreach ($action->objectifsSpecifiques as $objSpecIndex => $objSpec)
@@ -212,7 +210,7 @@
                                                                                                             data-bs-target="#objSpecContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}_{{ $objSpecIndex }}"
                                                                                                             aria-expanded="false"
                                                                                                             aria-controls="objSpecContent{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}_{{ $objSpecIndex }}"
-                                                                                                            style="background-color: #ffc107; color: #212529; margin-left: 20px;">
+                                                                                                            id="osColapse">
                                                                                                             {{ $objSpec->libelle }}
                                                                                                         </button>
                                                                                                     </h2>
@@ -220,8 +218,8 @@
                                                                                                         class="accordion-collapse collapse"
                                                                                                         aria-labelledby="objSpecHeader{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}_{{ $objSpecIndex }}"
                                                                                                         data-bs-parent="#objSpecAccordion{{ $programme->id }}_{{ $objIndex }}_{{ $actionIndex }}_{{ $objSpecIndex }}">
-                                                                                                        <div class="accordion-body"
-                                                                                                            style="margin-left: 40px;">
+                                                                                                        <div
+                                                                                                            class="accordion-body">
 
                                                                                                             <!-- Indicateurs objectif spécifique -->
                                                                                                             @if ($objSpec->indicateurs->count() > 0)
@@ -276,11 +274,11 @@
                                                                                                                 </h6>
                                                                                                                 @foreach ($objSpec->activites as $activiteIndex => $activite)
                                                                                                                     <div class="card mb-2"
-                                                                                                                        style="border-left: 4px solid #fd7e14;">
+                                                                                                                        id="activiteColapse">
                                                                                                                         <div
-                                                                                                                            class="card-body p-3">
-                                                                                                                            <h6 class="card-title"
-                                                                                                                                style="color: #fd7e14;">
+                                                                                                                            class="card-body ">
+                                                                                                                            <h6
+                                                                                                                                class="card-title">
 
                                                                                                                                 {{ $activite->libelle }}
                                                                                                                             </h6>
@@ -290,36 +288,20 @@
                                                                                                                                 <div
                                                                                                                                     class="col-md-6">
                                                                                                                                     <small><strong>Coût:</strong>
-                                                                                                                                        {{ number_format($activite->cout_previsionnel) }}
+                                                                                                                                        {{ number_format($activite->cout_previsionnel, 0, ',', ' ') }}
                                                                                                                                         FCFA</small>
                                                                                                                                 </div>
                                                                                                                                 <div
                                                                                                                                     class="col-md-6">
-                                                                                                                                    @php
-                                                                                                                                        $periodes = $activite->periodes
-                                                                                                                                            ->pluck(
-                                                                                                                                                'libelle',
-                                                                                                                                            )
-                                                                                                                                            ->toArray();
-                                                                                                                                    @endphp
-                                                                                                                                    <small><strong>Périodes:</strong>
-                                                                                                                                        @if (in_array('T1', $periodes) || in_array('Trimestre 1', $periodes))
+                                                                                                                                    @if ($activite->periodes->count() > 0)
+                                                                                                                                        @foreach ($activite->periodes as $periode)
                                                                                                                                             <span
-                                                                                                                                                class="badge bg-success">T1</span>
-                                                                                                                                        @endif
-                                                                                                                                        @if (in_array('T2', $periodes) || in_array('Trimestre 2', $periodes))
-                                                                                                                                            <span
-                                                                                                                                                class="badge bg-success">T2</span>
-                                                                                                                                        @endif
-                                                                                                                                        @if (in_array('T3', $periodes) || in_array('Trimestre 3', $periodes))
-                                                                                                                                            <span
-                                                                                                                                                class="badge bg-success">T3</span>
-                                                                                                                                        @endif
-                                                                                                                                        @if (in_array('T4', $periodes) || in_array('Trimestre 4', $periodes))
-                                                                                                                                            <span
-                                                                                                                                                class="badge bg-success">T4</span>
-                                                                                                                                        @endif
-                                                                                                                                    </small>
+                                                                                                                                                class="badge bg-success me-1">{{ $periode->libelle }}</span>
+                                                                                                                                        @endforeach
+                                                                                                                                    @else
+                                                                                                                                        <span
+                                                                                                                                            class="text-muted">-</span>
+                                                                                                                                    @endif
                                                                                                                                 </div>
                                                                                                                             </div>
 
