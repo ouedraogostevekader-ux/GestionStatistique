@@ -241,6 +241,13 @@
                     <p>Statistiques</p>
                 </a>
             </li>
+             <li class="nav-item">
+                <a href="{{ route('tableaux.index') }}"
+                    class="nav-link {{ Request::is('*statistique*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-bar-chart-fill"></i>
+                    <p>Tableaux</p>
+                </a>
+            </li>
 
         </ul>
         <!--end::Sidebar Menu-->
