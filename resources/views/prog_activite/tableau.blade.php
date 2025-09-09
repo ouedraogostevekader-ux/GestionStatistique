@@ -1,6 +1,6 @@
 {{-- resources/views/programmes/tableau.blade.php --}}
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Programme d\' activités')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('dist/css/tableau_pg_a.css') }}">
 @endsection

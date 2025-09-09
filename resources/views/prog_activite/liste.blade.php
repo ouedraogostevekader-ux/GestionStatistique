@@ -1,6 +1,6 @@
 {{-- resources/views/programme-activites/index.blade.php --}}
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Programme d\' activités')
 @section('content')
     <div class="container-fluid">
         <div class="row">

@@ -442,7 +442,7 @@ class ActiviteController extends Controller implements HasMiddleware
         return redirect()->back()->with("success", "L'activé a été supprimée.");
     }
 
-    public function delete($id)
+    public function deleteHorsProgramme($id)
     {
         $activite = Activite::onlyHorsProgramme()->where('id', $id)->first();
         $activite->delete();

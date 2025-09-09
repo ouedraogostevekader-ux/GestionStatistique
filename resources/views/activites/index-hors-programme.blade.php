@@ -78,8 +78,8 @@
                                     <td>{{ $activite->indicateursProgrammes->count() }}</td>
                                     <td>{{ $activite->updated_at->format('d/m/Y, H:i') }}</td>
                                     <td>
-                                        <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
-                                            class="d-inline">
+                                        <form action="{{ route('activites.hors.programme.delete', $activite->id) }}"
+                                            method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <div class='btn-group'>
