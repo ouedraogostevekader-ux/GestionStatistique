@@ -317,38 +317,38 @@
                                                                                                                         id="activiteColapse">
                                                                                                                         <div
                                                                                                                             class="card-body">
-                                                                                                                            <h6 class="card-title text-break"
-                                                                                                                                style="word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">
-                                                                                                                                {{ $activite->libelle }}
-                                                                                                                            </h6>
+                                                                                                                            <div
+                                                                                                                                class="mb-2">
+                                                                                                                                <h6 class="card-title text-break mb-2"
+                                                                                                                                    style="word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">
+                                                                                                                                    {{ $activite->libelle }}
+                                                                                                                                </h6>
+                                                                                                                            </div>
 
                                                                                                                             <div
-                                                                                                                                class="row">
-                                                                                                                                <div
-                                                                                                                                    class="col-12 mb-2">
-                                                                                                                                    <small><strong>Coût:</strong>
-                                                                                                                                        {{ number_format($activite->cout_previsionnel, 0, ',', ' ') }}
-                                                                                                                                        FCFA
-                                                                                                                                    </small>
-                                                                                                                                </div>
-                                                                                                                                <div
-                                                                                                                                    class="col-12">
-                                                                                                                                    <small><strong>Périodes:
-                                                                                                                                        </strong></small>
-                                                                                                                                    @if ($activite->periodes->count() > 0)
-                                                                                                                                        <div class="d-flex flex-wrap"
-                                                                                                                                            style="gap: 0.25rem;">
-                                                                                                                                            @foreach ($activite->periodes as $periode)
-                                                                                                                                                <span
-                                                                                                                                                    class="badge bg-success"
-                                                                                                                                                    style="font-size: 0.75em;">{{ $periode->libelle }}</span>
-                                                                                                                                            @endforeach
-                                                                                                                                        </div>
-                                                                                                                                    @else
-                                                                                                                                        <span
-                                                                                                                                            class="text-muted">-</span>
-                                                                                                                                    @endif
-                                                                                                                                </div>
+                                                                                                                                class="mb-2">
+                                                                                                                                <small><strong>Coût:</strong>
+                                                                                                                                    {{ number_format($activite->cout_previsionnel, 0, ',', ' ') }}
+                                                                                                                                    FCFA
+                                                                                                                                </small>
+                                                                                                                            </div>
+
+                                                                                                                            <div
+                                                                                                                                class="mb-2">
+                                                                                                                                <small><strong>Périodes:</strong></small>
+                                                                                                                                @if ($activite->periodes->count() > 0)
+                                                                                                                                    <div class="d-flex flex-wrap mt-1"
+                                                                                                                                        style="gap: 0.25rem;">
+                                                                                                                                        @foreach ($activite->periodes as $periode)
+                                                                                                                                            <span
+                                                                                                                                                class="badge bg-success"
+                                                                                                                                                style="font-size: 0.75em;">{{ $periode->libelle }}</span>
+                                                                                                                                        @endforeach
+                                                                                                                                    </div>
+                                                                                                                                @else
+                                                                                                                                    <span
+                                                                                                                                        class="text-muted">-</span>
+                                                                                                                                @endif
                                                                                                                             </div>
 
                                                                                                                             @if ($activite->indicateurs->count() > 0)
