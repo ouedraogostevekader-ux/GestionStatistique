@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreActiviteIndicateurRequest;
 use App\Http\Requests\StoreActiviteRequest;
+use App\Http\Requests\UpdateActiviteIndicateurRequest;
 use App\Http\Requests\UpdateActiviteRequest;
 use App\Models\Activite;
+use App\Models\IndicateurProgramme;
 use App\Models\ObjectifSpecifique;
 use App\Models\Periode;
 use App\Models\ProgrammeBudgetaire;
@@ -214,6 +217,67 @@ class ActiviteController extends Controller implements HasMiddleware
         return redirect()->route('activites.index')->with('success', "L'activité " . $activite->libelle . " a été enregistrée.");
     }
 
+    public function storeActiviteIndicateur(StoreActiviteIndicateurRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validated = $request->validated();
+            //   dd($validated);
+            // Créer l'activité
+            $activite = $this->activiteRepository->create($validated);
+
+            // Attacher les périodes sélectionnées
+            if (isset($validated['periodes']) && !empty($validated['periodes'])) {
+                $periodesData = [];
+                foreach ($validated['periodes'] as $periodeId) {
+                    $periodesData[$periodeId] = ['annee' => $validated['annee']];
+                }
+                $activite->periodes()->attach($periodesData);
+            }
+
+            // Créer les indicateurs associés
+            if (isset($validated['indicateurs']) && !empty($validated['indicateurs'])) {
+                foreach ($validated['indicateurs'] as $indicateurData) {
+                    // Nettoyer les données vides
+                    $indicateurData = array_filter($indicateurData, function ($value) {
+                        return !is_null($value) && $value !== '';
+                    });
+
+                    if (!empty($indicateurData) && isset($indicateurData['libelle'])) {
+                        IndicateurProgramme::create([
+                            'libelle' => $indicateurData['libelle'],
+                            'unite_mesure' => $indicateurData['unite_mesure'],
+                            'valeur_ref' => $indicateurData['valeur_ref'],
+                            'valeur_cible' => $indicateurData['valeur_cible'],
+                            'annee' => $indicateurData['annee'] ?? $validated['annee'],
+                            // 'objectif_specifique_id' => $validated['objectif_specifique_id'],
+                            'activites_id' => $activite->id,
+                            // Récupérer l'objectif stratégique via les relations
+                            //'objectif_strategique_id' => $activite->objectifSpecifique->action->objectif_strategique_id ?? null,
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            if ($request->activite) {
+                return redirect()->back()
+                    ->with('success', 'Activité avec indicateurs créée avec succès.');
+            }
+
+            return redirect()->route('activites.index')
+                ->with('success', "L'activité '{$activite->libelle}' avec ses indicateurs a été enregistrée avec succès.");
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
+        }
+    }
     public function edit($ulid)
     {
         $activite = Activite::with('periodes')->findOrFail($ulid);
@@ -287,6 +351,69 @@ class ActiviteController extends Controller implements HasMiddleware
         }
 
         return redirect()->route('activites.index')->with('success', "L'activité a été mise à jour");
+    }
+
+    /* Update Activite with indicateur */
+    public function updateActiviteIndicateur(UpdateActiviteIndicateurRequest $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validated = $request->validated();
+            $activite = Activite::findOrFail($id);
+            // Mettre à jour l'activité
+            $activite->update($validated);
+
+            // Mettre à jour les périodes
+            if (isset($validated['periodes']) && !empty($validated['periodes'])) {
+                // Détacher toutes les anciennes périodes
+                $activite->periodes()->detach();
+
+                // Attacher les nouvelles périodes
+                $periodesData = [];
+                foreach ($validated['periodes'] as $periodeId) {
+                    $periodesData[$periodeId] = ['annee' => $validated['annee']];
+                }
+                $activite->periodes()->attach($periodesData);
+            }
+
+            // Mettre à jour les indicateurs
+            if (isset($validated['indicateurs'])) {
+                // Supprimer les anciens indicateurs liés à cette activité
+                IndicateurProgramme::where('activites_id', $activite->id)->delete();
+
+                // Créer les nouveaux indicateurs
+                foreach ($validated['indicateurs'] as $indicateurData) {
+                    // Nettoyer les données vides
+                    $indicateurData = array_filter($indicateurData, function ($value) {
+                        return !is_null($value) && $value !== '';
+                    });
+
+                    if (!empty($indicateurData) && isset($indicateurData['libelle'])) {
+                        IndicateurProgramme::create([
+                            'libelle' => $indicateurData['libelle'],
+                            'unite_mesure' => $indicateurData['unite_mesure'],
+                            'valeur_ref' => $indicateurData['valeur_ref'],
+                            'valeur_cible' => $indicateurData['valeur_cible'],
+                            'annee' => $indicateurData['annee'] ?? $validated['annee'],
+                            'activites_id' => $activite->id,
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('activites.index')
+                ->with('success', "L'activité '{$activite->libelle}' avec ses indicateurs a été mise à jour avec succès.");
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Une erreur est survenue lors de la mise à jour : ' . $e->getMessage());
+        }
     }
 
     public function show($id)

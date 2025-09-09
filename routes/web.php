@@ -93,8 +93,11 @@ Route::middleware('auth')->group(function () {
     Route::get('activites-hors-programme/show/{id}', [ActiviteController::class, 'showHorsProgramme'])->name('activites.hors.programme.show');
     Route::get('activites-hors-programme/edit/{id}', [ActiviteController::class, 'editHorsProgramme'])->name('activites.hors.programme.edit');
     Route::put('activites-hors-programme/update/{id}', [ActiviteController::class, 'updateHorsProgramme'])->name('activites.hors.programme.update');
+    Route::post('activites-indicateur/store', [ActiviteController::class, 'storeActiviteIndicateur'])->name('activites.indicateur.store');
+    Route::put('activites-indicateur/update/{id}', [ActiviteController::class, 'updateActiviteIndicateur'])->name('activites.indicateur.update');
     Route::delete('activites-hors-programme/delete/{id}', [ActiviteController::class, 'deleteHorsProgramme'])->name('activites.hors.programme.delete');
     route::resource('objectifStrategiques', App\Http\Controllers\ObjectifStrategiqueController::class);
+
     // Routes index (toujours accessible)
     Route::get('/programmebudgetaire', [ProgrammeBudgetaireController::class, 'index'])
         ->name('programmebudgetaire.index');
