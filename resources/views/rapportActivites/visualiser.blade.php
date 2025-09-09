@@ -94,7 +94,7 @@
                         @endif
                     @endforeach
                     <!-- Action -->
-                    @foreach($objectifStrategique->actions as $action)
+                    @foreach($objectifStrategique->actions()->orderBy('libelle')->get() as $action)
                         <tr>
                             <td colspan="8" class="action-title">
                                 Action : {{$action->libelle}}
@@ -104,7 +104,7 @@
                             </td>
                         </tr>
                         <!-- Objectif spécifique -->
-                        @foreach($action->objectifsSpecifiques as $objectifsSpecifique)
+                        @foreach($action->objectifsSpecifiques()->orderBy('libelle')->get() as $objectifsSpecifique)
                         @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                             <tr>
                                 <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
@@ -140,7 +140,7 @@
                                 @endif
                             @endforeach
                             <!-- Activité -->
-                            @foreach($objectifsSpecifique->activites as $activite)
+                            @foreach($objectifsSpecifique->activites()->orderBy('libelle')->get() as $activite)
                             @if($activite->indicateursProgrammes->count() > 0)
                                 <tr>
                                     <td >

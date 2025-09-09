@@ -71,7 +71,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
             if ($rapport > 2) {
                 
                 if ($request->ajax()) {
-                    throw new \Exception('Deux (02) rapports d\'activité pour l\'annee en cours ' . now()->year . ' ont deja ete genere.');
+                    throw new \Exception('Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont déjà été générés.');
                     return response()->json([
                         'success' => false,
                         'message' => 'Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont été déjà générés.'
@@ -82,7 +82,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
             $periode = $request->input('periode_rapport');
             $annee = now()->year;
             $date = now();
-            $data = $programmeActivite->programmesBudgetaires;
+            $data = $programmeActivite->programmesBudgetaires()->orderBy('libelle')->get();
 
             // Generation du fichier excel
             $excel = new RapportActiviteExport($data, $periode, $annee, $date);
@@ -139,7 +139,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
             return redirect()->back()->with('error', 'Veuillez sélectionner au moins un programme budgétaire.');
         }
 
-        $data = ProgrammeBudgetaire::whereIn('id', $request->input('programmes'))->get();
+        $data = ProgrammeBudgetaire::whereIn('id', $request->input('programmes'))->orderBy('libelle')->get();
 
         return view('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
     }
