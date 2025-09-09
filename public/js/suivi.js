@@ -51,6 +51,53 @@ document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("suiviModal");
     const modalContent = modal.querySelector(".modal-content");
 
+    // Fonction pour sauvegarder la valeur au chargement de la page
+    function restaurerValeur() {
+        const valeurObjStrat = localStorage.getItem('valeurObjStrat');
+        if (valeurObjStrat !== null) {
+            document.getElementById('filterObjStrat').value = valeurStockee;
+        }
+        const valeurAction = localStorage.getItem('valeurAction');
+        if (valeurAction !== null) {
+            document.getElementById('filterAction').value = valeurAction;
+        }
+        const valeurObjectif = localStorage.getItem('valeurObjectif');
+        if (valeurObjectif !== null) {
+            document.getElementById('filterObjectif').value = valeurObjectif;
+        }
+        const valeurActivite = localStorage.getItem('valeurActivite');
+        if (valeurActivite !== null) {
+            document.getElementById('filterActivite').value = valeurActivite;
+        }
+    }
+
+    function sauvegarderValeur() {
+        const valeurObjStrat = document.getElementById('filterObjStrat').value;
+        if(valeurObjStrat !== null && valeurObjStrat !== undefined && valeurObjStrat !== ''){
+            localStorage.setItem('valeurObjStrat', valeurObjStrat);
+        }else{
+            localStorage.setItem('valeurObjStrat', null);
+        } 
+        const valeurAction = document.getElementById('filterAction').value;
+        if(valeurAction !== null && valeurAction !== undefined && valeurAction !== ''){
+            localStorage.setItem('valeurAction', valeurAction);
+        }else{
+            localStorage.setItem('valeurAction', null);
+        }
+        const valeurObjectif = document.getElementById('filterObjectif').value;
+        if(valeurObjectif !== null && valeurObjectif !== undefined && valeurObjectif !== ''){
+            localStorage.setItem('valeurObjectif', valeurObjectif);
+        }else{
+            localStorage.setItem('valeurObjectif', null);
+        }
+        const valeurActivite = document.getElementById('filterActivite').value;
+        if(valeurActivite !== null && valeurActivite !== undefined && valeurActivite !== ''){
+            localStorage.setItem('valeurActivite', valeurActivite);
+        }else{
+            localStorage.setItem('valeurActivite', null);
+        }
+    }
+
     modal.addEventListener("show.bs.modal", async function (event) {
         const button = event.relatedTarget;
         const url = button.getAttribute("data-url");
@@ -127,13 +174,19 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Afficher un message de succès
                             Swal.fire({
                                 title: "Opération réussie !",
-                                text: "Evolution de l'indicateur enregistrée avec succès",
+                                text: "Evaluation enregistrée avec succès",
                                 icon: "success",
                             });
 
                             // Recharger la page après un délai
                             setTimeout(() => {
+                                sauvegarderValeur();
+                                // Recharger la page 
                                 window.location.reload();
+                                // ramener les infos des inputs
+                                restaurerValeur();
+
+                                
                             }, 1500);
                         } else {
                             // Afficher les erreurs de validation
