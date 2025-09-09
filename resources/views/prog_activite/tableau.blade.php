@@ -1,6 +1,6 @@
 {{-- resources/views/programmes/tableau.blade.php --}}
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Programme d\' activités')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('dist/css/tableau_pg_a.css') }}">
 @endsection
@@ -10,10 +10,13 @@
         <div class="row mb-3 no-print">
             <div class="col-12">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#programmeActiviteModal">
-                        <i class="fas fa-plus"></i> Générer Programme d'Activité
-                    </button>
+                    @can('programme_activite-create')
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#programmeActiviteModal">
+                            <i class="fas fa-plus"></i> Générer Programme d'Activité
+                        </button>
+                    @endcan
+
                     <button onclick="exportTableToExcel()" class="btn btn-success">
                         <i class="fas fa-file-excel"></i> Excel
                     </button>

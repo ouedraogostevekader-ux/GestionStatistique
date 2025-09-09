@@ -61,7 +61,7 @@
                                                 @can('suivi-create')
                                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suiviModal"
                                                         data-url="{{ route('suivis.createM', $indicateur->id) }}">
-                                                        <i class="bi bi-plus"></i> Nouvelle evolution
+                                                        <i class="bi bi-plus"></i> Nouvelle evaluation
                                                     </button>
                                                 @endcan
                                             </div>

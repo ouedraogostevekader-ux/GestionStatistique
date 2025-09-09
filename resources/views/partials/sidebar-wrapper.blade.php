@@ -143,9 +143,18 @@
                         <li class="nav-item">
                             @can('manageActivite')
                                 <a href="{{ route('activites.index') }}"
-                                    class="nav-link {{ Request::is('activites*') ? 'active' : '' }}">
+                                    class="nav-link {{ Route::is('activites.index') || Route::is('activites.show') || Route::is('activites.create') || Route::is('activites.edit') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-clipboard-check-fill"></i>
                                     <p>Activités</p>
+                                </a>
+                            @endcan
+                        </li>
+                        <li class="nav-item">
+                            @can('manageActivite')
+                                <a href="{{ route('activites.hors.programme') }}"
+                                    class="nav-link {{ Route::is('activites.hors.programme*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                                    <p>Activités hors programme</p>
                                 </a>
                             @endcan
                         </li>
@@ -192,7 +201,7 @@
                     </ul>
                 </li>
             @endcan
-            @can('manageRapport')
+            @can('manageRapport_Activite')
                 <li class="nav-item {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'active' : '' }}">
@@ -203,21 +212,58 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        {{-- @can('manageObjectifStrategique') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('rapportActivites.index') }}"
-                                class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-journal-text"></i>
-                                <p>Rapport d'activités</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('suivis.index') }}"
-                                class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-eye-fill"></i>
-                                <p>Suivis</p>
-                            </a>
-                        </li>
+                        @can('manageSuivi')
+                            <li class="nav-item">
+                                <a href="{{ route('suivis.index') }}"
+                                    class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-eye-fill"></i>
+                                    <p>Suivis</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('manageRapport_Activite')
+                            <li class="nav-item">
+                                <a href="{{ route('rapportActivites.index') }}"
+                                    class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-journal-text"></i>
+                                    <p>Rapport d'activités</p>
+                                </a>
+                            </li>
+                        @endcan
+
+                    </ul>
+                </li>
+            @endcan
+            @can('manageRapport_Activite')
+                <li class="nav-item {{ Route::is('tableau*') || Route::is('saisi*') ? 'menu-open' : '' }}">
+                    <a href="#"
+                        class="nav-link {{ Route::is('tableau*') || Route::is('tableau*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-list"></i>
+                        <p>
+                            Tableaux
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @can('manageSuivi')
+                            <li class="nav-item">
+                                <a href="{{ route('tableaux.index') }}"
+                                    class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-eye-fill"></i>
+                                    <p>Catégories</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('manageRapport_Activite')
+                            <li class="nav-item">
+                                <a href="{{ route('tableaux.index') }}"
+                                    class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-journal-text"></i>
+                                    <p>Liste des tableaux</p>
+                                </a>
+                            </li>
+                        @endcan
+
                     </ul>
                 </li>
             @endcan
@@ -228,7 +274,6 @@
                     <p>Statistiques</p>
                 </a>
             </li>
-
         </ul>
         <!--end::Sidebar Menu-->
     </nav>

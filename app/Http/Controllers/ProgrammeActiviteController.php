@@ -167,9 +167,10 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
                 'file_excel' => 'programme-activites/' . $excelFilename,
                 'date_generation' => Carbon::now(),
             ]);
+
             // Attacher les programmes à ce programme d'activité
             $programmeActivite->programmesBudgetaires()->attach($request->programmes);
-
+            // dd($programmeActivite->programmesBudgetaires);
             // Verrouiller les programmes (isActive = false)
             ProgrammeBudgetaire::whereIn('id', $request->programmes)->update(['isActive' => false]);
             // Attacher les programmes à ce programme d'activité

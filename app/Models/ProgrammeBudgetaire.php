@@ -97,12 +97,10 @@ class ProgrammeBudgetaire extends Model
             if ($programme->isForceDeleting()) {
                 // Suppression définitive
                 $programme->objectifsStrategiques()->withTrashed()->forceDelete();
-
             } else {
                 // Suppression logique
                 $programme->objectifsStrategiques()->delete();
             }
-
         });
     }
 }
