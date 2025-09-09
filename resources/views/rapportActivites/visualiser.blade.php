@@ -62,7 +62,7 @@
                 @if($objectifStrategique->indicateurs->count() > 0)
                     <tr>
                         <td rowspan="{{$objectifStrategique->indicateurs->count()}}" class="objectif-strategique">
-                            Objectif stratégique : {{$objectifStrategique->libelle}}
+                            Objectif stratégique {{$objectifStrategique->libelle}}
                         </td>
                         @php
                             // Obtenir le premier indicateur de l'objectif stratégique
@@ -97,7 +97,7 @@
                     @foreach($objectifStrategique->actions()->orderBy('libelle')->get() as $action)
                         <tr>
                             <td colspan="8" class="action-title">
-                                Action : {{$action->libelle}}
+                                Action {{$action->libelle}}
                                 @php
                                     $tableauSommeAction[$action->libelle] = ["nombre"=>0, "achevees"=>0, "en_cours"=>0, "non_demarrees"=>0,"taux_realisation"=>0, "cout_effectif"=>0];
                                 @endphp
@@ -108,7 +108,7 @@
                         @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                             <tr>
                                 <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
-                                    Objectif spécifique : {{$objectifsSpecifique->libelle}}
+                                    Objectif spécifique {{$objectifsSpecifique->libelle}}
                                 </td>
                                 @php
                                     // Obtenir le premier indicateur de l'objectif opérationnel
@@ -144,7 +144,7 @@
                             @if($activite->indicateursProgrammes->count() > 0)
                                 <tr>
                                     <td >
-                                        Activité : {{$activite->libelle}}
+                                        Activité {{$activite->libelle}}
                                     </td>
                                     @php
                                         // Obtenir le premier indicateur de l'activité
@@ -215,7 +215,7 @@
             <tbody>
                 @foreach($tableauSommeAction as $action => $valeur)
                     <tr>
-                        <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Action : {{$action}}</td>
+                        <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Action {{$action}}</td>
                         <td class="center">{{$valeur["nombre"]}}</td>
                         <td class="center">{{$valeur["achevees"]}}</td>
                         <td class="center">{{$valeur["en_cours"]}}</td>
@@ -243,7 +243,7 @@
             <tbody>
                 @foreach($tableauSommeProgramme as $programme => $valeur)
                     <tr>
-                        <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Programme :{{$programme}}</td>
+                        <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Programme {{$programme}}</td>
                         <td class="center">{{$valeur["nombre"]}}</td>
                         <td class="center">{{$valeur["achevees"]}}</td>
                         <td class="center">{{$valeur["en_cours"]}}</td>
