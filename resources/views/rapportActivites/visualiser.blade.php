@@ -28,6 +28,8 @@
     <div class="card">
         @php
             $periodeModel = App\Models\Periode::find($periode);
+            $tableauSommeProgramme = [];
+            $tableauSommeAction = [];
         @endphp
         <h3 class="text-center">Rapport d'activités de {{$periodeModel->libelle ?? "Indisponible"}} {{$annee}} généré le {{now()->format('d/m/Y à H:i:s')}} </h3>
         <table>
@@ -50,6 +52,9 @@
                 <tr>
                     <td colspan="8" class="programme-title">
                         Programme {{$programme->numero_programme }} : {{$programme->libelle}}
+                        @php
+                            $tableauSommeProgramme[$$programme->numero_programme. " ". $programme->libelle] = ["nombre"=>0, "achevees"=>0, "en_cours"=>0, "non_demarrees"=>0,"taux_realisation"=>0, "cout_effectif"=>0];
+                        @endphp
                     </td>
                 </tr>
                 <!-- Objectif stratégique -->
@@ -89,14 +94,17 @@
                         @endif
                     @endforeach
                     <!-- Action -->
-                    @foreach($objectifStrategique->actions as $action)
+                    @foreach($objectifStrategique->actions()->orderBy('libelle')->get() as $action)
                         <tr>
                             <td colspan="8" class="action-title">
                                 Action : {{$action->libelle}}
+                                @php
+                                    $tableauSommeAction[$action->libelle] = ["nombre"=>0, "achevees"=>0, "en_cours"=>0, "non_demarrees"=>0,"taux_realisation"=>0, "cout_effectif"=>0];
+                                @endphp
                             </td>
                         </tr>
                         <!-- Objectif spécifique -->
-                        @foreach($action->objectifsSpecifiques as $objectifsSpecifique)
+                        @foreach($action->objectifsSpecifiques()->orderBy('libelle')->get() as $objectifsSpecifique)
                         @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                             <tr>
                                 <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
@@ -132,7 +140,7 @@
                                 @endif
                             @endforeach
                             <!-- Activité -->
-                            @foreach($objectifsSpecifique->activites as $activite)
+                            @foreach($objectifsSpecifique->activites()->orderBy('libelle')->get() as $activite)
                             @if($activite->indicateursProgrammes->count() > 0)
                                 <tr>
                                     <td >
@@ -148,6 +156,20 @@
                                             ->join('periodes', 'suivis.periode', '=', 'periodes.id')
                                             ->orderBy('periodes.libelle', 'desc')->first() : null;
                                         }
+                                        if(isset($lastS)){
+                                            $tableauSommeAction[$action->libelle]["nombre"] += 1;
+                                            if(is_numeric($lastS->resultat_atteint) && is_numeric($firstI->valeur_cible)){
+                                                $tableauSommeAction[$action->libelle]["taux_realisation"] += ($lastS->resultat_atteint *100 / ($firstI->valeur_cible ?? 1));
+                                            }
+                                            $tableauSommeAction[$action->libelle]["cout_effectif"] += isset($lastS->cout_effectif) ? $lastS->cout_effectif : 0;
+                                            if($lastS->resultat_atteint >= ($firstI->valeur_cible ?? 0)){
+                                                $tableauSommeAction[$action->libelle]["achevees"] += 1;
+                                            } elseif($lastS->resultat_atteint > 0 && $lastS->resultat_atteint < ($firstI->valeur_cible ?? 0)){
+                                                $tableauSommeAction[$action->libelle]["en_cours"] += 1;
+                                            } else {
+                                                $tableauSommeAction[$action->libelle]["non_demarrees"] += 1;
+                                            }
+                                        }
                                     @endphp
                                     <td class="center">{{$firstI->libelle ?? 'N/A'}}</td>
                                     <td class="center">{{$firstI->unite_mesure ?? 'N/A'}}</td>
@@ -161,12 +183,78 @@
                             @endforeach
                         @endif
                         @endforeach 
+                        @php
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["nombre"] += $tableauSommeAction[$action->libelle]["nombre"];
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["achevees"] += $tableauSommeAction[$action->libelle]["achevees"];
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["en_cours"] += $tableauSommeAction[$action->libelle]["en_cours"];
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["non_demarrees"] += $tableauSommeAction[$action->libelle]["non_demarrees"];
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["taux_realisation"] += $tableauSommeAction[$action->libelle]["taux_realisation"];
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["cout_effectif"] += $tableauSommeAction[$action->libelle]["cout_effectif"];
+                        @endphp
                     @endforeach
                 @endif
                 @endforeach
             @endforeach
             </tbody>
         </table>
+        
+        
+        <h6 style="text-align: center; margin-top: 40px;">Résumé des réalisations par actions </h6>
+        <table>
+            <thead>
+                <tr style="text-align: center; font-weight: bold; background-color: #E8F5E8;">
+                    <th>Action</th>
+                    <th>Nombre d'activités</th>
+                    <th>Nombre d'activités achevées</th>
+                    <th>Nombre d'activités en cours</th>
+                    <th>Nombre d'activités non demarrées</th>
+                    <th>Taux de réalisation globale</th>
+                    <th>Coût effectif (en FCFA)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($tableauSommeAction as $action => $valeur)
+                    <tr>
+                        <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Action : {{$action}}</td>
+                        <td class="center">{{$valeur["nombre"]}}</td>
+                        <td class="center">{{$valeur["achevees"]}}</td>
+                        <td class="center">{{$valeur["en_cours"]}}</td>
+                        <td class="center">{{$valeur["non_demarrees"]}}</td>
+                        <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]) * 100, 2, ',', ' ') }} %</td>
+                        <td class="center">{{number_format($valeur["cout_effectif"], 0, ',', ' ')}}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <br><br><br><br>
+        <h6 style="text-align: center; margin-top: 40px;">Résumé des réalisations par programme </h6>
+        <table>
+            <thead>
+                <tr style="text-align: center; font-weight: bold; background-color: #E8F5E8;">
+                    <th>Programmes</th>
+                    <th>Nombre d'activités</th>
+                    <th>Nombre d'activités achevées</th>
+                    <th>Nombre d'activités en cours</th>
+                    <th>Nombre d'activités non demarrées</th>
+                    <th>Taux de réalisation globale</th>
+                    <th>Coût effectif (en FCFA)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($tableauSommeProgramme as $programme => $valeur)
+                    <tr>
+                        <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Programme :{{$programme}}</td>
+                        <td class="center">{{$valeur["nombre"]}}</td>
+                        <td class="center">{{$valeur["achevees"]}}</td>
+                        <td class="center">{{$valeur["en_cours"]}}</td>
+                        <td class="center">{{$valeur["non_demarrees"]}}</td>
+                        <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]) * 100, 2, ',', ' ') }} %</td>
+                        <td class="center">{{ number_format($valeur["cout_effectif"], 0, ',', ' ')}}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
     </div>
 </section>
 @endsection
