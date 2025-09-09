@@ -220,7 +220,7 @@
                         <td class="center">{{$valeur["achevees"]}}</td>
                         <td class="center">{{$valeur["en_cours"]}}</td>
                         <td class="center">{{$valeur["non_demarrees"]}}</td>
-                        <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]) * 100, 2, ',', ' ') }} %</td>
+                        <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]), 2, ',', ' ') }} %</td>
                         <td class="center">{{number_format($valeur["cout_effectif"], 0, ',', ' ')}}</td>
                     </tr>
                 @endforeach
@@ -248,7 +248,7 @@
                         <td class="center">{{$valeur["achevees"]}}</td>
                         <td class="center">{{$valeur["en_cours"]}}</td>
                         <td class="center">{{$valeur["non_demarrees"]}}</td>
-                        <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]) * 100, 2, ',', ' ') }} %</td>
+                        <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]), 2, ',', ' ') }} %</td>
                         <td class="center">{{ number_format($valeur["cout_effectif"], 0, ',', ' ')}}</td>
                     </tr>
                 @endforeach
