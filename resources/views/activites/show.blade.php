@@ -33,6 +33,10 @@
                                 <strong>Programme budgétaire :</strong>
                                 {{ $activite->objectifSpecifique->action->objectifStrategique->programmeBudgetaire->libelle ?? '-' }}
                             </li>
+                            <li class="list-group-item">
+                                <strong>Situation :</strong>
+                                {{ $activite->hors_programme ? 'Hors programme' : 'Programmé' }}
+                            </li>
                         </ul>
                     </div>
 

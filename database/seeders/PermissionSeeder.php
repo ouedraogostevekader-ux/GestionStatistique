@@ -14,15 +14,25 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $programmes = ['Programme_Budgetaire', 'Programme_Activite', 'Rapport_Activite', 'Objectif_Strategique', 'Objectif_Specifique', 'Action', 'Activite', 'Indicateur_Programme', 'Suivi', 'Rapport'];
+        $tableaux = ['Tableau', 'ligne_tableau', 'Colonne', 'Assignation', 'Soumission', 'Categorie', 'Regle_Gestion'];
         $parametres = ['Structure'];
 
         foreach ($programmes as $entite) {
+            Permission::create(['name' => 'manage' . $entite, 'table' => $entite, 'groupe' => 'Annuaire']);
+            Permission::create(['name' => lcfirst($entite) . '-list', 'table' => $entite, 'groupe' => 'Annuaire']);
+            Permission::create(['name' => lcfirst($entite) . '-create', 'table' => $entite, 'groupe' => 'Annuaire']);
+            Permission::create(['name' => lcfirst($entite) . '-edit', 'table' => $entite, 'groupe' => 'Annuaire']);
+            Permission::create(['name' => lcfirst($entite) . '-delete', 'table' => $entite, 'groupe' => 'Annuaire']);
+        }
+
+        foreach ($tableaux as $entite) {
             Permission::create(['name' => 'manage' . $entite, 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-list', 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-create', 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-edit', 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-delete', 'table' => $entite, 'groupe' => 'Programme']);
         }
+
         foreach ($parametres as $entite) {
             Permission::create(['name' => 'manage' . $entite, 'table' => $entite, 'groupe' => 'Paramétrage']);
             Permission::create(['name' => lcfirst($entite) . '-list', 'table' => $entite, 'groupe' => 'Paramétrage']);
