@@ -247,7 +247,7 @@
                     <ul class="nav nav-treeview">
                         @can('manageSuivi')
                             <li class="nav-item">
-                                <a href="{{ route('tableaux.index') }}"
+                                <a href="{{ route('categories.index') }}"
                                     class="nav-link {{ Request::is('suivis*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-eye-fill"></i>
                                     <p>Catégories</p>
