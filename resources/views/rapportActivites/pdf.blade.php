@@ -78,7 +78,7 @@
                     <td colspan="8" class="programme-title">
                         Programme {{$programme->numero_programme }} : {{$programme->libelle}}
                         @php
-                            $tableauSommeProgramme[$$programme->numero_programme. " ". $programme->libelle] = ["nombre"=>0, "achevees"=>0, "en_cours"=>0, "non_demarrees"=>0,"taux_realisation"=>0, "cout_effectif"=>0];
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle] = ["nombre"=>0, "achevees"=>0, "en_cours"=>0, "non_demarrees"=>0,"taux_realisation"=>0, "cout_effectif"=>0];
                         @endphp
                     </td>
                 </tr>
