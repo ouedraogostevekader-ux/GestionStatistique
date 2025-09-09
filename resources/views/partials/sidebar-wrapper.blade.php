@@ -143,7 +143,7 @@
                         <li class="nav-item">
                             @can('manageActivite')
                                 <a href="{{ route('activites.index') }}"
-                                    class="nav-link {{ Request::is('activites.index*') ? 'active' : '' }}">
+                                    class="nav-link {{ Route::is('activites.index') || Route::is('activites.show') || Route::is('activites.create') || Route::is('activites.edit') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-clipboard-check-fill"></i>
                                     <p>Activités</p>
                                 </a>
