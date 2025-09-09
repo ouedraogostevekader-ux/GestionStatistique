@@ -32,7 +32,7 @@
             </div>
 
             <!-- Section des filtres -->
-            <div class="card mb-3" id="filters-section" style="display: none;">
+            <div class="card mb-3" id="filters-section">
                 <div class="card-header">
                     <h6 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtres de recherche</h6>
                 </div>
@@ -81,8 +81,24 @@
                                 </select>
                             </div>
 
+                            <!-- Filtre par structure -->
+                            @if (Auth::user()->isAdmin())
+                                <div class="col-md-3">
+                                    <label for="structure_id" class="form-label fw-bold">Structure :</label>
+                                    <select name="structure_id" id="structure_id" class="form-select form-select-sm">
+                                        <option value="">-- Toutes --</option>
+                                        @foreach ($structures as $structure)
+                                            <option value="{{ $structure->id }}"
+                                                {{ $structureId == $structure->id ? 'selected' : '' }}>
+                                                {{ $structure->nom }} ({{ $structure->sigle }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
                             <!-- Filtre par objectif spécifique -->
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="objectif_specifique_id" class="form-label fw-bold">Objectif spécifique :</label>
                                 <select name="objectif_specifique_id" id="objectif_specifique_id"
                                     class="form-select form-select-sm">
@@ -90,28 +106,14 @@
                                     @foreach ($objectifs as $objectif)
                                         <option value="{{ $objectif->id }}"
                                             {{ $objectifSpecifiqueId == $objectif->id ? 'selected' : '' }}>
-                                            {{ Str::limit($objectif->libelle, 50) }}
+                                            {{ Str::limit($objectif->libelle, 40) }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
-
-                            <!-- Filtre par coût minimum -->
-                            <div class="col-md-2">
-                                <label for="cout_min" class="form-label fw-bold">Coût min. (FCFA) :</label>
-                                <input type="number" name="cout_min" id="cout_min" class="form-control form-control-sm"
-                                    value="{{ $coutMin }}" placeholder="0" min="0" step="1000">
-                            </div>
                         </div>
 
-                        <div class="row g-3 mt-2">
-                            <!-- Filtre par coût maximum -->
-                            <div class="col-md-2">
-                                <label for="cout_max" class="form-label fw-bold">Coût max. (FCFA) :</label>
-                                <input type="number" name="cout_max" id="cout_max" class="form-control form-control-sm"
-                                    value="{{ $coutMax }}" placeholder="Illimité" min="0" step="1000">
-                            </div>
-
+                        <div class="row g-3 mt-1">
                             <div class="col-md-10 d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary btn-sm me-2">
                                     <i class="bi bi-search"></i> Rechercher
@@ -132,18 +134,18 @@
             <div class="card-body px-3">
                 @if ($activites->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover" id="activitesTable">
+                        <table class="table table-striped table-bordered table-hover" id="example1">
                             <thead class="table-dark">
                                 <tr>
-                                    <th style="width: 50px;">No</th>
+                                    <th>No</th>
                                     <th>Activité</th>
-                                    <th style="width: 100px;">Année</th>
-                                    <th style="width: 120px;">Périodes</th>
-                                    <th style="width: 140px;">Coût prévisionnel</th>
+                                    <th>Année</th>
+                                    <th>Périodes</th>
+                                    <th>Coût prévisionnel</th>
                                     <th>Objectif spécifique</th>
-                                    <th style="width: 80px;">Indicateurs</th>
-                                    <th style="width: 120px;">Date création</th>
-                                    <th style="width: 120px;">Action</th>
+                                    <th>Indicateurs</th>
+                                    <th>Date création</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -151,7 +153,7 @@
                                     <tr>
                                         <td class="text-center">{{ $activites->firstItem() + $key }}</td>
                                         <td>
-                                            <div class="fw-semibold">{{ Str::limit($activite->libelle, 60) }}</div>
+                                            <div class="fw-semibold">{{ Str::limit($activite->libelle, 320) }}</div>
                                             @if ($activite->objectifSpecifique && $activite->objectifSpecifique->action)
                                                 <small class="text-muted">
                                                     {{ Str::limit($activite->objectifSpecifique->action->objectifStrategique->programmeBudgetaire->libelle ?? '', 40) }}
@@ -235,7 +237,7 @@
                             sur {{ $activites->total() }} activités
                         </div>
                         <div>
-                            {{ $activites->withQueryString()->links('pagination::bootstrap-5') }}
+                            {{ $activites->appends(request()->query())->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 @else
@@ -243,14 +245,7 @@
                         <i class="bi bi-folder2-open display-1 text-muted"></i>
                         <h4 class="text-muted mt-3">Aucune activité trouvée</h4>
                         <p class="text-muted">
-                            @if (request()->hasAny([
-                                    'annee',
-                                    'trimestre',
-                                    'objectif_specifique_id',
-                                    'programme_budgetaire_id',
-                                    'cout_min',
-                                    'cout_max',
-                                ]))
+                            @if (request()->hasAny(['annee', 'trimestre', 'objectif_specifique_id', 'programme_budgetaire_id', 'structure_id']))
                                 Aucune activité ne correspond à vos critères de recherche.
                             @else
                                 Il n'y a pas encore d'activités enregistrées.
@@ -267,8 +262,9 @@
 
     <!-- Script JavaScript externe -->
     <script src="{{ asset('js/activites-table.js') }}"></script>
+    <script src="{{ asset('js/activites-hp-table.js') }}"></script>
 
-    @if (request()->hasAny(['trimestre', 'objectif_specifique_id', 'programme_budgetaire_id', 'cout_min', 'cout_max']))
+    @if (request()->hasAny(['trimestre', 'objectif_specifique_id', 'programme_budgetaire_id', 'structure_id']))
         <script>
             // Afficher automatiquement les filtres s'il y a des paramètres actifs
             document.addEventListener('DOMContentLoaded', function() {

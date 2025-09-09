@@ -84,7 +84,7 @@
                                             @method('DELETE')
                                             <div class='btn-group'>
                                                 @can('activite-list')
-                                                    <a href="{{ route('activites.show', $activite->id) }}"
+                                                    <a href="{{ route('activites.hors.programme.show', $activite->id) }}"
                                                         class="btn btn-info btn-xs" title="Voir"><i
                                                             class="bi bi-eye-fill"></i></a>
                                                 @endcan
