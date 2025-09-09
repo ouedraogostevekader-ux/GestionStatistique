@@ -34,8 +34,8 @@ class RapportActiviteController extends Controller implements HasMiddleware
     public function index()
     {
         $rapportActivites = RapportActivite::all();
-        //$programmeActivites = ProgrammeActivite::all();
-        $programmeActivites = DB::select("SELECT * from programmes_activites");
+        $programmeActivites = ProgrammesActivite::where('annee', now()->year)->get();
+        //$programmeActivites = DB::select("SELECT * from programmes_activites");
         $periodes = Periode::pluck('libelle', 'id');
         return view('rapportActivites.index', compact('rapportActivites', 'programmeActivites', 'periodes'));
     }
@@ -55,7 +55,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
         try {
 
             //$programmeActivite = ProgrammesActivite::findOrFail($request->programme_activite_id);
-            $programmeActivite = ProgrammesActivite::where('annee', now()->year)->latest()->first();
+            $programmeActivite = ProgrammesActivite::where('annee', now()->year)->orderBy('id', 'desc')->first();
             if (!$programmeActivite) {
                 
                 if ($request->ajax()) {
@@ -127,7 +127,19 @@ class RapportActiviteController extends Controller implements HasMiddleware
         $periode = $request->input('periode_rapport');
         $annee = $request->input('annee');
 
-        $data = ProgrammeBudgetaire::where('annee', $request->input('annee'))->get();
+        // Si aucun programme n'est sélectionné, rediriger avec un message d'erreur
+        if (!$request->has('programmes') || empty($request->input('programmes'))) {
+            if ($request->ajax()) {
+                throw new \Exception('Veuillez sélectionner au moins un programme budgétaire');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez sélectionner au moins un programme budgétaire'
+                ]);
+            }
+            return redirect()->back()->with('error', 'Veuillez sélectionner au moins un programme budgétaire.');
+        }
+
+        $data = ProgrammeBudgetaire::whereIn('id', $request->input('programmes'))->get();
 
         return view('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
     }
