@@ -34,7 +34,7 @@
             @if($objectifStrategique->indicateurs->count() > 0)
                 <tr>
                     <td rowspan="{{$objectifStrategique->indicateurs->count()}}" style="text-align: center; vertical-align: middle; font-weight: bold;">
-                        Objectif stratégique : {{$objectifStrategique->libelle}}
+                        Objectif stratégique {{$objectifStrategique->libelle}}
                     </td>
                     @php
                         // Obtenir le premier indicateur de l'objectif stratégique
@@ -70,7 +70,7 @@
                 @foreach($objectifStrategique->actions()->orderBy('libelle')->get() as $action)
                     <tr>
                         <td colspan="8" style="text-align: center; font-weight: bold; background-color: #e8f5f5;">
-                            Action : {{$action->libelle}}
+                            Action {{$action->libelle}}
                             @php
                                 $tableauSommeAction[$action->libelle] = ["nombre"=>0, "achevees"=>0, "en_cours"=>0, "non_demarrees"=>0,"taux_realisation"=>0, "cout_effectif"=>0];
                             @endphp
@@ -117,7 +117,7 @@
                         @if($activite->indicateursProgrammes->count()>0)
                             <tr>
                                 <td  style="text-align: center;">
-                                    Activité : {{$activite->libelle}}
+                                    Activité {{$activite->libelle}}
                                 </td>
                                 @php
                                     // Obtenir le premier indicateur de l'activité
@@ -191,12 +191,12 @@
     <tbody>
         @foreach($tableauSommeAction as $action => $valeur)
             <tr>
-                <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Action : {{$action}}</td>
+                <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Action {{$action}}</td>
                 <td class="center">{{$valeur["nombre"]}}</td>
                 <td class="center">{{$valeur["achevees"]}}</td>
                 <td class="center">{{$valeur["en_cours"]}}</td>
                 <td class="center">{{$valeur["non_demarrees"]}}</td>
-                <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]) * 100, 2, ',', ' ') }} %</td>
+                <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]), 2, ',', ' ') }} %</td>
                 <td class="center">{{$valeur["cout_effectif"]}}</td>
             </tr>
         @endforeach
@@ -219,12 +219,12 @@
     <tbody>
         @foreach($tableauSommeProgramme as $programme => $valeur)
             <tr>
-                <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Programme : {{$programme}}</td>
+                <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">Programme {{$programme}}</td>
                 <td class="center">{{$valeur["nombre"]}}</td>
                 <td class="center">{{$valeur["achevees"]}}</td>
                 <td class="center">{{$valeur["en_cours"]}}</td>
                 <td class="center">{{$valeur["non_demarrees"]}}</td>
-                <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]) * 100, 2, ',', ' ') }} %</td>
+                <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]), 2, ',', ' ') }} %</td>
                 <td class="center">{{$valeur["cout_effectif"]}}</td>
             </tr>
         @endforeach
