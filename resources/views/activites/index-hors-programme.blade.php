@@ -14,8 +14,9 @@
                 <div class="col-sm-6">
                     <div class="mt-3 d-flex justify-content-end">
                         @can('activite-create')
-                            <a class="btn btn-primary" id="btnAjouter" href="{{ route('activites.create') }}">
-                                <i class="bi bi-plus"></i> Ajouter
+                            <a class="btn btn-primary" id="btnAjouter"
+                                href="{{ route('rapportActivites.hors.programme.create') }}">
+                                <i class="bi bi-plus"></i> + Ajouter
                             </a>
                         @endcan
                     </div>
@@ -78,18 +79,18 @@
                                     <td>{{ $activite->indicateursProgrammes->count() }}</td>
                                     <td>{{ $activite->updated_at->format('d/m/Y, H:i') }}</td>
                                     <td>
-                                        <form action="{{ route('activites.hors.programme.delete', $activite->id) }}"
+                                        <form action="{{ route('rapportActivites.hors.programme.delete', $activite->id) }}"
                                             method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <div class='btn-group'>
                                                 @can('activite-list')
-                                                    <a href="{{ route('activites.hors.programme.show', $activite->id) }}"
+                                                    <a href="{{ route('rapportActivites.hors.programme.show', $activite->id) }}"
                                                         class="btn btn-info btn-xs" title="Voir"><i
                                                             class="bi bi-eye-fill"></i></a>
                                                 @endcan
                                                 @can('activite-edit')
-                                                    <a href="{{ route('activites.edit', $activite->id) }}"
+                                                    <a href="{{ route('rapportActivites.edit', $activite->id) }}"
                                                         class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
                                                             class="bi bi-pencil-fill"></i></a>
                                                 @endcan

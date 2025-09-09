@@ -93,9 +93,9 @@
 
             @can('manageDeProgramme')
                 <li
-                    class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('suivi*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
+                    class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
                     <a href="#"
-                        class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
+                        class="nav-link {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Route::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-folder-fill"></i>
                         <p>
                             Programmation
@@ -146,15 +146,6 @@
                                     class="nav-link {{ Route::is('activites.index') || Route::is('activites.show') || Route::is('activites.create') || Route::is('activites.edit') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-clipboard-check-fill"></i>
                                     <p>Activités</p>
-                                </a>
-                            @endcan
-                        </li>
-                        <li class="nav-item">
-                            @can('manageActivite')
-                                <a href="{{ route('activites.hors.programme') }}"
-                                    class="nav-link {{ Route::is('activites.hors.programme*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
-                                    <p>Activités hors programme</p>
                                 </a>
                             @endcan
                         </li>
@@ -221,10 +212,19 @@
                                 </a>
                             </li>
                         @endcan
+                        <li class="nav-item">
+                            @can('manageActivite')
+                                <a href="{{ route('rapportActivites.hors.programme') }}"
+                                    class="nav-link {{ Route::is('rapportActivites.hors.programme*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-clipboard-check-fill"></i>
+                                    <p>Activités hors programme</p>
+                                </a>
+                            @endcan
+                        </li>
                         @can('manageRapport_Activite')
                             <li class="nav-item">
                                 <a href="{{ route('rapportActivites.index') }}"
-                                    class="nav-link {{ Route::is('rapportActivites*') ? 'active' : '' }}">
+                                    class="nav-link {{ Route::is('rapportActivites.index*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-journal-text"></i>
                                     <p>Rapport d'activités</p>
                                 </a>

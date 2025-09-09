@@ -11,6 +11,7 @@ class Categorie extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'categories';
     protected $keyType = 'string';
     public $incrementing = false;
 

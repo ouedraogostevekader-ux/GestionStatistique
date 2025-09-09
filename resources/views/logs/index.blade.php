@@ -1,11 +1,12 @@
 @extends('layouts.admin')
+@section('breadcrumb', 'Administration/Logs')
 @push('page_css')
     @livewireStyles
 @endpush
 @section('content')
     <section class="content-header">
         <h2 class="">
-            Logs
+            Logs <span class="badge badge-success">{{ $logs->count() }}</span>
         </h2>
         <br>
 
