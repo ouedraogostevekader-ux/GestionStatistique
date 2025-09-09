@@ -126,97 +126,99 @@
     <section class="content px-3">
         <div class="card">
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="example1">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Activité</th>
-                                <th>Période</th>
-                                <th>Coût prévisionnel</th>
-                                <th>Objectif spécifique</th>
-                                <th>Indicateurs</th>
-                                <th>Date création</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($activites as $key => $activite)
+                @if ($activites->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" id="example1">
+                            <thead>
                                 <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $activite->libelle }}</td>
-                                    <td>
-                                        @foreach ($activite->periodes as $periode)
-                                            {{ $periode->libelle }},
-                                        @endforeach
-                                    </td>
-                                    <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
-                                    <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
-                                    <td>{{ $activite->indicateursProgrammes->count() }}</td>
-                                    <td>{{ $activite->updated_at->format('d/m/Y, H:i') }}</td>
-                                    <td>
-                                        <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <div class='btn-group'>
-                                                @can('activite-list')
-                                                    <a href="{{ route('activites.show', $activite->id) }}"
-                                                        class="btn btn-info btn-xs" title="Voir"><i
-                                                            class="bi bi-eye-fill"></i></a>
-                                                @endcan
-                                                @can('activite-edit')
-                                                    <a href="{{ route('activites.edit', $activite->id) }}"
-                                                        class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
-                                                            class="bi bi-pencil-fill"></i></a>
-                                                @endcan
-                                                @can('activite-delete')
-                                                    <button type="submit" class="btn btn-danger btn-xs"
-                                                        onclick="return confirm('Supprimer cette activité ?')"
-                                                        title="Supprimer">
-                                                        <i class="bi bi-trash-fill"></i>
-                                                    </button>
-                                                @endcan
-                                            </div>
-                                    </td>
+                                    <th>No</th>
+                                    <th>Activité</th>
+                                    <th>Période</th>
+                                    <th>Coût prévisionnel</th>
+                                    <th>Objectif spécifique</th>
+                                    <th>Indicateurs</th>
+                                    <th>Date création</th>
+                                    <th>Action</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
 
-                <!-- Pagination -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div class="text-muted">
-                        Affichage de {{ $activites->firstItem() }} à {{ $activites->lastItem() }}
-                        sur {{ $activites->total() }} activités
+                                @foreach ($activites as $key => $activite)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $activite->libelle }}</td>
+                                        <td>
+                                            @foreach ($activite->periodes as $periode)
+                                                {{ $periode->libelle }},
+                                            @endforeach
+                                        </td>
+                                        <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
+                                        <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
+                                        <td>{{ $activite->indicateursProgrammes->count() }}</td>
+                                        <td>{{ $activite->updated_at->format('d/m/Y, H:i') }}</td>
+                                        <td>
+                                            <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <div class='btn-group'>
+                                                    @can('activite-list')
+                                                        <a href="{{ route('activites.show', $activite->id) }}"
+                                                            class="btn btn-info btn-xs" title="Voir"><i
+                                                                class="bi bi-eye-fill"></i></a>
+                                                    @endcan
+                                                    @can('activite-edit')
+                                                        <a href="{{ route('activites.edit', $activite->id) }}"
+                                                            class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
+                                                                class="bi bi-pencil-fill"></i></a>
+                                                    @endcan
+                                                    @can('activite-delete')
+                                                        <button type="submit" class="btn btn-danger btn-xs"
+                                                            onclick="return confirm('Supprimer cette activité ?')"
+                                                            title="Supprimer">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </button>
+                                                    @endcan
+                                                </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <div>
-                        {{ $activites->withQueryString()->links('pagination::bootstrap-5') }}
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Affichage de {{ $activites->firstItem() }} à {{ $activites->lastItem() }}
+                            sur {{ $activites->total() }} activités
+                        </div>
+                        <div>
+                            {{ $activites->withQueryString()->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
-                </div>
-            @else
-                <div class="text-center py-5">
-                    <i class="bi bi-folder2-open display-1 text-muted"></i>
-                    <h4 class="text-muted mt-3">Aucune activité trouvée</h4>
-                    <p class="text-muted">
-                        @if (request()->hasAny([
-                                'annee',
-                                'trimestre',
-                                'objectif_specifique_id',
-                                'programme_budgetaire_id',
-                                'cout_min',
-                                'cout_max',
-                            ]))
-                            Aucune activité ne correspond à vos critères de recherche.
-                        @else
-                            Il n'y a pas encore d'activités enregistrées.
-                        @endif
-                    </p>
-                    <a href="{{ route('activites.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus"></i> Créer la première activité
-                    </a>
-                </div>
+                @else
+                    <div class="text-center py-5">
+                        <i class="bi bi-folder2-open display-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">Aucune activité trouvée</h4>
+                        <p class="text-muted">
+                            @if (request()->hasAny([
+                                    'annee',
+                                    'trimestre',
+                                    'objectif_specifique_id',
+                                    'programme_budgetaire_id',
+                                    'cout_min',
+                                    'cout_max',
+                                ]))
+                                Aucune activité ne correspond à vos critères de recherche.
+                            @else
+                                Il n'y a pas encore d'activités enregistrées.
+                            @endif
+                        </p>
+                        <a href="{{ route('activites.create') }}" class="btn btn-primary">
+                            <i class="bi bi-plus"></i> Créer la première activité
+                        </a>
+                    </div>
                 @endif
             </div>
         </div>
