@@ -110,7 +110,7 @@
                         <div class="mb-3">
                             <label class="form-label">Programmes *</label>
                             <select class="form-select" name="programmes[]" multiple required >
-                                @foreach ($programmeActivites as $programme)
+                                @foreach ($programmeBudgetaires as $programme)
                                     <option value="{{ $programme->id }}">{{ $programme->libelle }}</option>
                                 @endforeach
                             </select>
