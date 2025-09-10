@@ -45,26 +45,26 @@ class TableauController extends Controller
         ]);
 
         return redirect()->route('tableaux.show', $tableau->id)
-                         ->with('success', 'Tableau créé avec succès');
+            ->with('success', 'Tableau créé avec succès');
     }
 
     public function show($id)
     {
         $tableau = Tableau::with(['categorie', 'lignesTableau', 'colonnesTableau'])->findOrFail($id);
-        
+
         // Récupérer les lignes principales (sans parent)
         $lignes = LigneTableau::where('tableau_id', $id)
-                             ->whereNull('parent_id')
-                             ->orderBy('ordre')
-                             ->with('enfants')
-                             ->get();
-        
+            ->whereNull('parent_id')
+            ->orderBy('ordre')
+            ->with('enfants')
+            ->get();
+
         // Récupérer les colonnes principales (sans parent)
         $colonnes = ColonneTableau::where('tableau_id', $id)
-                                 ->whereNull('parent_id')
-                                 ->orderBy('ordre')
-                                 ->with('enfants')
-                                 ->get();
+            ->whereNull('parent_id')
+            ->orderBy('ordre')
+            ->with('enfants')
+            ->get();
 
         // Récupérer les données des cellules
         $soumissions = $this->getSoumissionsData($id);
@@ -76,14 +76,14 @@ class TableauController extends Controller
     {
         $tableau = Tableau::findOrFail($id);
         $categories = Categorie::all();
-        
+
         $lignes = LigneTableau::where('tableau_id', $id)
-                             ->orderBy('ordre')
-                             ->get();
-        
+            ->orderBy('ordre')
+            ->get();
+
         $colonnes = ColonneTableau::where('tableau_id', $id)
-                                 ->orderBy('ordre')
-                                 ->get();
+            ->orderBy('ordre')
+            ->get();
 
         return view('tableaux.edit', compact('tableau', 'categories', 'lignes', 'colonnes'));
     }
@@ -100,7 +100,7 @@ class TableauController extends Controller
         $tableau->update($request->only(['libelle', 'description', 'categorie_id']));
 
         return redirect()->route('tableaux.show', $id)
-                         ->with('success', 'Tableau mis à jour avec succès');
+            ->with('success', 'Tableau mis à jour avec succès');
     }
 
     public function destroy($id)
@@ -109,20 +109,20 @@ class TableauController extends Controller
         $tableau->delete();
 
         return redirect()->route('tableaux.index')
-                         ->with('success', 'Tableau supprimé avec succès');
+            ->with('success', 'Tableau supprimé avec succès');
     }
 
     public function structureTableau($id)
     {
         $tableau = Tableau::with('categorie')->findOrFail($id);
-        
+
         $lignes = LigneTableau::where('tableau_id', $id)
-                             ->orderBy('ordre')
-                             ->get();
-        
+            ->orderBy('ordre')
+            ->get();
+
         $colonnes = ColonneTableau::where('tableau_id', $id)
-                                 ->orderBy('ordre')
-                                 ->get();
+            ->orderBy('ordre')
+            ->get();
 
         return view('tableaux.structure', compact('tableau', 'lignes', 'colonnes'));
     }
@@ -176,18 +176,18 @@ class TableauController extends Controller
         $tableau = Tableau::with('categorie')->findOrFail($id);
         $structures = Structure::all();
         $assignations = Assignation::where('tableau_id', $id)->get();
-        
+
         $lignes = LigneTableau::where('tableau_id', $id)
-                             ->whereNull('parent_id')
-                             ->orderBy('ordre')
-                             ->with('enfants')
-                             ->get();
-        
+            ->whereNull('parent_id')
+            ->orderBy('ordre')
+            ->with('enfants')
+            ->get();
+
         $colonnes = ColonneTableau::where('tableau_id', $id)
-                                 ->whereNull('parent_id')
-                                 ->orderBy('ordre')
-                                 ->with('enfants')
-                                 ->get();
+            ->whereNull('parent_id')
+            ->orderBy('ordre')
+            ->with('enfants')
+            ->get();
 
         $soumissions = $this->getSoumissionsData($id);
 
@@ -233,7 +233,7 @@ class TableauController extends Controller
     private function createCellulesForNewLigne($ligne)
     {
         $colonnes = ColonneTableau::where('tableau_id', $ligne->tableau_id)->get();
-        
+
         foreach ($colonnes as $colonne) {
             Cellule::create([
                 'id' => Str::ulid(),
@@ -246,7 +246,7 @@ class TableauController extends Controller
     private function createCellulesForNewColonne($colonne)
     {
         $lignes = LigneTableau::where('tableau_id', $colonne->tableau_id)->get();
-        
+
         foreach ($lignes as $ligne) {
             Cellule::create([
                 'id' => Str::ulid(),
@@ -259,10 +259,10 @@ class TableauController extends Controller
     private function getSoumissionsData($tableau_id)
     {
         return SoumissionTableau::where('tableau_id', $tableau_id)
-                                ->with(['cellule.ligne', 'cellule.colonne', 'structure'])
-                                ->get()
-                                ->keyBy(function ($item) {
-                                    return $item->cellule_id . '_' . $item->structure_id;
-                                });
+            ->with(['cellule.ligne', 'cellule.colonne', 'structure'])
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->cellule_id . '_' . $item->structure_id;
+            });
     }
 }

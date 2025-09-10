@@ -236,9 +236,9 @@
             @endcan
             @can('manageRapport_Activite')
                 <li
-                    class="nav-item {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('saisi*') ? 'menu-open' : '' }}">
+                    class="nav-item {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('assignations.dashboard') || Route::is('saisi*') ? 'menu-open' : '' }}">
                     <a href="#"
-                        class="nav-link {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('tableau*') ? 'active' : '' }}">
+                        class="nav-link {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('assignations.dashboard') || Route::is('tableau*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-list"></i>
                         <p>
                             Tableaux
@@ -261,6 +261,13 @@
                                     class="nav-link {{ Route::is('tableaux.index') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-journal-text"></i>
                                     <p>Liste des tableaux</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('assignations.dashboard') }}"
+                                    class="nav-link {{ Route::is('assignations.dashboard') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-journal-text"></i>
+                                    <p>Assignations</p>
                                 </a>
                             </li>
                         @endcan

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActiviteController;
+use App\Http\Controllers\AssignationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ObjectifStrategiqueController;
@@ -180,6 +181,16 @@ Route::middleware('auth')->group(function () {
 
         // Routes categories de tableaux
         route::resource('categories', App\Http\Controllers\CategorieController::class);
+
+        // les assignations
+        Route::get('/assignations', [AssignationController::class, 'index'])->name('assignations.index');
+        Route::get('/assignations/create/{id}', [AssignationController::class, 'create'])->name('assignations.create');
+        Route::post('/assignations/store/{id}', [AssignationController::class, 'store'])->name('assignations.store');
+        Route::get('/assignations/{assignation}/edit', [AssignationController::class, 'edit'])->name('assignations.edit');
+        Route::put('/assignations/{assignation}', [AssignationController::class, 'update'])->name('assignations.update');
+        Route::delete('/assignations/{assignation}', [AssignationController::class, 'destroy'])->name('destroy');
+        Route::post('/assignations/{assignation}/status', [AssignationController::class, 'changeStatus'])->name('assignations.changeStatus');
+        Route::get('/assignations/dashboard', [AssignationController::class, 'dashboard'])->name('assignations.dashboard');
     });
 });
 
