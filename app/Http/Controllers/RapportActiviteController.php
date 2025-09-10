@@ -83,7 +83,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
             $periode = $request->input('periode_rapport');
             $annee = now()->year;
             $date = now();
-            $data = $programmeActivite->programmesBudgetaires()->orderBy('libelle')->get();
+            $data = $programmeActivite->programmesBudgetaires()->orderBy('numero_programme')->get();
 
             // Generation du fichier excel
             $excel = new RapportActiviteExport($data, $periode, $annee, $date);
@@ -140,7 +140,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
             return redirect()->back()->with('error', 'Veuillez sélectionner au moins un programme budgétaire.');
         }
 
-        $data = ProgrammeBudgetaire::whereIn('id', $request->input('programmes'))->orderBy('libelle')->get();
+        $data = ProgrammeBudgetaire::whereIn('id', $request->input('programmes'))->orderBy('numero_programme')->get();
 
         return view('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
     }
