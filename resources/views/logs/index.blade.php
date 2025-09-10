@@ -11,7 +11,7 @@
         <br>
 
     </section>
-    <div class="content">
+    <div class="content px-3">
         <div class="clearfix"></div>
 
         <div class="clearfix"></div>

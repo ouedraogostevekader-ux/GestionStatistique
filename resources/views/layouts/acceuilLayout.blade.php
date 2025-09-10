@@ -49,7 +49,7 @@
                         <a class="nav-link" href="#">Contact</a>
                     </li>
                     @php
-                        $uid = '01k4dfpgfxd4xdf0t4hsnser5g';
+                        $uid = '01k4q706agzangp4rbwpj5cnrb';
                     @endphp
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('edit.compte', $uid) }}">Modif</a>

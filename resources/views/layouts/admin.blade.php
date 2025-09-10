@@ -87,7 +87,7 @@
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
-                                <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">@yield('breadcrumb')</li>
                             </ol>
                         </div>
@@ -166,11 +166,13 @@
     <!-- Configuration DataTables globale -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.1/dist/sweetalert2.all.min.js"></script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+
     <script src="{{ asset('dist/js/adminlte.js') }}"></script>
     <script src="{{ asset('dist/js/datatable-affiche.js') }}"></script>
     <!-- Script de modal de suppression -->
     <script src="{{ asset('dist/js/delete-modal.js') }}"></script>
     <script src="{{ asset('dist/js/logout.js') }}"></script>
+    <!--end::Script-->
 
     @stack('page_scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
@@ -183,7 +185,7 @@
         integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('dist/js/select2.js') }}"></script>
-    <!--end::Script-->
+
 </body>
 <!--end::Body-->
 

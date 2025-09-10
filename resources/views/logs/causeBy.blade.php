@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+@extends('layouts.admin')
 
 @section('content')
     <section class="content-header">
@@ -14,7 +14,7 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="table-responsive">
-                @include('admin.logs.tableC')
+                @include('logs.tableC')
             </div>
         </div>
     </div>

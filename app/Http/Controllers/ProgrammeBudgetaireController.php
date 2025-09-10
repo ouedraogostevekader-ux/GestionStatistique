@@ -61,7 +61,7 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
             });
         }
 
-        $programmes = $query->paginate(10);
+        $programmes = $query->paginate(1000);
 
         $structures = Structure::orderBy('nom')->get();
         $users = User::orderBy('name')->get();
@@ -243,35 +243,52 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
     public function storeDuplicate(Request $request)
     {
         $request->validate([
-            'programme_source_id' => 'required|exists:programmes_budgetaires,id',
-            'nouveau_libelle' => 'required|string|max:255',
-            'nouveau_numero' => 'required|string|max:50',
+            // 'programme_source_id' => 'required|exists:programmes_budgetaires,id',
+            //'nouveau_libelle' => 'required|string|max:255',
+            // 'nouveau_numero' => 'required|string|max:50',
+            'programme_source_id' => 'required|array',
             'annee' => 'required|integer|min:2000|max:2100',
             'dupliquer_activites' => 'sometimes|boolean'
         ]);
-
+        //dd($request->all());
+        DB::beginTransaction();
         try {
-            // Récupérer le programme source
-            $programmeSource = ProgrammeBudgetaire::with([
-                'objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes'
-            ])->findOrFail($request->programme_source_id);
+            foreach ($request->programme_source_id as $sourceId) {
+                $programmeSource = ProgrammeBudgetaire::with([
+                    'objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes'
+                ])->findOrFail($sourceId);
+                // ✅ Vérification avant duplication
+                $existe = ProgrammeBudgetaire::where('numero_programme', $programmeSource->numero_programme)
+                    ->where('annee', $request->annee)
+                    ->exists();
 
-            // Créer le nouveau programme
-            $nouveauProgramme = ProgrammeBudgetaire::create([
-                'id' => Str::ulid(),
-                'libelle' => $request->nouveau_libelle,
-                'numero_programme' => $request->nouveau_numero,
-                'annee' => $request->annee,
-                'isActive' => true,
-                'programme_activite_id' => $programmeSource->programme_activite_id
-            ]);
+                if ($existe) {
+                    DB::rollBack();
+                    return redirect()->back()
+                        ->with('error', "Le programme « {$programmeSource->libelle} » a déjà été dupliqué pour l'année {$request->annee}. Veuillez ressayer SVP")
+                        ->withInput();
+                }
+                $nouveauProgramme = ProgrammeBudgetaire::create([
+                    'id' => Str::ulid(),
+                    'libelle' => $programmeSource->libelle . ')',
+                    'numero_programme' => $programmeSource->numero_programme,
+                    'annee' => $request->annee,
+                    'isActive' => true,
+                    //'programme_activite_id' => $programmeSource->programme_activite_id
+                ]);
 
-            // Dupliquer la hiérarchie
-            $this->dupliquerHierarchie($programmeSource, $nouveauProgramme, $request->annee, $request->dupliquer_activites);
-
+                $this->dupliquerHierarchie(
+                    $programmeSource,
+                    $nouveauProgramme,
+                    $request->annee,
+                    $request->dupliquer_activites
+                );
+            }
+            DB::commit();
             return redirect()->route('programmebudgetaire.index')
-                ->with('success', 'Programme budgétaire dupliqué avec succès !');
+                ->with('success', 'Programme(s) budgétaire(s) dupliqué(s) avec succès !');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()
                 ->with('error', 'Erreur lors de la duplication: ' . $e->getMessage())
                 ->withInput();

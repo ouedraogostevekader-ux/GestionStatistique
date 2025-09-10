@@ -17,16 +17,12 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="mt-3 d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-outline-secondary btn-sm" id="toggleFilters">
-                            <i class="bi bi-funnel"></i> Filtres
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="resetFilters()">
-                            <i class="bi bi-arrow-clockwise"></i> Réinitialiser
-                        </button>
-                        <a class="btn btn-primary" href="{{ route('activites.create') }}">
-                            <i class="bi bi-plus"></i> Ajouter
-                        </a>
+                    <div class="mt-3 d-flex justify-content-end">
+                        @can('activite-create')
+                            <a class="btn btn-primary" id="btnAjouter" href="{{ route('activites.create') }}">
+                                <i class="bi bi-plus"></i> Ajouter
+                            </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -131,7 +127,7 @@
 
     <section class="content px-3">
         <div class="card">
-            <div class="card-body px-3">
+            <div class="card-body p-0">
                 @if ($activites->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="example1">
@@ -146,9 +142,13 @@
                                     <th>Indicateurs</th>
                                     <th>Date création</th>
                                     <th>Action</th>
+                                    <th>Indicateurs</th>
+                                    <th>Date création</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+
                                 @foreach ($activites as $key => $activite)
                                     <tr>
                                         <td class="text-center">{{ $activites->firstItem() + $key }}</td>
@@ -203,26 +203,29 @@
                                                 class="text-muted d-block">{{ $activite->created_at->format('H:i') }}</small>
                                         </td>
                                         <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ route('activites.show', $activite->id) }}"
-                                                    class="btn btn-outline-info btn-sm" title="Voir les détails">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('activites.edit', $activite->id) }}"
-                                                    class="btn btn-outline-warning btn-sm" title="Modifier">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('activites.destroy', $activite->id) }}"
-                                                    method="POST" class="d-inline"
-                                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette activité ?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                        title="Supprimer">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
+                                            <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <div class='btn-group'>
+                                                    @can('activite-list')
+                                                        <a href="{{ route('activites.show', $activite->id) }}"
+                                                            class="btn btn-info btn-xs" title="Voir"><i
+                                                                class="bi bi-eye-fill"></i></a>
+                                                    @endcan
+                                                    @can('activite-edit')
+                                                        <a href="{{ route('activites.edit', $activite->id) }}"
+                                                            class="btn btn-warning btn-xs" id="btnEdit" title="Modifier"><i
+                                                                class="bi bi-pencil-fill"></i></a>
+                                                    @endcan
+                                                    @can('activite-delete')
+                                                        <button type="submit" class="btn btn-danger btn-xs"
+                                                            onclick="return confirm('Supprimer cette activité ?')"
+                                                            title="Supprimer">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </button>
+                                                    @endcan
+                                                </div>
                                         </td>
                                     </tr>
                                 @endforeach

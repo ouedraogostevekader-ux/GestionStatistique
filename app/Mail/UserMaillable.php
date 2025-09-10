@@ -24,7 +24,7 @@ class UserMaillable extends Mailable
     {
         return new Envelope(
             subject: 'Confirmation et activation du compte',
-            from: config('mail.from.address', 'dsi.dgess@gmail.com')
+            from: config('url', 'dsi.dgess@gmail.com')
         );
     }
 
