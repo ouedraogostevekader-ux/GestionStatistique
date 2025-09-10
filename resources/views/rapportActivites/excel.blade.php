@@ -33,90 +33,103 @@
             @foreach($programme->objectifsStrategiques as $objectifStrategique)
             @if($objectifStrategique->indicateurs->count() > 0)
                 <tr>
-                    <td rowspan="{{$objectifStrategique->indicateurs->count()}}" style="text-align: center; vertical-align: middle; font-weight: bold;">
+                    <td rowspan="{{$objectifStrategique->indicateurs->count()}}" class="objectif-strategique">
                         Objectif stratégique {{$objectifStrategique->libelle}}
                     </td>
                     @php
                         // Obtenir le premier indicateur de l'objectif stratégique
-                        $firstIndicateur = $objectifStrategique->indicateurs->count()>0 ? $objectifStrategique->indicateurs->first() : null;
+                        $firstIndicateur = $objectifStrategique->indicateurs->first();
                         $lastSuivi = $firstIndicateur ? $firstIndicateur->suivis()->where('periode', $periode)->first() : null;
+                        $div = floatval($firstIndicateur->valeur_cible ?? 0) - floatval($firstIndicateur->valeur_ref ?? 0);
+                        $div = $div != 0 ? $div : 1;
+                        $taux = (floatval($lastSuivi->resultat_atteint ?? 0) - floatval($firstIndicateur->valeur_ref ?? 0)) *100 / $div;
+
                     @endphp
-                    <td>{{$firstIndicateur->libelle ?? 'N/A'}}</td>
-                    <td>{{$firstIndicateur->unite_mesure ?? 'N/A'}}</td>
-                    <td>{{$firstIndicateur->valeur_cible ?? 'N/A'}}</td>
-                    <td>{{$lastSuivi->resultat_atteint ?? 'N/A'}}</td>
-                    <td >@if(isset($lastSuivi) && is_numeric($firstIndicateur->valeur_cible)){{ number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($firstIndicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
-                    
-                    <td >{{$lastSuivi->cout_effectif ?? '-'}}</td>
-                    <td>{{$lastSuivi->observations ?? 'N/A'}}</td>
+                    <td class="center">{{$firstIndicateur->libelle ?? 'N/A'}}</td>
+                    <td class="center">{{$firstIndicateur->unite_mesure ?? 'N/A'}}</td>
+                    <td class="center">{{$firstIndicateur->valeur_cible ?? 'N/A'}}</td>
+                    <td class="center">{{$lastSuivi->resultat_atteint ?? 'N/E'}}</td>
+                    <td class="center">@if(isset($lastSuiv) && is_numeric($firstIndicateur->valeur_cible)){{ number_format( $taux , 2, ',', ' ')}} % @else N/A @endif</td>
+                    <td class="center">{{$lastSuivi->cout_effectif ?? '-'}}</td>
+                    <td class="center">{{$lastSuivi->observations ?? '-'}}</td>
                 </tr>
                 @foreach($objectifStrategique->indicateurs as $indicateur)
                     @if($indicateur->id != $firstIndicateur->id)
                     @php
-                        $lastSuivi = $indicateur->suivis()->where('periode', $periode)->first();
+                        $lastSuiv = $indicateur->suivis()->where('periode', $periode)->first();
+                        
+                        $div = floatval($indicateur->valeur_cible ?? 0) - floatval($indicateur->valeur_ref ?? 0);
+                        $div = $div != 0 ? $div : 1;
+                        $taux = (floatval($lastSuiv->resultat_atteint ?? 0) - floatval($indicateur->valeur_ref ?? 0)) *100 / $div;
                     @endphp
                     <tr>
-                        <td>{{$indicateur->libelle}}</td>
-                        <td>{{$indicateur->unite_mesure}}</td>
-                        <td>{{$indicateur->valeur_cible}}</td>
-                        <td>{{$lastSuivi->resultat_atteint ?? 'N/A'}}</td>
-                        <td >@if(isset($lastSuivi) && is_numeric($indicateur->valeur_cible)){{number_format( ($lastSuivi->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif </td>
-                        <td >{{$lastSuivi->cout_effectif ?? '-'}}</td>
-                        <td>{{$lastSuivi->observations ?? 'N/A'}}</td>
+                        <td class="center">{{$indicateur->libelle}}</td>
+                        <td class="center">{{$indicateur->unite_mesure}}</td>
+                        <td class="center">{{$indicateur->valeur_cible}}</td>
+                        <td class="center">{{$lastSuiv->resultat_atteint ?? 'N/E'}}</td>
+                        <td class="center">@if(isset($lastSuiv) && is_numeric($indicateur->valeur_cible)){{number_format($taux, 2, ',', ' ')}} % @else N/A @endif</td>
+                        <td class="center">{{$lastSuiv->cout_effectif ?? '-'}}</td>
+                        <td class="center">{{$lastSuiv->observations ?? '-'}}</td>
                     </tr>
                     @endif
                 @endforeach
-                <!-- Actions -->
+                <!-- Action -->
                 @foreach($objectifStrategique->actions()->orderBy('libelle')->get() as $action)
                     <tr>
-                        <td colspan="8" style="text-align: center; font-weight: bold; background-color: #e8f5f5;">
+                        <td colspan="8" class="action-title">
                             Action {{$action->libelle}}
                             @php
                                 $tableauSommeAction[$action->libelle] = ["nombre"=>0, "achevees"=>0, "en_cours"=>0, "non_demarrees"=>0,"taux_realisation"=>0, "cout_effectif"=>0];
                             @endphp
                         </td>
                     </tr>
-                    <!-- Objectif Specifique -->
+                    <!-- Objectif spécifique -->
                     @foreach($action->objectifsSpecifiques()->orderBy('libelle')->get() as $objectifsSpecifique)
                     @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                         <tr>
-                            <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" style="text-align: center; vertical-align: middle; font-weight: bold;">
+                            <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
                                 Objectif spécifique {{$objectifsSpecifique->libelle}}
                             </td>
                             @php
                                 // Obtenir le premier indicateur de l'objectif opérationnel
-                                $firstIndi = $objectifsSpecifique->indicateursProgrammes->count()>0 ? $objectifsSpecifique->indicateursProgrammes->first() : null;
+                                $firstIndi = $objectifsSpecifique->indicateursProgrammes->first();
                                 $lastSuiv = $firstIndi ? $firstIndi->suivis()->where('periode', $periode)->first() : null;
+                                $div = floatval($firstIndi->valeur_cible ?? 0) - floatval($firstIndi->valeur_ref ?? 0);
+                                $div = $div != 0 ? $div : 1;
+                                $taux = (floatval($lastSuiv->resultat_atteint ?? 0) - floatval($firstIndi->valeur_ref ?? 0)) *100 / $div;
                             @endphp
-                            <td>{{$firstIndi->libelle ?? 'N/A'}}</td>
-                            <td>{{$firstIndi->unite_mesure ?? 'N/A' }}</td>
-                            <td>{{$firstIndi->valeur_cible ?? 'N/A'}}</td>
-                            <td>{{$lastSuiv->resultat_atteint ?? 'N/A'}}</td>
-                            <td>@if(isset($lastSuiv) && is_numeric($firstIndi->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($firstIndi->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
-                            <td >{{$lastSuiv->cout_effectif ?? '-'}}</td>
-                            <td>{{$lastSuiv->observations ?? 'N/A'}}</td>
+                            <td class="center">{{$firstIndi->libelle ?? 'N/A'}}</td>
+                            <td class="center">{{$firstIndi->unite_mesure ?? 'N/A' }}</td>
+                            <td class="center">{{$firstIndi->valeur_cible ?? 'N/A'}}</td>
+                            <td class="center">{{$lastSuiv->resultat_atteint ?? 'N/E'}}</td>
+                            <td class="center">@if(isset($lastSuiv) && is_numeric($firstIndi->valeur_cible)){{ number_format($taux , 2, ',', ' ')}} % @else N/A @endif</td>
+                            <td class="center">{{$lastSuiv->cout_effectif ?? '-'}}</td>
+                            <td class="center">{{$lastSuiv->observations ?? '-'}}</td>
                         </tr>
                         @foreach($objectifsSpecifique->indicateursProgrammes as $indicateur)
                             @if($indicateur->id != $firstIndi->id)
                             @php
                                 $lastSuiv = $indicateur->suivis()->where('periode', $periode)->first();
+                                $div = floatval($indicateur->valeur_cible ?? 0) - floatval($indicateur->valeur_ref ?? 0);
+                                $div = $div != 0 ? $div : 1;
+                                $taux = (floatval($lastSuiv->resultat_atteint ?? 0) - floatval($indicateur->valeur_ref ?? 0)) *100 / $div;
                             @endphp
                             <tr>
-                                <td>{{$indicateur->libelle}}</td>
-                                <td>{{$indicateur->unite_mesure}}</td>
-                                <td>{{$indicateur->valeur_cible}}</td>
-                                <td>{{$lastSuiv->resultat_atteint ?? 'N/A'}}</td>
-                                <td>@if(isset($lastSuiv) && is_numeric($indicateur->valeur_cible)){{ number_format(($lastSuiv->resultat_atteint ?? 0) *100 / ($indicateur->valeur_cible ?? 1), 2, ',', ' ')}} % @else N/A @endif</td>
-                                <td>{{$lastSuiv->cout_effectif ?? '-'}}</td>
-                                <td>{{$lastSuiv->observations ?? 'N/A'}}</td>
+                                <td class="center">{{$indicateur->libelle}}</td>
+                                <td class="center">{{$indicateur->unite_mesure}}</td>
+                                <td class="center">{{$indicateur->valeur_cible}}</td>
+                                <td class="center">{{$lastSuiv->resultat_atteint ?? 'N/E'}}</td>
+                                <td class="center">@if(isset($lastSuiv) && is_numeric($indicateur->valeur_cible)){{ number_format($taux, 2, ',', ' ')}} % @else N/A @endif</td>
+                                <td class="center">{{$lastSuiv->cout_effectif ?? '-'}}</td>
+                                <td class="center">{{$lastSuiv->observations ?? '-'}}</td>
                             </tr>
                             @endif
                         @endforeach
                         <!-- Activité -->
                         @foreach($objectifsSpecifique->activites()->orderBy('libelle')->get() as $activite)
-                        @if($activite->indicateursProgrammes->count()>0)
+                        @if($activite->indicateursProgrammes->count() > 0)
                             <tr>
-                                <td  style="text-align: center;">
+                                <td >
                                     Activité {{$activite->libelle}}
                                 </td>
                                 @php
@@ -129,31 +142,39 @@
                                         ->join('periodes', 'suivis.periode', '=', 'periodes.id')
                                         ->orderBy('periodes.libelle', 'desc')->first() : null;
                                     }
+                                   
+                                    // Si l'activite a un suivi dans la periode
                                     if(isset($lastS)){
                                         $tableauSommeAction[$action->libelle]["nombre"] += 1;
-                                        if(is_numeric($lastS->resultat_atteint) && is_numeric($firstI->valeur_cible)){
-                                            $tableauSommeAction[$action->libelle]["taux_realisation"] += ($lastS->resultat_atteint *100 / ($firstI->valeur_cible ?? 1));
-                                        }
-                                        $tableauSommeAction[$action->libelle]["cout_effectif"] += isset($lastS->cout_effectif) ? $lastS->cout_effectif : 0;
-                                        if($lastS->resultat_atteint >= ($firstI->valeur_cible ?? 0)){
+                                         // calcul du taux de realisation = (atteint-reference)/(cible-reference)
+                                        $div = floatval($firstI->valeur_cible) - floatval($firstI->valeur_ref);
+                                        $div = $div != 0 ? $div : 1;
+                                        $taux = (floatval($lastS->resultat_atteint) - floatval($firstI->valeur_ref)) *100 / $div;
+                                        $tableauSommeAction[$action->libelle]["taux_realisation"] += $taux;
+                                        
+                                        $tableauSommeAction[$action->libelle]["cout_effectif"] += floatval($lastS->cout_effectif); 
+                                        if(floatval($lastS->resultat_atteint) >= floatval($firstI->valeur_cible)){
                                             $tableauSommeAction[$action->libelle]["achevees"] += 1;
-                                        } elseif($lastS->resultat_atteint > 0 && $lastS->resultat_atteint < ($firstI->valeur_cible ?? 0)){
+                                        } elseif(floatval($lastS->resultat_atteint) > 0 && floatval($lastS->resultat_atteint) < floatval($firstI->valeur_cible)){
                                             $tableauSommeAction[$action->libelle]["en_cours"] += 1;
                                         } else {
                                             $tableauSommeAction[$action->libelle]["non_demarrees"] += 1;
                                         }
+                                    } // sinon si l'activite est prevue dans la periode mais n'a pas de suivi
+                                    elseif($activite->periodes->pluck('id')->contains($periode)){
+                                        $tableauSommeAction[$action->libelle]["nombre"] += 1;
+                                        $tableauSommeAction[$action->libelle]["non_demarrees"] += 1;
                                     }
                                 @endphp
                                 <td class="center">{{$firstI->libelle ?? 'N/A'}}</td>
                                 <td class="center">{{$firstI->unite_mesure ?? 'N/A'}}</td>
                                 <td class="center">{{$firstI->valeur_cible ?? 'N/A'}}</td>
-                                <td class="center">{{$lastS->resultat_atteint ?? 'N/A'}}</td>
-                                <td class="center">@if(is_numeric($firstI->valeur_cible)){{ number_format(($lastS->resultat_atteint ?? 0) *100 / ($firstI->valeur_cible ?? 1) , 2, ',', ' ')}} % @else N/A @endif</td>
-                                <td class="center">@if(isset($lastS) && is_numeric($lastS->resultat_atteint)){{isset($lastS->cout_effectif) ? number_format($lastS->cout_effectif, 2, ',', ' ') : 'N/E'}} @else N/E @endif</td>
-                                <td class="center">{{$lastS->observations ?? 'N/A'}}</td>
-                               
+                                <td class="center">{{$lastS->resultat_atteint ?? 'N/E'}}</td>
+                                <td class="center">@if(isset($lastS)){{ number_format($taux , 2, ',', ' ')}} % @else N/A @endif</td>
+                                <td class="center">@if(isset($lastS)){{isset($lastS->cout_effectif) ? number_format(floatval($lastS->cout_effectif), 0, ',', ' ') : 'N/A'}} @else N/E @endif</td>
+                                <td class="center">{{$lastS->observations ?? '-'}}</td>                                    
                             </tr>
-                        @endif
+                        @endif 
                         @endforeach
                     @endif
                     @endforeach 
@@ -166,7 +187,7 @@
                         $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["cout_effectif"] += $tableauSommeAction[$action->libelle]["cout_effectif"];
                     @endphp
                 @endforeach
-            @endif    
+            @endif
             @endforeach
         @endforeach
 
