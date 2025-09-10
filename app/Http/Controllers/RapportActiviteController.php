@@ -85,13 +85,15 @@ class RapportActiviteController extends Controller implements HasMiddleware
             $date = now();
             $data = $programmeActivite->programmesBudgetaires()->orderBy('numero_programme')->get();
 
+            $libelle = $request->input('libelle');
+
             // Generation du fichier excel
-            $excel = new RapportActiviteExport($data, $periode, $annee, $date);
+            $excel = new RapportActiviteExport($data, $periode, $annee, $date, $libelle);
             $url_excel = (string) Str::uuid();
             Excel::store($excel, 'rapports/' . $url_excel . '.xlsx', 'public');
 
             // Generation du fichier PDF
-            $pdf = PDF::loadView('rapportActivites.pdf', compact('data', 'periode', 'annee', 'date'));
+            $pdf = PDF::loadView('rapportActivites.pdf', compact('data', 'periode', 'annee', 'date', 'libelle'));
             $pdf->setPaper('a4', 'landscape');
             $url_pdf = (string) Str::uuid();
             $pdf->save(storage_path('app/public/rapports/' . $url_pdf . '.pdf'));
