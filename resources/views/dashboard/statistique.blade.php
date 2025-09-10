@@ -187,7 +187,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-primary">Non commencées</h5>
+                        <h5 class="card-title text-primary">Non demarrées</h5>
                         <h3 class="text-primary">{{ number_format($advancementStats['activites_non_commencees']) }}</h3>
                         <div class="progress mt-2">
                             <div class="progress-bar bg-primary"
@@ -215,7 +215,7 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-success">Terminées</h5>
+                        <h5 class="card-title text-success">Achevées</h5>
                         <h3 class="text-success">{{ number_format($advancementStats['activites_terminees']) }}</h3>
                         <div class="progress mt-2">
                             <div class="progress-bar bg-success"
@@ -226,7 +226,17 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            {{-- <div class="col-md-3 text-center">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="circle-progress" data-value="{{ $performanceStats['taux_suivi_indicateurs'] }}">
+                            <span>{{ $performanceStats['taux_suivi_indicateurs'] }}%</span>
+                        </div>
+                        <p class="">Taux de suivi des indicateurs</p>
+                    </div>
+                </div>
+            </div> --}}
+            {{--             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title text-danger">En retard</h5>
@@ -234,7 +244,7 @@
                         <small class="text-muted">Activités avec performance < 50%</small>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Statistiques financières -->
@@ -251,13 +261,28 @@
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-success">Coût exécuté</h5>
+                        <h5 class="card-title text-success">Coût effectif</h5>
                         <h3 class="text-success">{{ number_format($financialStats['budget_execute'], 0, ',', ' ') }} FCFA
                         </h3>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning">Taux d'éxecution physique</h5>
+                        <h3 class="text-warning">{{ $performanceStats['moyenne_resultats'] }} %
+                        </h3>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-warning"
+                                style="width: {{ $performanceStats['moyenne_resultats'] }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title text-warning">Coût restant</h5>
@@ -265,11 +290,11 @@
                         </h3>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title text-info">Taux d'exécution</h5>
+                        <h5 class="card-title text-info">Taux d'exécution financière</h5>
                         <h3 class="text-info">{{ $financialStats['taux_execution'] }}%</h3>
                         <div class="progress mt-2">
                             <div class="progress-bar bg-info" style="width: {{ $financialStats['taux_execution'] }}%">
@@ -277,11 +302,12 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
         <!-- Indicateurs de performance -->
-        <div class="row mb-4">
+        {{-- <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -318,12 +344,12 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Graphiques -->
         <div class="row mb-4">
             <!-- Graphique d'évolution des activités -->
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Évolution mensuelle des activités</h3>
@@ -332,7 +358,7 @@
                         <canvas id="evolutionActivitesChart" width="400" height="200"></canvas>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Graphique de répartition par statut -->
             <div class="col-md-6">
@@ -390,7 +416,7 @@
         @endif
 
         <!-- Tableaux détaillés -->
-        <div class="row">
+        {{-- <div class="row">
             <!-- Top activités les plus coûteuses -->
             <div class="col-md-6">
                 <div class="card">
@@ -497,10 +523,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Résumé financier par trimestre -->
-        <div class="row mt-4">
+        {{-- <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
@@ -526,7 +552,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </section>
 
     <!-- Scripts pour les graphiques -->

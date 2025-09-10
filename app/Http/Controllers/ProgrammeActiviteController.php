@@ -63,6 +63,7 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
             'structures'
         ])
             ->where('annee', now()->year)
+            ->orderBy('numero_programme', 'ASC')
             ->get();
 
 
@@ -73,13 +74,14 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
     {
         $programmes = ProgrammeBudgetaire::with([
             'objectifsStrategiques' => function ($query) {
-                $query->with([
+                $query->orderBy('libelle', 'ASC')->with([
                     'actions' => function ($query) {
-                        $query->with([
+                        $query->orderBy('libelle', 'ASC')->with([
                             'objectifsSpecifiques' => function ($query) {
-                                $query->with([
+                                $query->orderBy('libelle', 'ASC')->with([
                                     'activites' => function ($query) {
-                                        $query->with(['indicateurs', 'periodes']);
+                                        $query->orderBy('libelle', 'ASC')
+                                            ->with(['indicateurs', 'periodes']);
                                     },
                                     'indicateurs'
                                 ]);
@@ -91,7 +93,10 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
             },
             'programmeActivite',
             'structures'
-        ])->get();
+        ])
+            ->where('annee', now()->year)
+            ->orderBy('numero_programme', 'ASC')
+            ->get();
 
 
         return view('prog_activite.tableau', compact('programmes'));
@@ -130,12 +135,37 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
                     ->withInput();
             }
             // Récupérer les programmes sélectionnés
-            $programmes = ProgrammeBudgetaire::with([
+            /* $programmes = ProgrammeBudgetaire::with([
                 'objectifsStrategiques.indicateurs',
                 'objectifsStrategiques.actions.objectifsSpecifiques.indicateurs',
                 'objectifsStrategiques.actions.objectifsSpecifiques.activites.indicateurs',
                 'objectifsStrategiques.actions.objectifsSpecifiques.activites.periodes'
-            ])->whereIn('id', $request->programmes)->get();
+            ])->whereIn('id', $request->programmes)->get(); */
+            $programmes = ProgrammeBudgetaire::with([
+                'objectifsStrategiques' => function ($query) {
+                    $query->orderBy('libelle', 'ASC')->with([
+                        'actions' => function ($query) {
+                            $query->orderBy('libelle', 'ASC')->with([
+                                'objectifsSpecifiques' => function ($query) {
+                                    $query->orderBy('libelle', 'ASC')->with([
+                                        'activites' => function ($query) {
+                                            $query->orderBy('libelle', 'ASC')
+                                                ->with(['indicateurs', 'periodes']);
+                                        },
+                                        'indicateurs'
+                                    ]);
+                                }
+                            ]);
+                        },
+                        'indicateurs'
+                    ]);
+                },
+                'programmeActivite',
+                'structures'
+            ])
+                ->where('annee', now()->year)
+                ->orderBy('numero_programme', 'ASC')
+                ->get();
 
             // Créer le répertoire pour les fichiers s'il n'existe pas
             $directory = storage_path('app/public/programme-activites');
@@ -222,13 +252,13 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
     {
         $programmes = ProgrammeBudgetaire::with([
             'objectifsStrategiques' => function ($query) {
-                $query->with([
+                $query->orderBy('libelle', 'ASC')->with([
                     'actions' => function ($query) {
-                        $query->with([
+                        $query->orderBy('libelle', 'ASC')->with([
                             'objectifsSpecifiques' => function ($query) {
-                                $query->with([
+                                $query->orderBy('libelle', 'ASC')->with([
                                     'activites' => function ($query) {
-                                        $query->with(['indicateurs', 'periodes']);
+                                        $query->orderBy('libelle', 'ASC')->with(['indicateurs', 'periodes']);
                                     },
                                     'indicateurs'
                                 ]);
@@ -242,6 +272,7 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
             'structures'
         ])
             ->where('annee', now()->year)
+            ->orderBy('numero_programme', 'ASC')
             ->get();
         return Excel::download(new ProgrammeTableauExport($programmes), 'programmes-tableau.xlsx');
     }
@@ -251,13 +282,13 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
     {
         $programmes = ProgrammeBudgetaire::with([
             'objectifsStrategiques' => function ($query) {
-                $query->with([
+                $query->orderBy('libelle', 'ASC')->with([
                     'actions' => function ($query) {
-                        $query->with([
+                        $query->orderBy('libelle', 'ASC')->with([
                             'objectifsSpecifiques' => function ($query) {
-                                $query->with([
+                                $query->orderBy('libelle', 'ASC')->with([
                                     'activites' => function ($query) {
-                                        $query->with(['indicateurs', 'periodes']);
+                                        $query->orderBy('libelle', 'ASC')->with(['indicateurs', 'periodes']);
                                     },
                                     'indicateurs'
                                 ]);
@@ -271,9 +302,10 @@ class ProgrammeActiviteController extends Controller implements HasMiddleware
             'structures'
         ])
             ->where('annee', now()->year)
+            ->orderBy('numero_programme', 'ASC')
             ->get();
         $pdf = PDF::loadView('prog_activite.export-pdf', compact('programmes'));
-        return $pdf->download('programmes-tableau.pdf');
+        return $pdf->download('programmes-tableau_activité.pdf');
     }
 
     /**

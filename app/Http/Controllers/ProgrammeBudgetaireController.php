@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Action;
 use App\Models\Activite;
+use App\Models\IndicateurProgramme;
 use App\Models\ObjectifSpecifique;
 use App\Models\ObjectifsStrategique;
 use Illuminate\Http\Request;
@@ -270,7 +271,7 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
                 }
                 $nouveauProgramme = ProgrammeBudgetaire::create([
                     'id' => Str::ulid(),
-                    'libelle' => $programmeSource->libelle . ')',
+                    'libelle' => $programmeSource->libelle,
                     'numero_programme' => $programmeSource->numero_programme,
                     'annee' => $request->annee,
                     'isActive' => true,
@@ -305,6 +306,17 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
                 'annee' => $annee,
                 'programme_budgetaire_id' => $nouveauProgramme->id
             ]);
+            //Indicateurs
+            foreach ($osSource->indicateurs as $indicateur) {
+                IndicateurProgramme::create([
+                    'libelle' => $indicateur->libelle,
+                    'unite_mesure' => $indicateur->unite_mesure,
+                    'valeur_ref' => $indicateur->valeur_ref,
+                    'valeur_cible' => $indicateur->valeur_cible,
+                    'annee' => $annee,
+                    'objectif_strategique_id' => $osSource->id,
+                ]);
+            }
 
             foreach ($osSource->actions as $actionSource) {
                 // Dupliquer action
