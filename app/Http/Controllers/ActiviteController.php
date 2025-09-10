@@ -196,6 +196,21 @@ class ActiviteController extends Controller implements HasMiddleware
         return view('activites.create', compact('objectifs', 'periodes'));
     }
 
+    /* Create Activite hors programme */
+    public function createHorsProgramme()
+    {
+        if (Auth::user()->isAdmin()) {
+            $objectifs = DB::select("SELECT * from objectifs_specifiques");
+        } else {
+            // Via la table pivot structure_programme_budgetaire
+            $objectifs = ObjectifSpecifique::whereHas('action.objectifStrategique.programmeBudgetaire.structures', function ($query) {
+                $query->where('structure_id', Auth::user()->structure_id);
+            })
+                ->get();
+        }
+        $periodes = Periode::all();
+        return view('activites.create-horsprogramme', compact('objectifs', 'periodes'));
+    }
     public function store(StoreActiviteRequest $request)
     {
         $validated = $request->validated();
@@ -442,7 +457,7 @@ class ActiviteController extends Controller implements HasMiddleware
         return redirect()->back()->with("success", "L'activé a été supprimée.");
     }
 
-    public function delete($id)
+    public function deleteHorsProgramme($id)
     {
         $activite = Activite::onlyHorsProgramme()->where('id', $id)->first();
         $activite->delete();

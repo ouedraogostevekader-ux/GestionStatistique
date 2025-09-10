@@ -1,13 +1,12 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Permissions')
 @section('content')
     <section class="content-header">
         <div class="container-fluid px-4">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="mt-4">Permissions</h1>
                     <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Details</li>
+                        <li class="breadcrumb-item active">Details role</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">

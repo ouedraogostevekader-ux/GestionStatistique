@@ -1,19 +1,18 @@
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Permissions')
 @section('content')
     <section class="content-header">
         <div class="container-fluid px-4">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="mt-4">Permissions</h1>
                     <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Listes</li>
+                        <li class="breadcrumb-item active">Listes des permissions</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="mt-5 d-flex justify-content-end">
                         <a class="btn btn-primary" href="{{ route('permissions.create') }}">
-                            Ajouter
+                            + Ajouter
                         </a>
                     </div>
                 </div>

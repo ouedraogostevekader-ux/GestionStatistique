@@ -28,7 +28,7 @@
             </div>
 
             <!-- Section des filtres -->
-            <div class="card mb-3" id="filters-section" style="display: none;">
+            <div class="card mb-3" id="filters-section">
                 <div class="card-header">
                     <h6 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtres de recherche</h6>
                 </div>
@@ -135,7 +135,8 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Activité</th>
-                                    <th>Période</th>
+                                    <th>Année</th>
+                                    <th>Périodes</th>
                                     <th>Coût prévisionnel</th>
                                     <th>Objectif spécifique</th>
                                     <th>Indicateurs</th>
@@ -147,12 +148,26 @@
 
                                 @foreach ($activites as $key => $activite)
                                     <tr>
-                                        <td>{{ $key + 1 }}</td>
-                                        <td>{{ $activite->libelle }}</td>
+                                        <td class="text-center">{{ $activites->firstItem() + $key }}</td>
                                         <td>
-                                            @foreach ($activite->periodes as $periode)
-                                                {{ $periode->libelle }},
-                                            @endforeach
+                                            <div class="fw-semibold">{{ Str::limit($activite->libelle, 320) }}</div>
+                                            @if ($activite->objectifSpecifique && $activite->objectifSpecifique->action)
+                                                <small class="text-muted">
+                                                    {{ Str::limit($activite->objectifSpecifique->action->objectifStrategique->programmeBudgetaire->libelle ?? '', 40) }}
+                                                </small>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info">{{ $activite->annee }}</span>
+                                        </td>
+                                        <td>
+                                            @if ($activite->periodes->count() > 0)
+                                                @foreach ($activite->periodes as $periode)
+                                                    <span class="badge bg-secondary me-1">{{ $periode->libelle }}</span>
+                                                @endforeach
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
                                         </td>
                                         <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
                                         <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>

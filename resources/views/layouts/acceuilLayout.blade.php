@@ -40,7 +40,7 @@
                         <a class="nav-link active" aria-current="page" href="#">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#stats-section">Diagrammes</a>
+                         <a class="nav-link" href="#stats-section">Statistiques</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">À Propos</a>
@@ -80,21 +80,21 @@
             <div class="carousel-item active">
                 <img src="{{ asset('assets/images/im4.jpg') }}" class="d-block w-100" alt="Image 1">
                 <div class="carousel-caption">
-                    <h1>Elaboration des programmes budgetaires</h1>
+                    <h1>Suivre et évaluer vos projets d'investissement.</h1>
                     <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im2.jpg') }}" class="d-block w-100" alt="Image 2">
                 <div class="carousel-caption">
-                    <h2>Gérez vos programmes d'activités</h2>
+                    <h1>Élaborer vos activités</h1>
                     <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im5.jpg') }}" class="d-block w-100" alt="Image 3">
                 <div class="carousel-caption">
-                    <h3>Renseignez vos activités</h3>
+                    <h1>Élaborer vos annuaires statistiques.</h1>
                     <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
                 </div>
             </div>
@@ -114,45 +114,12 @@
     <!-- Section Statistiques avec Diagramme et Tableau -->
     <section class="stats-section" id="stats-section">
         <div class="container">
-            <h2 class="text-center mb-4">Statistiques</h2>
+            <h2 class="text-center mb-4">Quelques statistiques</h2>
             <!-- Diagramme (Chart.js - Exemple de Bar Chart) -->
-            <div class="chart-container">
+            <div id="chartContainer" class="col-6">
+               <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
                 <canvas id="myChart"></canvas>
             </div>
-            <!-- Tableau Bootstrap -->
-            <div class="table-container">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Catégorie</th>
-                            <th scope="col">Valeur</th>
-                            <th scope="col">Pourcentage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Ventes</td>
-                            <td>1500</td>
-                            <td>30%</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Visiteurs</td>
-                            <td>5000</td>
-                            <td>50%</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Produits</td>
-                            <td>200</td>
-                            <td>20%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </section>
 
     <!-- Footer -->
@@ -169,7 +136,7 @@
                     <h5>Liens Rapides</h5>
                     <ul class="list-unstyled">
                         <li><a href="#">Accueil</a></li>
-                        <li><a href="#">Diagrammes</a></li>
+                        <li><a href="#">Statistiques</a></li>
                         <li><a href="#">À Propos</a></li>
                         <li><a href="#">Contact</a></li>
                     </ul>
@@ -179,9 +146,7 @@
                     <h5>Suivez-nous</h5>
                     <div class="social-icons">
                         <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-twitter"></i></a>
                         <a href="#"><i class="bi bi-linkedin"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
                     </div>
                 </div>
             </div>
@@ -193,6 +158,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">

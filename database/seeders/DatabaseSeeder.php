@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,7 +21,8 @@ class DatabaseSeeder extends Seeder
             DataSeeder::class,
             StructureSeeder::class,
             PermissionSeeder::class,
-            RoleSeeder::class
+            RoleSeeder::class,
+            TableauSeeder::class,
         ]);
     }
 }

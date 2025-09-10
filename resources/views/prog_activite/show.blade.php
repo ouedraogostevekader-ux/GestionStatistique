@@ -1,6 +1,6 @@
 {{-- resources/views/programmes/tableau.blade.php --}}
 @extends('layouts.admin')
-
+@section('breadcrumb', 'Programme d\' activités')
 {{-- @section('title', 'Tableau Programme Budgétaire') --}}
 @section('styles')
     <link rel="stylesheet" href="{{ asset('dist/css/show_pgb_table.css') }}">
