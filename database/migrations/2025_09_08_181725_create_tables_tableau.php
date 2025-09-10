@@ -109,7 +109,7 @@ return new class extends Migration {
         // 8️⃣ SOUMISSIONS TABLEAU
         Schema::create('soumissions_tableau', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
-            $table->string('valeur', 50);
+            $table->string('valeur', 250);
 
 
             $table->foreignUlid('tableau_id')->references('id')->on('tableaux')->cascadeOnDelete();

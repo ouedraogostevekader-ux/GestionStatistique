@@ -192,6 +192,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/assignations/{assignation}', [AssignationController::class, 'destroy'])->name('destroy');
         Route::post('/assignations/{assignation}/status', [AssignationController::class, 'changeStatus'])->name('assignations.changeStatus');
         Route::get('/assignations/dashboard', [AssignationController::class, 'dashboard'])->name('assignations.dashboard');
+        Route::get('tableaux/{id}/affecter', [TableauController::class, 'affecterStructures'])->name('tableaux.affecter');
+        Route::post('tableaux/{id}/affecter', [TableauController::class, 'storeAffectation'])->name('tableaux.storeAffectation');
     });
 });
 

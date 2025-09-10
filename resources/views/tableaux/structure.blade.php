@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('breadcrumb', 'Tableaux')
+@section('breadcrumb', 'Tableaux/structure')
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
