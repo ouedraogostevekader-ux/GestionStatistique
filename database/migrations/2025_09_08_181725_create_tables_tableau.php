@@ -48,7 +48,7 @@ return new class extends Migration {
             $table->string('statut', 250)->nullable();
             $table->string('responsable', 250)->nullable();
             $table->date('date_debut')->nullable();
-            $table->string('date_fin', 250)->nullable();
+            $table->date('date_fin')->nullable();
             $table->date('annee')->nullable();
             $table->string('periode', 250)->nullable();
 
@@ -113,7 +113,7 @@ return new class extends Migration {
         // 8️⃣ SOUMISSIONS TABLEAU
         Schema::create('soumissions_tableau', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
-            $table->string('valeur', 50);
+            $table->string('valeur', 250);
 
           
             $table->foreignUlid('tableau_id')->references('id')->on('tableaux')->cascadeOnDelete();

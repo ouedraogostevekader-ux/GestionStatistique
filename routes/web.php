@@ -174,6 +174,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     // Routes pour supprimer lignes et colonnes
     Route::delete('/lignes/{id}', [LigneTableauController::class, 'destroy'])->name('lignes.destroy');
     Route::delete('/colonnes/{id}', [ColonneTableauController::class, 'destroy'])->name('colonnes.destroy');
+
+    Route::get('tableaux/{id}/affecter', [TableauController::class, 'affecterStructures'])->name('tableaux.affecter');
+    Route::post('tableaux/{id}/affecter', [TableauController::class, 'storeAffectation'])->name('tableaux.storeAffectation');
+
 });
 });
 

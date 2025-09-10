@@ -10,11 +10,15 @@
         </div>
         <div>
             <a href="{{ route('tableaux.structure', $tableau->id) }}" class="btn btn-outline-secondary">
-                <i class="fas fa-cogs"></i> Structure
+                <i class="fas fa-cogs"></i> Structure tableau
             </a>
             <a href="{{ route('tableaux.saisie', $tableau->id) }}" class="btn btn-success">
                 <i class="fas fa-edit"></i> Saisir Données
             </a>
+            <a href="{{ route('tableaux.affecter', $tableau->id) }}" class="btn btn-success">
+                <i class="fas fa-edit"></i> Affecter tableau
+            </a>
+
         </div>
     </div>
 
