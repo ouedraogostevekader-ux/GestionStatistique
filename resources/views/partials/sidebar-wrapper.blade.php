@@ -287,3 +287,4 @@
         <!--end::Sidebar Menu-->
     </nav>
 </div>
+<script src="{{ asset('js/custom.js') }}"></script>

@@ -102,6 +102,112 @@ li.nav-item.dropdown.user-menu {
     backdrop-filter: blur(10px);
 }
 
+.sidebar-wrapper {
+    height: 100vh;
+    /* Hauteur pleine de la fenêtre */
+    overflow-y: auto;
+    /* Permettre le défilement vertical */
+    overflow-x: hidden;
+    /* Masquer le défilement horizontal */
+    position: fixed;
+    /* Fixer la sidebar */
+    /* top: 0;
+    left: 0; */
+    width: 280px;
+    z-index: 1000;
+    padding-top: 60px;
+    /* Espace pour le header si nécessaire */
+}
+
+.sidebar-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-track {
+    background: var(--burkina-red);
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb {
+    background: #DC143C;
+    border-radius: 3px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--burkina-yellow);
+}
+
+/* Ajustements pour le menu de navigation */
+.sidebar-wrapper nav {
+    height: auto;
+    padding-bottom: 20px;
+    /* Espace en bas pour éviter que le dernier élément soit coupé */
+}
+
+.sidebar-wrapper .nav {
+    padding: 0;
+    margin: 0;
+}
+
+/* Assurer que le contenu principal ne soit pas masqué par la sidebar fixe */
+.main-wrapper {
+    /* margin-left: 280px; */
+    /* Même largeur que la sidebar */
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+    /* Animation lors du collapse */
+}
+
+/* Responsive - masquer la sidebar sur mobile */
+@media (max-width: 768px) {
+    .sidebar-wrapper {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar-wrapper.show {
+        transform: translateX(0);
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+    }
+}
+
+/* Si vous utilisez AdminLTE ou un framework similaire */
+.main-sidebar {
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.main-sidebar .sidebar {
+    padding-bottom: 20px;
+}
+
+/* Alternative si vous préférez une approche flex */
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.sidebar-header {
+    flex-shrink: 0;
+    /* Le header ne rétrécit pas */
+}
+
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 20px;
+}
+
+.sidebar-footer {
+    flex-shrink: 0;
+    /* Le footer ne rétrécit pas */
+}
+
 /* Breadcrumb burkinabé */
 ol.breadcrumb {
     background: linear-gradient(90deg, var(--burkina-light-green), var(--burkina-white));
