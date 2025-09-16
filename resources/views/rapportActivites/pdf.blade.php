@@ -238,7 +238,8 @@
                             $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["non_demarrees"] += $tableauSommeAction[$action->libelle]["non_demarrees"];
                             $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["taux_realisation"] += $tableauSommeAction[$action->libelle]["taux_realisation"];
                             $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["cout_effectif"] += $tableauSommeAction[$action->libelle]["cout_effectif"];
-                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["activites"] = $tableauSommeAction;
+                            // Ajouter l'action à la liste des activités du programme
+                            $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["activites"][$action->libelle] = $tableauSommeAction[$action->libelle];
                         @endphp
                     @endforeach
                 @endif
@@ -249,8 +250,8 @@
             @endforeach
         </tbody>
     </table>
-    <h1 style=" page-break-after: always"> Synthèse des activités</h1>
-    <h4 style="text-align: center; margin-top: 40px;">Résumé des réalisations par actions </h4>
+    <h1 style=" page-break-before: always; text-align: center"> Synthèse des activités</h1>
+    <h2 style="text-align: center; margin-top: 40px;">Résumé des réalisations par actions </h2>
     <table>
         <thead>
             <tr style="text-align: center; font-weight: bold; background-color: #E8F5E8;">
@@ -266,7 +267,7 @@
         <tbody>
             @foreach($tableauSommeAction as $action => $valeur)
                 <tr>
-                    <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">{{$action}}</td>
+                    <td style=" font-weight: bold; background-color: #e8f5f5;">{{$action}}</td>
                     <td class="center">{{$valeur["nombre"]}}</td>
                     <td class="center">{{$valeur["achevees"]}}</td>
                     <td class="center">{{$valeur["en_cours"]}}</td>
@@ -277,7 +278,7 @@
             @endforeach
         </tbody>
     </table>
-    <h4 style="text-align: center; margin-top: 40px; page-break-after: always">Résumé des réalisations par programme </h4>
+    <h2 style="text-align: center; margin-top: 40px; page-break-before: always">Résumé des réalisations par programme </h2>
     <table>
         <thead>
             <tr style="text-align: center; font-weight: bold; background-color: #E8F5E8;">
@@ -293,7 +294,7 @@
         <tbody>
             @foreach($tableauSommeProgramme as $programme => $valeur)
                 <tr>
-                    <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">{{$programme}}</td>
+                    <td style="font-weight: bold; background-color: #e8f5f5;">{{$programme}}</td>
                     <td class="center">{{$valeur["nombre"]}}</td>
                     <td class="center">{{$valeur["achevees"]}}</td>
                     <td class="center">{{$valeur["en_cours"]}}</td>
@@ -304,7 +305,7 @@
             @endforeach
         </tbody>
     </table>
-    <h4 style="text-align: center; margin-top: 40px; page-break-after: always">Résumé des réalisations par programme et action </h4>
+    <h2 style="text-align: center; margin-top: 40px; page-break-before: always">Résumé des réalisations par programme et action </h2>
     <table>
         <thead>
             <tr style="text-align: center; font-weight: bold; background-color: #E8F5E8;">
@@ -335,8 +336,8 @@
                     $tauxRealisationTotal += $valeur["taux_realisation"];
                     $coutEffectifTotal += $valeur["cout_effectif"];
                 @endphp
-                <tr>
-                    <td style="text-align: center; font-weight: bold; background-color: #e8f5f5;">{{$programme}}</td>
+                <tr style="font-weight: bold; background-color: #e8f5f5;">
+                    <td >{{$programme}}</td>
                     <td class="center">{{$valeur["nombre"]}}</td>
                     <td class="center">{{$valeur["achevees"]}}</td>
                     <td class="center">{{$valeur["en_cours"]}}</td>
@@ -344,19 +345,19 @@
                     <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]), 2, ',', ' ') }}</td>
                     <td class="center">{{number_format($valeur["cout_effectif"], 0, ',', ' ')}}</td>
                 </tr>
-                @foreach($valeur["activites"] as $action => $valeur)
+                @foreach($valeur["activites"] as $action => $val)
                     <tr>
-                        <td style="text-align: center;">{{$action}}</td>
-                        <td class="center">{{$valeur["nombre"]}}</td>
-                        <td class="center">{{$valeur["achevees"]}}</td>
-                        <td class="center">{{$valeur["en_cours"]}}</td>
-                        <td class="center">{{$valeur["non_demarrees"]}}</td>
-                        <td class="center">{{ number_format($valeur["taux_realisation"]/($valeur["nombre"] == 0 ? 1 : $valeur["nombre"]), 2, ',', ' ') }}</td>
-                        <td class="center">{{number_format($valeur["cout_effectif"], 0, ',', ' ')}}</td>
+                        <td>{{$action}}</td>
+                        <td class="center">{{$val["nombre"]}}</td>
+                        <td class="center">{{$val["achevees"]}}</td>
+                        <td class="center">{{$val["en_cours"]}}</td>
+                        <td class="center">{{$val["non_demarrees"]}}</td>
+                        <td class="center">{{ number_format($val["taux_realisation"]/($val["nombre"] == 0 ? 1 : $val["nombre"]), 2, ',', ' ') }}</td>
+                        <td class="center">{{number_format($val["cout_effectif"], 0, ',', ' ')}}</td>
                     </tr>
                 @endforeach
             @endforeach
-            <tr style="text-align: center; font-weight: bold;">
+            <tr style="text-align: center; font-weight: bold; background-color: #eccc86;">
                 <td style="text-align: center;">Totaux</td>
                 <td class="center">{{$nombreTotal}}</td>
                 <td class="center">{{$acheveesTotal}}</td>
