@@ -349,16 +349,7 @@
         <!-- Graphiques -->
         <div class="row mb-4">
             <!-- Graphique d'évolution des activités -->
-            {{-- <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Évolution mensuelle des activités</h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="evolutionActivitesChart" width="400" height="200"></canvas>
-                    </div>
-                </div>
-            </div> --}}
+            {{-- è --}}
 
             <!-- Graphique de répartition par statut -->
             <div class="col-md-6">
