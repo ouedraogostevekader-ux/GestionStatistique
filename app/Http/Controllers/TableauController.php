@@ -52,25 +52,27 @@ class TableauController extends Controller
     {
         $tableau = Tableau::with(['categorie', 'lignesTableau', 'colonnesTableau'])->findOrFail($id);
 
-        // Récupérer les lignes principales (sans parent)
         $lignes = LigneTableau::where('tableau_id', $id)
             ->whereNull('parent_id')
             ->orderBy('ordre')
             ->with('enfants')
             ->get();
 
-        // Récupérer les colonnes principales (sans parent)
         $colonnes = ColonneTableau::where('tableau_id', $id)
             ->whereNull('parent_id')
             ->orderBy('ordre')
             ->with('enfants')
             ->get();
 
-        // Récupérer les données des cellules
+        $assignations = Assignation::where('tableau_id', $id)
+            ->with('structure')
+            ->get();
+
         $soumissions = $this->getSoumissionsData($id);
 
-        return view('tableaux.show', compact('tableau', 'lignes', 'colonnes', 'soumissions'));
+        return view('tableaux.show', compact('tableau', 'lignes', 'colonnes', 'assignations', 'soumissions'));
     }
+
 
     public function edit($id)
     {
@@ -265,4 +267,39 @@ class TableauController extends Controller
                 return $item->cellule_id . '_' . $item->structure_id;
             });
     }
+
+    public function affecterStructures($id)
+    {
+        $tableau = Tableau::findOrFail($id);
+        $structures = Structure::all();
+
+        return view('tableaux.affecter', compact('tableau', 'structures'));
+    }
+
+    public function storeAffectation(Request $request, $id)
+    {
+        $request->validate([
+            'structure_ids' => 'required|array',
+            'structure_ids.*' => 'exists:structures,id',
+            'version' => 'nullable|string|max:250',
+            'periode' => 'nullable|string|max:250',
+            'date_debut' => 'nullable|date',
+            'date_fin' => 'nullable|date',
+        ]);
+
+        foreach ($request->structure_ids as $structureId) {
+            Assignation::create([
+                'id' => Str::ulid(),
+                'tableau_id' => $id,
+                'structure_id' => $structureId,
+                'version' => $request->version,
+                'periode' => $request->periode,
+                'date_debut' => $request->date_debut,
+                'date_fin' => $request->date_fin,
+            ]);
+        }
+
+        return redirect()->route('tableaux.show', $id)->with('success', 'Structures assignées avec succès');
+    }
+
 }

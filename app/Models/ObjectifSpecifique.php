@@ -37,6 +37,16 @@ class ObjectifSpecifique extends Model
         return $this->hasMany(Activite::class, 'objectif_specifique_id', 'id');
     }
 
+    public function sortItems($items)
+    {
+        usort($items, function($a, $b) {
+            $versionA = preg_replace('/^[^\d]+/', '', $a['libelle']); // enlève "Activité "
+            $versionB = preg_replace('/^[^\d]+/', '', $b['libelle']);
+            return version_compare($versionA, $versionB);
+        });
+        return $items;
+    }
+
     public function indicateursProgrammes()
     {
         return $this->hasMany(IndicateurProgramme::class, 'objectif_specifique_id', 'id');

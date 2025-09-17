@@ -240,7 +240,7 @@
                     class="nav-item {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('assignations.dashboard') || Route::is('saisi*') ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('assignations.dashboard') || Route::is('tableau*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-list"></i>
+                        <i class="nav-icon bi bi-table"></i>
                         <p>
                             Tableaux
                             <i class="nav-arrow bi bi-chevron-right"></i>
@@ -260,7 +260,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('tableaux.index') }}"
                                     class="nav-link {{ Route::is('tableaux.index') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-journal-text"></i>
+                                    <i class="nav-icon bi bi-list"></i>
                                     <p>Liste des tableaux</p>
                                 </a>
                             </li>

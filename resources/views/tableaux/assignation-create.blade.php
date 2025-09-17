@@ -245,7 +245,7 @@
             // Sélection/Désélection de toutes les structures
             const selectAllBtn = document.createElement('button');
             selectAllBtn.type = 'button';
-            selectAllBtn.className = 'btn btn-sm btn-outline-primary mb-2';
+            selectAllBtn.className = 'btn btn-sm btn-outline-success mb-2';
             selectAllBtn.textContent = 'Tout sélectionner';
 
             const structuresContainer = document.querySelector('.row');

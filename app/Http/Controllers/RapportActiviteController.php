@@ -83,15 +83,17 @@ class RapportActiviteController extends Controller implements HasMiddleware
             $periode = $request->input('periode_rapport');
             $annee = now()->year;
             $date = now();
-            $data = $programmeActivite->programmesBudgetaires()->orderBy('libelle')->get();
+            $data = $programmeActivite->programmesBudgetaires()->orderBy('numero_programme')->get();
+
+            $libelle = $request->input('libelle');
 
             // Generation du fichier excel
-            $excel = new RapportActiviteExport($data, $periode, $annee, $date);
+            $excel = new RapportActiviteExport($data, $periode, $annee, $date, $libelle);
             $url_excel = (string) Str::uuid();
             Excel::store($excel, 'rapports/' . $url_excel . '.xlsx', 'public');
 
             // Generation du fichier PDF
-            $pdf = PDF::loadView('rapportActivites.pdf', compact('data', 'periode', 'annee', 'date'));
+            $pdf = PDF::loadView('rapportActivites.pdf', compact('data', 'periode', 'annee', 'date', 'libelle'));
             $pdf->setPaper('a4', 'landscape');
             $url_pdf = (string) Str::uuid();
             $pdf->save(storage_path('app/public/rapports/' . $url_pdf . '.pdf'));
@@ -140,7 +142,7 @@ class RapportActiviteController extends Controller implements HasMiddleware
             return redirect()->back()->with('error', 'Veuillez sélectionner au moins un programme budgétaire.');
         }
 
-        $data = ProgrammeBudgetaire::whereIn('id', $request->input('programmes'))->orderBy('libelle')->get();
+        $data = ProgrammeBudgetaire::whereIn('id', $request->input('programmes'))->orderBy('numero_programme')->get();
 
         return view('rapportActivites.visualiser', compact('data', 'periode', 'annee'));
     }

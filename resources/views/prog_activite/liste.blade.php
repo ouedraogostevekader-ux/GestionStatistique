@@ -11,13 +11,6 @@
                     </div>
 
                     <div class="card-body">
-                        @if (session('success'))
-                            <div class="alert alert-success alert-dismissible fade show">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
-
                         @if ($programmesActivites->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">

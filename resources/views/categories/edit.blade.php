@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('breadcrumb', 'Actions')
+@section('breadcrumb', 'Tableaux/categories')
 @section('content')
     <section class="content-header">
         <div class="container-fluid">

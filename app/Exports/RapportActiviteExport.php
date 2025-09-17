@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Contracts\View\View;
+use Termwind\Components\Li;
 
 class RapportActiviteExport implements FromView, WithStyles, ShouldAutoSize
 {
@@ -18,13 +19,15 @@ class RapportActiviteExport implements FromView, WithStyles, ShouldAutoSize
     protected $periode;
     protected $annee;
     protected $date;
+    protected $libelle;
 
-    public function __construct($data, $periode, $annee, $date=null)
+    public function __construct($data, $periode, $annee, $date=null, $libelle)
     {
         $this->data = $data;
         $this->periode = $periode;
         $this->annee = $annee;
         $this->date = $date ?: now();
+        $this->libelle = $libelle;
 
     }
 
@@ -34,7 +37,8 @@ class RapportActiviteExport implements FromView, WithStyles, ShouldAutoSize
             'data' => $this->data,
             'periode' => $this->periode,
             'annee' => $this->annee,
-            'date' => $this->date
+            'date' => $this->date,
+            'libelle' => $this->libelle,
         ]);
     }
 

@@ -142,6 +142,9 @@
                                     <th>Indicateurs</th>
                                     <th>Date création</th>
                                     <th>Action</th>
+                                    <th>Indicateurs</th>
+                                    <th>Date création</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -169,10 +172,36 @@
                                                 <span class="text-muted">-</span>
                                             @endif
                                         </td>
-                                        <td>{{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA</td>
-                                        <td>{{ $activite->objectifSpecifique->libelle ?? '-' }}</td>
-                                        <td>{{ $activite->indicateursProgrammes->count() }}</td>
-                                        <td>{{ $activite->updated_at->format('d/m/Y, H:i') }}</td>
+                                        <td class="text-end">
+                                            <span class="fw-semibold text-success">
+                                                {{ number_format($activite->cout_previsionnel, 0, ',', ' ') }}
+                                            </span>
+                                            <small class="text-muted d-block">FCFA</small>
+                                        </td>
+                                        <td>
+                                            @if ($activite->objectifSpecifique)
+                                                <div title="{{ $activite->objectifSpecifique->libelle }}">
+                                                    {{ Str::limit($activite->objectifSpecifique->libelle, 50) }}
+                                                </div>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @php
+                                                $indicateursCount = $activite->indicateursProgrammes->count();
+                                            @endphp
+                                            @if ($indicateursCount > 0)
+                                                <span class="badge bg-primary">{{ $indicateursCount }}</span>
+                                            @else
+                                                <span class="badge bg-warning">0</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <small>{{ $activite->created_at->format('d/m/Y') }}</small>
+                                            <small
+                                                class="text-muted d-block">{{ $activite->created_at->format('H:i') }}</small>
+                                        </td>
                                         <td>
                                             <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
                                                 class="d-inline">

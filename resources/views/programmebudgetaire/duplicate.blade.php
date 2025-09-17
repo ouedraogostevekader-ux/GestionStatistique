@@ -14,13 +14,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="programme_source_id" class="form-label">Programme à dupliquer *</label>
-                                <select name="programme_source_id" id="programme_source_id"
-                                    class="form-select @error('programme_source_id') is-invalid @enderror" required>
-                                    <option value="">-- Sélectionner un programme --</option>
+                                <label for="programme_source_id" class="form-label">Programme(s) à dupliquer *</label>
+                                <select name="programme_source_id[]" id="programme_source_id"
+                                    class="form-select @error('programme_source_id') is-invalid @enderror" multiple
+                                    required>
                                     @foreach ($programmes as $programme)
                                         <option value="{{ $programme->id }}"
-                                            {{ old('programme_source_id') == $programme->id ? 'selected' : '' }}>
+                                            {{ collect(old('programme_source_id'))->contains($programme->id) ? 'selected' : '' }}>
                                             {{ $programme->numero_programme }} - {{ $programme->libelle }}
                                             ({{ $programme->annee }})
                                         </option>
@@ -29,9 +29,10 @@
                                 @error('programme_source_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <small class="text-muted">Maintenir CTRL (ou CMD sur Mac) pour en sélectionner
+                                    plusieurs</small>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="annee" class="form-label">Année du nouveau programme *</label>
@@ -46,7 +47,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="nouveau_libelle" class="form-label">Nouveau libellé *</label>
                                 <input type="text" name="nouveau_libelle" id="nouveau_libelle"
@@ -56,9 +57,9 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="col-md-6">
+                        {{--  <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="nouveau_numero" class="form-label">Nouveau numéro *</label>
                                 <input type="text" name="nouveau_numero" id="nouveau_numero"
@@ -69,7 +70,7 @@
                                 @enderror
                                 <small class="text-muted">Doit être unique</small>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="mb-3">

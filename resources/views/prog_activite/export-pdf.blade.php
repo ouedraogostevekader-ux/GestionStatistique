@@ -9,8 +9,34 @@
 
 <body>
 
+    <!-- En-tête -->
+    <div class="row d-flex justify-content-center" style="margin-bottom: 250px; font-size: 14px;">
+        <div class="col-sm-5" style="text-align: center;float: left;">
 
-
+            MINISTERE DES INFRASTRUCTURES<br>
+            ET DU DESENCLAVEMENT<br>
+            ------------------- <br>
+            SÉCRETARIAT GÉNÉRAL<br>
+            ------------------- <br>
+            DIRECTION GÉNÉRALE DES ETUDES<br> STATISTIQUES ET SECTORIELLES <br>
+        </div>
+        <div class="col-sm-2 px-3" style="text-align: center; float: center; margin-left: 20%;">
+            <img src="{{ public_path('dist/assets/img/ARMOIRIES-BF.jpg') }}" alt="Logo ARMOIRIES" width="18%" /><br />
+        </div>
+        <div class="col-sm-5" style="text-align: center;float: right;">
+            BURKINA FASO <br>
+            --------------<br>
+            La Patrie ou la Mort, nous Vaincrons <br>
+            <br>
+            {{--  @if (isset($qrcode))
+                <img src="data:image/png;base64,{{ $qrcode }}">
+            @endif --}}
+        </div>
+    </div>
+    <h3 id="titre" style="text-align: center; text-justify: distribute
+    ; text-decoration: underline;">Programme
+        d'activités du
+        {{ date('d/m/Y, H:i') }}</h3>
     <div class="container-fluid">
         <div class="row mb-3 no-print">
             <div class="col-12">

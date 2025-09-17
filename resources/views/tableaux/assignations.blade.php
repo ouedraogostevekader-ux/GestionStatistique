@@ -1,6 +1,5 @@
 @extends('layouts.admin')
-@section('breadcrumb', 'Assignations')
-
+@section('breadcrumb', 'Tableaux/Assignations')
 @section('content')
     <div class="container-fluid">
         <!-- En-tête avec informations du tableau -->
