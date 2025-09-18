@@ -205,7 +205,7 @@ class AssignationController extends Controller
                 ? "Le tableau '{$tableau->libelle}' a été assigné à {$structuresCount} structures avec succès."
                 : "Le tableau '{$tableau->libelle}' a été assigné à la structure avec succès.";
 
-            return redirect()->route('assignations.index', $tableauId)
+            return redirect()->route('assignations.dashboard', $tableau)
                 ->with('success', $message);
 
         } catch (\Exception $e) {

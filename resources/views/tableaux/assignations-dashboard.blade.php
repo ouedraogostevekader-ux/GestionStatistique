@@ -55,7 +55,84 @@
                 </form>
             </div>
         </div>
-
+        <!-- Liste des assignations -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0">Assignations récentes</h6>
+            </div>
+            <div class="card-body">
+                @if ($assignations->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Tableau</th>
+                                    <th>Structure</th>
+                                    <th>Responsable</th>
+                                    <th>Statut</th>
+                                    <th>Progrès</th>
+                                    <th>Date début</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($assignations as $assignation)
+                                    <tr>
+                                        <td>
+                                            <strong>{{ Str::limit($assignation->tableau->libelle, 30) }}</strong>
+                                            <br><small
+                                                class="text-muted">{{ $assignation->tableau->categorie->libelle }}</small>
+                                        </td>
+                                        <td>
+                                            {{ $assignation->structure->nom }}
+                                            <br><small class="text-muted">{{ $assignation->structure->sigle }}</small>
+                                        </td>
+                                        <td>{{ $assignation->responsable ?? '-' }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $assignation->statut_class }}">
+                                                {{ $assignation->statut_libelle }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar bg-{{ $assignation->statut_class }}"
+                                                    style="width: {{ $assignation->progress }}%"></div>
+                                            </div>
+                                            <small>{{ $assignation->progress }}%</small>
+                                        </td>
+                                        <td>
+                                            @if ($assignation->date_debut)
+                                                <small>{{ $assignation->date_debut }}</small>
+                                            @else
+                                                <small class="text-muted">-</small>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ route('assignations.edit', [$assignation->tableau_id, $assignation->id]) }}"
+                                                    class="btn btn-outline-primary" title="Modifier">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{{ route('tableaux.show', $assignation->tableau_id) }}"
+                                                    class="btn btn-outline-info" title="Voir le tableau">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-4">
+                        <i class="bi bi-clipboard-x display-4 text-muted"></i>
+                        <h6 class="text-muted mt-2">Aucune assignation trouvée</h6>
+                        <p class="text-muted small">Aucune assignation ne correspond aux critères sélectionnés.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
         <!-- Statistiques globales -->
         <div class="row mb-4">
             <div class="col-lg-3 col-md-6">
@@ -143,87 +220,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Liste des assignations -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0">Assignations récentes</h6>
-                <a href="#" class="btn btn-sm btn-outline-primary">Voir toutes</a>
-            </div>
-            <div class="card-body">
-                @if ($assignations->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Tableau</th>
-                                    <th>Structure</th>
-                                    <th>Responsable</th>
-                                    <th>Statut</th>
-                                    <th>Progrès</th>
-                                    <th>Date début</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($assignations as $assignation)
-                                    <tr>
-                                        <td>
-                                            <strong>{{ Str::limit($assignation->tableau->libelle, 30) }}</strong>
-                                            <br><small
-                                                class="text-muted">{{ $assignation->tableau->categorie->libelle }}</small>
-                                        </td>
-                                        <td>
-                                            {{ $assignation->structure->nom }}
-                                            <br><small class="text-muted">{{ $assignation->structure->sigle }}</small>
-                                        </td>
-                                        <td>{{ $assignation->responsable ?? '-' }}</td>
-                                        <td>
-                                            <span class="badge bg-{{ $assignation->statut_class }}">
-                                                {{ $assignation->statut_libelle }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="progress" style="height: 8px;">
-                                                <div class="progress-bar bg-{{ $assignation->statut_class }}"
-                                                    style="width: {{ $assignation->progress }}%"></div>
-                                            </div>
-                                            <small>{{ $assignation->progress }}%</small>
-                                        </td>
-                                        <td>
-                                            @if ($assignation->date_debut)
-                                                <small>{{ $assignation->date_debut }}</small>
-                                            @else
-                                                <small class="text-muted">-</small>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ route('assignations.edit', [$assignation->tableau_id, $assignation->id]) }}"
-                                                    class="btn btn-outline-primary" title="Modifier">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="{{ route('tableaux.show', $assignation->tableau_id) }}"
-                                                    class="btn btn-outline-info" title="Voir le tableau">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="text-center py-4">
-                        <i class="bi bi-clipboard-x display-4 text-muted"></i>
-                        <h6 class="text-muted mt-2">Aucune assignation trouvée</h6>
-                        <p class="text-muted small">Aucune assignation ne correspond aux critères sélectionnés.</p>
-                    </div>
-                @endif
-            </div>
-        </div>
-
         <!-- Assignations en retard -->
         @if ($assignationsEnRetard->count() > 0)
             <div class="card mt-4">
