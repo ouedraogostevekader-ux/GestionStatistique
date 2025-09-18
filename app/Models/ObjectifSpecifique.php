@@ -37,6 +37,45 @@ class ObjectifSpecifique extends Model
         return $this->hasMany(Activite::class, 'objectif_specifique_id', 'id');
     }
 
+    public function getActivitesSortedAttribute()
+    {
+        return $this->activites->sort(function ($a, $b) {
+            $versionA = $this->extractVersionFromLibelle($a->libelle);
+            $versionB = $this->extractVersionFromLibelle($b->libelle);
+            
+            if (!$versionA && !$versionB) return 0;
+            if (!$versionA) return 1;
+            if (!$versionB) return -1;
+            
+            $parsedA = array_map('intval', explode('.', $versionA));
+            $parsedB = array_map('intval', explode('.', $versionB));
+            
+            $maxLength = max(count($parsedA), count($parsedB));
+            
+            for ($i = 0; $i < $maxLength; $i++) {
+                $partA = $parsedA[$i] ?? 0;
+                $partB = $parsedB[$i] ?? 0;
+                
+                if ($partA < $partB) return -1;
+                if ($partA > $partB) return 1;
+            }
+            
+            return 0;
+        })->values();
+    }
+    
+    /**
+     * Méthode helper pour extraire la version
+     */
+    private function extractVersionFromLibelle($libelle)
+    {
+        $pattern = '/(\d+(?:\.\d+)*)/';
+        if (preg_match($pattern, $libelle, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    }
+
     public function sortItems($items)
     {
         usort($items, function($a, $b) {
