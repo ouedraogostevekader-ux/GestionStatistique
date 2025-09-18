@@ -32,16 +32,16 @@ body {
         }
         /* Style pour la barre de défilement */
         .ticker-container {
-            background-color: black;
+            background-color: rgb(255, 255, 255);
             height: 30px;
             overflow: hidden;
             position: relative;
         }
-        .ticker-text {            color: white;
+        .ticker-text {            color: rgb(0, 0, 0);
             font-size: 18px;
             position: absolute;
             white-space: nowrap;
-            animation: ticker 20s linear infinite;
+            animation: ticker 22s linear infinite;
         }
         @keyframes ticker {
             0% {
@@ -60,7 +60,7 @@ body {
        
         /* slider img style */
         .carousel-item img{
-            filter: grayscale(50%) brightness(40%) contrast(120%);
+            filter: grayscale(50%) brightness(40%) contrast(150%);
         }
 
         /* connexion btn style */
@@ -73,7 +73,7 @@ body {
 
         /* Style pour le footer */
         .footer {
-            background-color: #343a40;
+            background-color: #51884D;
             color: white;
             padding: 40px 0;
             margin-top: 50px;

@@ -33,11 +33,11 @@
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('categories.show', $categorie->id) }}" 
                                        class="btn btn-sm btn-outline-primary" title="Voir">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="bi bi-eye"></i>
                                     </a>
                                     <a href="{{ route('categories.edit', $categorie->id) }}" 
                                        class="btn btn-sm btn-outline-warning" title="Modifier">
-                                        <i class="fas fa-pencil-alt"></i>
+                                        <i class="bi bi-pencil-fill"></i>
                                     </a>
                                     @if($categorie->tableaux_count == 0)
                                     <form action="{{ route('categories.destroy', $categorie->id) }}" 
@@ -47,7 +47,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                     @endif

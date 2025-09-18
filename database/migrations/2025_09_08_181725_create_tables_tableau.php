@@ -38,20 +38,16 @@ return new class extends Migration {
         // 4️⃣ ASSIGNATIONS
         Schema::create('assignations', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
-           
             $table->foreignUlid('tableau_id')->references('id')->on('tableaux')->cascadeOnDelete();
-
             $table->foreignUlid('structure_id')->constrained('structures')->cascadeOnDelete();
-
             $table->string('version', 250)->nullable();
             $table->string('source', 250)->nullable();
-            $table->string('statut', 250)->nullable();
+            $table->integer('statut')->default(1);
             $table->string('responsable', 250)->nullable();
             $table->date('date_debut')->nullable();
-            $table->date('date_fin')->nullable();
-            $table->date('annee')->nullable();
+            $table->string('date_fin', 250)->nullable();
+            $table->year('annee')->nullable();
             $table->string('periode', 250)->nullable();
-
             $table->timestamps();
             $table->softDeletes();
         });
@@ -61,13 +57,13 @@ return new class extends Migration {
             $table->ulid('id')->primary()->unique();
             $table->string('nom_ligne', 250);
             $table->string('ordre', 250);
-           
+
             $table->foreignUlid('tableau_id')->references('id')->on('tableaux')->cascadeOnDelete();
 
             // auto-référence pour sous-lignes
-        
 
-            
+
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -80,30 +76,30 @@ return new class extends Migration {
 
         // 6️⃣ COLONNES TABLEAU (avec sous-colonnes)
         Schema::create('colonnes_tableau', function (Blueprint $table) {
-             $table->ulid('id')->primary()->unique();
+            $table->ulid('id')->primary()->unique();
             $table->string('colonne_ligne', 250);
             $table->string('ordre', 250);
-       
+
             $table->foreignUlid('tableau_id')->references('id')->on('tableaux')->cascadeOnDelete();
 
             // auto-référence pour sous-colonnes
-         
-         
+
+
             $table->timestamps();
             $table->softDeletes();
         });
 
-            Schema::table(('colonnes_tableau'), function (Blueprint $table) {
+        Schema::table(('colonnes_tableau'), function (Blueprint $table) {
             $table->foreignUlid('parent_id')->nullable()->constrained('colonnes_tableau')->restrictOnDelete()->cascadeOnUpdate();
-        }); 
+        });
 
         // 7️⃣ CELLULES
         Schema::create('cellules', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
-            
+
             $table->foreignUlid('ligne_id')->references('id')->on('lignes_tableau')->cascadeOnDelete();
 
-            
+
             $table->foreignUlid('colonne_id')->references('id')->on('colonnes_tableau')->cascadeOnDelete();
 
             $table->timestamps();
@@ -115,7 +111,7 @@ return new class extends Migration {
             $table->ulid('id')->primary()->unique();
             $table->string('valeur', 250);
 
-          
+
             $table->foreignUlid('tableau_id')->references('id')->on('tableaux')->cascadeOnDelete();
 
             $table->foreignUlid('structure_id')->constrained('structures')->cascadeOnDelete();

@@ -5,9 +5,8 @@
         <div class="container-fluid px-4">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="mt-4">Roles</h1>
                     <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Listes</li>
+                        <li class="breadcrumb-item active">Listes des rôles</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
