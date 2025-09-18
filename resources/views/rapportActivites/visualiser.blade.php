@@ -59,11 +59,12 @@
                     </tr>
                     <!-- Objectif stratégique -->
                     @foreach($programme->objectifsStrategiques as $objectifStrategique)
-                    @if($objectifStrategique->indicateurs->count() > 0)
+                    
                         <tr>
-                            <td rowspan="{{$objectifStrategique->indicateurs->count()}}" class="objectif-strategique">
+                            <td rowspan="{{$objectifStrategique->indicateurs->count()>0 ? $objectifStrategique->indicateurs->count() : 1}}" class="objectif-strategique">
                                 {{$objectifStrategique->libelle}}
                             </td>
+                            @if($objectifStrategique->indicateurs->count() > 0)
                             @php
                                 // Obtenir le premier indicateur de l'objectif stratégique
                                 $firstIndicateur = $objectifStrategique->indicateurs->first();
@@ -80,6 +81,7 @@
                             <td class="center">@if(isset($lastSuiv) && is_numeric($firstIndicateur->valeur_cible)){{ number_format( $taux , 2, ',', ' ')}} % @else N/A @endif</td>
                             <td class="center">{{$lastSuivi->cout_effectif ?? '-'}}</td>
                             <td class="center">{{$lastSuivi->observations ?? '-'}}</td>
+                            @endif
                         </tr>
                         @foreach($objectifStrategique->indicateurs as $indicateur)
                             @if($indicateur->id != $firstIndicateur->id)
@@ -113,11 +115,12 @@
                             </tr>
                             <!-- Objectif spécifique -->
                             @foreach($action->objectifsSpecifiques()->orderBy('libelle')->get() as $objectifsSpecifique)
-                            @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
+                            
                                 <tr>
-                                    <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()}}" class="center middle objectif-strategique">
+                                    <td rowspan="{{$objectifsSpecifique->indicateursProgrammes->count()>0 ? $objectifsSpecifique->indicateursProgrammes->count() : 1}}" class="center middle objectif-strategique">
                                         {{$objectifsSpecifique->libelle}}
                                     </td>
+                                    @if($objectifsSpecifique->indicateursProgrammes->count() > 0)
                                     @php
                                         // Obtenir le premier indicateur de l'objectif opérationnel
                                         $firstIndi = $objectifsSpecifique->indicateursProgrammes->first();
@@ -133,6 +136,7 @@
                                     <td class="center">@if(isset($lastSuiv) && is_numeric($firstIndi->valeur_cible)){{ number_format($taux , 2, ',', ' ')}} % @else N/A @endif</td>
                                     <td class="center">{{$lastSuiv->cout_effectif ?? '-'}}</td>
                                     <td class="center">{{$lastSuiv->observations ?? '-'}}</td>
+                                    @endif
                                 </tr>
                                 @foreach($objectifsSpecifique->indicateursProgrammes as $indicateur)
                                     @if($indicateur->id != $firstIndi->id)
@@ -204,7 +208,7 @@
                                     </tr>
                                 @endif 
                                 @endforeach
-                            @endif
+                            
                             @endforeach 
                             @php
                                 $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["nombre"] += $tableauSommeAction[$action->libelle]["nombre"];
@@ -217,7 +221,7 @@
                                 $tableauSommeProgramme[$programme->numero_programme. " ". $programme->libelle]["activites"][$action->libelle] = $tableauSommeAction[$action->libelle];
                             @endphp
                         @endforeach
-                    @endif
+                    
                     @endforeach
                     <tr style="page-break-after: always">
                         <td colspan="8"></td>

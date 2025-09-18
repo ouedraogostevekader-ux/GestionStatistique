@@ -69,13 +69,13 @@ class RapportActiviteController extends Controller implements HasMiddleware
                 return redirect()->back()->with('error', 'Aucun programme d\'activité trouvé pour l\'année en cours ' . now()->year);
             }
             $rapport = RapportActivite::where('annee', now()->year)->count();
-            if ($rapport > 2) {
+            if ($rapport > 3) {
                 
                 if ($request->ajax()) {
-                    throw new \Exception('Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont déjà été générés.');
+                    throw new \Exception('Deux (03) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont déjà été générés.');
                     return response()->json([
                         'success' => false,
-                        'message' => 'Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont été déjà générés.'
+                        'message' => 'Deux (03) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont été déjà générés.'
                     ]);
                 }
                 return redirect()->back()->with('error', 'Deux (02) rapports d\'activité pour l\'année en cours ' . now()->year . ' ont été déjà générés.');
