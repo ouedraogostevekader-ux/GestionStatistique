@@ -17,6 +17,7 @@ use App\Http\Controllers\ProgrammeActiviteController;
 use App\Http\Controllers\LigneTableauController;
 use App\Http\Controllers\ColonneTableauController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\TableauController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
