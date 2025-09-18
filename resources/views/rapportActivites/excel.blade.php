@@ -75,7 +75,7 @@
                 @endif
             @endforeach
             <!-- Action -->
-            @foreach($objectifStrategique->actions()->orderBy('libelle')->get() as $action)
+            @foreach($objectifStrategique->activites_sorted as $action)
                 <tr>
                     <td colspan="8" class="action-title">
                         {{$action->libelle}}

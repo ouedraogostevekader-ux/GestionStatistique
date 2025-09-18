@@ -179,7 +179,7 @@
                                 @endif
                             @endforeach
                             <!-- Activité -->
-                            @foreach($objectifsSpecifique->activites()->orderBy('libelle')->get() as $activite)
+                            @foreach($objectifsSpecifique->activites_sorted as $activite)
                             @if($activite->indicateursProgrammes->count() > 0)
                                 <tr>
                                     <td >
