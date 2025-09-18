@@ -48,10 +48,10 @@
         </div>
 
         <div class="mb-3 form-check">
-            <input type="checkbox" name="hors_programme" id="hors_programme" value="1"
+            <input hidden type="checkbox" name="hors_programme" id="hors_programme" value="1"
                 class="form-check-input @error('hors_programme') is-invalid @enderror"
                 {{ old('hors_programme', $activite->hors_programme ?? false) ? 'checked' : '' }}>
-            <label class="form-check-label" for="hors_programme">Activité hors programme</label>
+            <label hidden class="form-check-label" for="hors_programme">Activité hors programme</label>
             @error('hors_programme')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -199,7 +199,7 @@
         // Supprimer un indicateur
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('remove-indicator') || e.target.closest(
-                '.remove-indicator')) {
+                    '.remove-indicator')) {
                 const indicatorItem = e.target.closest('.indicator-item');
                 indicatorItem.remove();
                 updateIndicatorNumbers();

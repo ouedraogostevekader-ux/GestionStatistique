@@ -57,8 +57,10 @@
                                 <td>{{ $indicateur->unite_mesure }}</td>
                                 <td>{{ $indicateur->valeur_cible }}</td>
                                 <td>
-                                    <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
-                                        class="btn btn-info btn-sm">Voir</a>
+                                    @can('indicateur_Programme-list')
+                                        <a href="{{ route('indicateurs-programmes.show', $indicateur->id) }}"
+                                            class="btn btn-info btn-sm">Voir</a>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty
@@ -74,9 +76,11 @@
     <div class="card-body p-2">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title mb-0">Actions associées</h3>
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addActionModal">
-                <i class="fas fa-plus"></i> Ajouter une action
-            </button>
+            @can('action-create')
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addActionModal">
+                    <i class="fas fa-plus"></i> Ajouter une action
+                </button>
+            @endcan
         </div>
         <div class="table-responsive">
             <table class="table table-striped">
@@ -91,8 +95,10 @@
                         <tr>
                             <td>{{ $o_specifique->libelle }}</td>
                             <td>
-                                <a href="{{ route('actions.show', $o_specifique->id) }}"
-                                    class="btn btn-info btn-sm">Voir</a>
+                                @can('action-list')
+                                    <a href="{{ route('actions.show', $o_specifique->id) }}"
+                                        class="btn btn-info btn-sm">Voir</a>
+                                @endcan
                             </td>
                         </tr>
                     @empty

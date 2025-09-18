@@ -78,6 +78,7 @@
                                             <th>Numéro programme</th>
                                             {{-- <th>Programme activité</th> --}}
                                             <th>Responsable Budgétaire</th>
+                                            <th>Année</th>
                                             <th>Etat</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
@@ -104,6 +105,7 @@
                                                         <span class="text-muted">Aucun responsable assigné</span>
                                                     @endif
                                                 </td>
+                                                <td>{{ $programme->annee }}</td>
                                                 <td>
                                                     @if ($programme->isActive)
                                                         <span class="badge bg-success">Ouvert</span>

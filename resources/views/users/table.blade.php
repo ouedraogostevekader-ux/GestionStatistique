@@ -7,7 +7,7 @@
                     <th>Nom</th>
                     <th>Telephone</th>
                     <th>Structure</th>
-                    {{-- <th>Commune</th>  --}}
+                    <th>Role</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -18,6 +18,7 @@
                         <td>{{ $user->name }} </td>
                         <td>{{ $user->telephone }}</td>
                         <td>{{ $user->structure->sigle }}</td>
+                        <td>{{ $user->roleLabels() }}</td>
                         <td>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
                                 @csrf

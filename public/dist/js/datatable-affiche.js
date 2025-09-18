@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize the DataTable
-    $("#example2").DataTable({
+    let table = new DataTable("#example2", {
         responsive: true,
         pageLength: 10,
         lengthMenu: [

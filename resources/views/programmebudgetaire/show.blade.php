@@ -18,6 +18,9 @@
                                 <strong>Code :</strong> {{ $programmeBudgetaire->numero_programme }}
                             </li>
                             <li class="list-group-item">
+                                <strong>Année :</strong> {{ $programmeBudgetaire->annee }}
+                            </li>
+                            <li class="list-group-item">
                                 <strong>Structure</strong>
                                 {{ $programmeBudgetaire->structures->isEmpty() ? 'Aucune structure associée' : '' }}
                                 @foreach ($programmeBudgetaire->structures as $structure)
