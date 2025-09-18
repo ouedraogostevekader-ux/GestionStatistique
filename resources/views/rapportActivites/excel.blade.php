@@ -34,7 +34,7 @@
         @foreach($programme->objectifsStrategiques as $objectifStrategique)
         @if($objectifStrategique->indicateurs->count() > 0)
             <tr>
-                <td rowspan="{{$objectifStrategique->indicateurs->count()>}}" class="objectif-strategique">
+                <td rowspan="{{$objectifStrategique->indicateurs->count()}}" class="objectif-strategique">
                     {{$objectifStrategique->libelle}}
                 </td>
                 @php
