@@ -86,6 +86,8 @@
                         </tbody>
                     </table>
                 </div>
+
+                {{ $tableaux->links() }}
             </div>
         </div>
     @endsection

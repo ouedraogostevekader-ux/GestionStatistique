@@ -27,9 +27,9 @@
             <a href="{{ route('tableaux.saisie', $tableau->id) }}" class="btn btn-success">
                 <i class="fas fa-edit"></i> Saisir Données
             </a>
-            <a href="{{ route('tableaux.affecter', $tableau->id) }}" class="btn btn-success">
+            {{-- <a href="{{ route('tableaux.affecter', $tableau->id) }}" class="btn btn-success">
                 <i class="fas fa-edit"></i> Affecter tableau
-            </a>
+            </a> --}}
 
         </div>
     </div>
