@@ -5,14 +5,20 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3>Les objectifs spécifiques</h3>
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Liste des objectifs spécifiques<span
+                                class="btn btn-info">({{ $objectifsSpecifiques->count() }})</span>
+                        </li>
+                    </ol>
                 </div>
                 <div class="col-sm-6">
-                    @can('objectif_Specifique-create')
-                        <a id="btnAjouter" class="btn btn-primary float-right" href="{{ route('objectifs-specifiques.create') }}">
-                            Ajouter
-                        </a>
-                    @endcan
+                    <div class="mt-3 d-flex justify-content-end">
+                        @can('objectif_Specifique-create')
+                            <a class="btn btn-primary" id="btnAjouter" href="{{ route('objectifs-specifiques.create') }}">
+                                <i class="bi bi-plus"></i> Ajouter
+                            </a>
+                        @endcan
+                    </div>
                 </div>
             </div>
         </div>

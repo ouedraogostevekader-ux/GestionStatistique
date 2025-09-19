@@ -25,7 +25,7 @@ class SuiviController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('permission:suivi-list', only: ['index', 'show']),
-            new Middleware('permission:suivi-create', only: ['create', 'store']),
+            new Middleware('permission:suivi-create', only: ['create', 'createByMIndicateur', 'store']),
             new Middleware('permission:suivi-edit', only: ['edit', 'update']),
             new Middleware('permission:suivi-delete', only: ['destroy']),
         ];
@@ -58,22 +58,22 @@ class SuiviController extends Controller implements HasMiddleware
             $actions = Action::with('objectifStrategique')->where('annee', $annee)->whereHas('objectifStrategique.programmeBudgetaire.structures', function ($query) {
                 $query->where('structure_id', Auth::user()->structure_id);
             })->orderBy('libelle')->get();
-            
+
             // Récupérer tous les indicateurs avec leurs relations si l'indicateur appartient aux objectifs spécifiques, stratégiques ou activités filtrés
             $indicateurProgrammes = IndicateurProgramme::with([
                 'objectifStrategique',
-                'objectifSpecifique', 
+                'objectifSpecifique',
                 'activite',
                 'suivis.getPeriode'
             ])->where(function ($query) use ($objectifSpecifiques, $objectifStrategiques, $activites) {
                 $query->whereIn('objectif_specifique_id', $objectifSpecifiques->pluck('id'))
-                      ->orWhereIn('objectif_strategique_id', $objectifStrategiques->pluck('id'))
-                      ->orWhereIn('activites_id', $activites->pluck('id'));
-            })->get();    
-        }else{
+                    ->orWhereIn('objectif_strategique_id', $objectifStrategiques->pluck('id'))
+                    ->orWhereIn('activites_id', $activites->pluck('id'));
+            })->get();
+        } else {
             $indicateurProgrammes = IndicateurProgramme::with([
                 'objectifStrategique',
-                'objectifSpecifique', 
+                'objectifSpecifique',
                 'activite',
                 'suivis.getPeriode'
             ])->where('annee', $annee)->get();
@@ -82,8 +82,8 @@ class SuiviController extends Controller implements HasMiddleware
             $objectifStrategiques = ObjectifsStrategique::where('annee', $annee)->get();
             $actions = Action::with('objectifStrategique')->where('annee', $annee)->orderBy('libelle')->get();
         }
-        
-        
+
+
         return view('suivis.index', compact('indicateurProgrammes', 'activites', 'objectifSpecifiques', 'objectifStrategiques', 'actions'));
     }
 
@@ -99,7 +99,7 @@ class SuiviController extends Controller implements HasMiddleware
     public function createByMIndicateur($id)
     {
         $periodes = Periode::pluck('libelle', 'id');
-        return view('suivis.modal-content', ['indicateur_programme_id' => $id,'periodes'=>$periodes]);
+        return view('suivis.modal-content', ['indicateur_programme_id' => $id, 'periodes' => $periodes]);
     }
 
     /**
@@ -134,14 +134,14 @@ class SuiviController extends Controller implements HasMiddleware
             }
         }
 
-        $suivi =Suivi::create($request->validated());
+        $suivi = Suivi::create($request->validated());
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Suivi créé avec succès!'
             ]);
         }
-        
+
         return redirect()->route('suivis.index')->with('success', 'Suivi créé avec succès');
     }
 
@@ -155,7 +155,7 @@ class SuiviController extends Controller implements HasMiddleware
         if ($request->ajax()) {
             return response()->json($suivi->load('indicateurProgramme'));
         }
-        
+
         return view('suivis.show', compact('suivi'));
     }
 
@@ -167,7 +167,7 @@ class SuiviController extends Controller implements HasMiddleware
         //
         $suivi = Suivi::findOrFail($id);
         $periodes = Periode::pluck('libelle', 'id');
-        return view('suivis.modal-content-edit', ['suivi' => $suivi,'periodes'=>$periodes]);
+        return view('suivis.modal-content-edit', ['suivi' => $suivi, 'periodes' => $periodes]);
     }
 
     /**
