@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Name</th>
+                    <th>Nom</th>
                     <th>Entité</th>
                     <th>Groupe</th>
                     <th>Action</th>

@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             StructureSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
-            TableauSeeder::class,
+            // TableauSeeder::class,
         ]);
     }
 }

@@ -140,10 +140,6 @@
                                     <th>Coût prévisionnel</th>
                                     <th>Objectif spécifique</th>
                                     <th>Indicateurs</th>
-                                    <th>Date création</th>
-                                    <th>Action</th>
-                                    <th>Indicateurs</th>
-                                    <th>Date création</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -197,11 +193,7 @@
                                                 <span class="badge bg-warning">0</span>
                                             @endif
                                         </td>
-                                        <td class="text-center">
-                                            <small>{{ $activite->created_at->format('d/m/Y') }}</small>
-                                            <small
-                                                class="text-muted d-block">{{ $activite->created_at->format('H:i') }}</small>
-                                        </td>
+
                                         <td>
                                             <form action="{{ route('activites.destroy', $activite->id) }}" method="POST"
                                                 class="d-inline">

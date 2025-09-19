@@ -159,14 +159,17 @@
                                                                                 <table class="table table-sm table-striped">
                                                                                     <thead class="table-primary">
                                                                                         <tr>
-                                                                                            <th class="w-40">Indicateur
+                                                                                            <th class="w-40">
+                                                                                                Indicateur
                                                                                             </th>
                                                                                             <th
                                                                                                 class="w-20 d-none d-sm-table-cell">
                                                                                                 Unité</th>
-                                                                                            <th class="w-20">Référence
+                                                                                            <th class="w-20">
+                                                                                                Référence
                                                                                             </th>
-                                                                                            <th class="w-20">Cible</th>
+                                                                                            <th class="w-20">Cible
+                                                                                            </th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>
