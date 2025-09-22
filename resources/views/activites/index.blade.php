@@ -142,9 +142,6 @@
                                     <th>Indicateurs</th>
                                     <th>Date création</th>
                                     <th>Action</th>
-                                    <th>Indicateurs</th>
-                                    <th>Date création</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
