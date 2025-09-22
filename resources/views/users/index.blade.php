@@ -5,7 +5,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3>Utilisateurs : <span class="btn btn-info">({{ $users->count() }})</span></h3>
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Liste des utilisateurs <span
+                                class="btn btn-info">({{ $users->count() }})</span>
+                        </li>
+                    </ol>
                 </div>
                 <div class="col-sm-6">
                     @can('user-create')

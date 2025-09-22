@@ -4,7 +4,6 @@ use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AssignationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
-use App\Http\Controllers\LigneController;
 use App\Http\Controllers\ObjectifStrategiqueController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -13,12 +12,12 @@ use App\Http\Controllers\StatistiquesController;
 use App\Http\Controllers\StructureController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProgrammeBudgetaireController;
-use App\Http\Controllers\TableauController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProgrammeActiviteController;
 use App\Http\Controllers\LigneTableauController;
 use App\Http\Controllers\ColonneTableauController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\TableauController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');

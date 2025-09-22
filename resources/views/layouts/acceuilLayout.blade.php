@@ -11,7 +11,7 @@
     <!-- Chart.js pour les diagrammes -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- notre css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/css_accueil.css') }}">>
+    <link rel="stylesheet" href="{{ asset('assets/css/css_accueil.css') }}">
 
 </head>
 
@@ -35,12 +35,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- Liens de navigation à gauche -->
-                <ul class="navbar-nav navbar-nav-left">
+                {{-- <ul class="navbar-nav navbar-nav-left">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#">Accueil</a>
                     </li>
                     <li class="nav-item">
-                         <a class="nav-link" href="#stats-section">Statistiques</a>
+                        <a class="nav-link" href="#stats-section">Statistiques</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">À Propos</a>
@@ -54,7 +54,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('edit.compte', $uid) }}">Modif</a>
                     </li>
-                </ul>
+                </ul> --}}
                 <!-- Bouton de connexion à droite -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -117,7 +117,7 @@
             <h2 class="text-center mb-4">Quelques statistiques</h2>
             <!-- Diagramme (Chart.js - Exemple de Bar Chart) -->
             <div id="chartContainer" class="col-6">
-               <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
+                <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
                 <canvas id="myChart"></canvas>
             </div>
     </section>

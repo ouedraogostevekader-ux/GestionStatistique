@@ -50,33 +50,5 @@
 
     @stack('page_scripts')
 </body>
-{{--
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-700 to-green-700">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
-        <div class="text-center items-center justify-center" id="logo-login">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </div>
-
-        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-            {{ $slot ?? '' }}
-            @yield('content')
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{{ asset('dist/js/select2.js') }}"></script>
-
-    <script src=" {{ asset('js/login.js') }}"></script>
-
-    @stack('page_scripts')
-</body> --}}
 
 </html>

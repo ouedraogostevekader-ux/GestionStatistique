@@ -16,7 +16,7 @@
                         @can('activite-create')
                             <a class="btn btn-primary" id="btnAjouter"
                                 href="{{ route('rapportActivites.hors.programme.create') }}">
-                                <i class="bi bi-plus"></i> + Ajouter
+                                <i class="bi bi-plus"></i>Ajouter
                             </a>
                         @endcan
                     </div>
