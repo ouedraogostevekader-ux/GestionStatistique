@@ -5,10 +5,15 @@
 @endpush
 @section('content')
     <section class="content-header">
-        <h2 class="">
-            Logs <span class="badge badge-success">{{ $logs->count() }}</span>
-        </h2>
-        <br>
+        <div class="container row">
+            <div class="col-sm-6">
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Listes des logs <span
+                            class="btn btn-info">({{ $logs->count() }})</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
     </section>
     <div class="content px-3">

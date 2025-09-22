@@ -14,6 +14,11 @@
                                 <strong>Libellé :</strong> {{ $activite->libelle }}
                             </li>
                             <li class="list-group-item">
+                                <strong>Date création :</strong>
+                                <small>{{ $activite->created_at->format('d/m/Y H:i') }}</small>
+                            </li>
+
+                            <li class="list-group-item">
                                 <strong>Coût prévisionnel :</strong>
                                 {{ number_format($activite->cout_previsionnel, 2, ',', ' ') }} FCFA
                             </li>
@@ -151,10 +156,6 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title mb-0">Indicateurs associés</h3>
             @can('indicateur_Programme-create')
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#addIndicateurModal">
-                    <i class="fas fa-plus"></i> Ajouter un indicateur
-                </button>
                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                     data-bs-target="#addIndicateurModal">
                     <i class="fas fa-plus"></i> Ajouter un indicateur

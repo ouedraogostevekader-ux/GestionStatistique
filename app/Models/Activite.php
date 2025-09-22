@@ -146,4 +146,98 @@ class Activite extends Model
         return $query->withoutGlobalScope('nonHorsProgramme')
             ->where('hors_programme', true);
     }
+
+    /**
+     * Extrait le numéro de version du libellé
+     * Gère les formats :
+     * - "Activité 1.1.1.3.30 : ..."
+     * - "1.1.1.7 : ..."
+     * 
+     * @param string $libelle
+     * @return string|null
+     */
+    private function extractVersionFromLibelle($libelle)
+    {
+        // Regex pour capturer le pattern de version (1.1 ou 1.1.1 ou 1.1.1.1 etc.)
+        // Cherche une séquence de nombres séparés par des points
+        $pattern = '/(\d+(?:\.\d+)*)/';
+        
+        if (preg_match($pattern, $libelle, $matches)) {
+            return $matches[1];
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Parse une version string en array d'entiers
+     * 
+     * @param string $version
+     * @return array
+     */
+    private function parseVersion($version)
+    {
+        if (!$version) {
+            return [0];
+        }
+        return array_map('intval', explode('.', $version));
+    }
+    
+    /**
+     * Compare deux versions parsées
+     * 
+     * @param array $versionA
+     * @param array $versionB
+     * @return int -1 si A < B, 0 si A == B, 1 si A > B
+     */
+    private function compareVersions($versionA, $versionB)
+    {
+        $maxLength = max(count($versionA), count($versionB));
+        
+        for ($i = 0; $i < $maxLength; $i++) {
+            $partA = $versionA[$i] ?? 0;
+            $partB = $versionB[$i] ?? 0;
+            
+            if ($partA < $partB) {
+                return -1;
+            } elseif ($partA > $partB) {
+                return 1;
+            }
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Scope pour ordonner par le numéro dans le libellé
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $direction Direction du tri ('asc' ou 'desc')
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function scopeOrderByLibelle($query, $direction = 'asc')
+    {
+        $results = $query->get();
+        
+        $sorted = $results->sort(function ($a, $b) use ($direction) {
+            // Extraire les versions des libellés
+            $versionA = $this->extractVersionFromLibelle($a->libelle);
+            $versionB = $this->extractVersionFromLibelle($b->libelle);
+            
+            // Si l'un des deux n'a pas de version, le mettre à la fin
+            if (!$versionA && !$versionB) return 0;
+            if (!$versionA) return 1;
+            if (!$versionB) return -1;
+            
+            // Parser et comparer les versions
+            $parsedA = $this->parseVersion($versionA);
+            $parsedB = $this->parseVersion($versionB);
+            
+            $comparison = $this->compareVersions($parsedA, $parsedB);
+            
+            return $direction === 'desc' ? -$comparison : $comparison;
+        });
+        
+        return $sorted->values();
+    }
 }

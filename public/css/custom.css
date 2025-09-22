@@ -1,14 +1,14 @@
 /* --- Palette Burkina Faso --- */
 /* Variables CSS inspirées du drapeau du Burkina Faso */
 :root {
-    --burkina-red: #DC143C;
-    --burkina-green: #228B22;
-    --burkina-yellow: #FFD700;
-    --burkina-white: #FFFFFF;
+    --burkina-red: #dc143c;
+    --burkina-green: #228b22;
+    --burkina-yellow: #ffd700;
+    --burkina-white: #ffffff;
     --burkina-dark: #1a4a2e;
     --burkina-light-green: #e8f5e8;
     --burkina-light-red: #fdf2f2;
-    --burkina-gold: #B8860B;
+    --burkina-gold: #b8860b;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease;
@@ -22,8 +22,12 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--burkina-light-green) 0%, var(--burkina-white) 100%);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(
+        135deg,
+        var(--burkina-light-green) 0%,
+        var(--burkina-white) 100%
+    );
     min-height: 100vh;
 }
 
@@ -38,16 +42,24 @@ main.app-main {
 }
 
 .sidebar-brand {
-    background: linear-gradient(180deg, var(--burkina-green) 0%, var(--burkina-dark) 100%);
+    background: linear-gradient(
+        180deg,
+        var(--burkina-green) 0%,
+        var(--burkina-dark) 100%
+    );
     /* background: #006233; */
-    width: 280px;
+    width: 275px;
     box-shadow: var(--shadow-lg);
 }
 
 .sidebar-wrapper {
     /* background: #019e48; */
-    width: 280px;
-    background: linear-gradient(180deg, var(--burkina-green) 100%, var(--burkina-dark) 10%);
+    width: 275px;
+    background: linear-gradient(
+        180deg,
+        var(--burkina-green) 100%,
+        var(--burkina-dark) 10%
+    );
     color: white;
     box-shadow: var(--shadow-lg);
     min-height: calc(100vh - 80px);
@@ -56,7 +68,7 @@ main.app-main {
 }
 
 .sidebar-wrapper::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 20px;
     right: 20px;
@@ -71,7 +83,6 @@ main.app-main {
 }
 
 @keyframes twinkle {
-
     0%,
     100% {
         opacity: 0.5;
@@ -103,20 +114,8 @@ li.nav-item.dropdown.user-menu {
 }
 
 .sidebar-wrapper {
-    height: 100vh;
-    /* Hauteur pleine de la fenêtre */
+    /* Active le defilement horizontal */
     overflow-y: auto;
-    /* Permettre le défilement vertical */
-    overflow-x: hidden;
-    /* Masquer le défilement horizontal */
-    position: fixed;
-    /* Fixer la sidebar */
-    /* top: 0;
-    left: 0; */
-    width: 280px;
-    z-index: 1000;
-    padding-top: 60px;
-    /* Espace pour le header si nécessaire */
 }
 
 .sidebar-wrapper::-webkit-scrollbar {
@@ -128,7 +127,7 @@ li.nav-item.dropdown.user-menu {
 }
 
 .sidebar-wrapper::-webkit-scrollbar-thumb {
-    background: #DC143C;
+    background: #dc143c;
     border-radius: 3px;
 }
 
@@ -210,7 +209,11 @@ li.nav-item.dropdown.user-menu {
 
 /* Breadcrumb burkinabé */
 ol.breadcrumb {
-    background: linear-gradient(90deg, var(--burkina-light-green), var(--burkina-white));
+    background: linear-gradient(
+        90deg,
+        var(--burkina-light-green),
+        var(--burkina-white)
+    );
     padding: 1rem 1.5rem;
     border-radius: var(--border-radius);
     margin-bottom: 2rem;
@@ -241,9 +244,13 @@ nav.app-header.navbar.navbar-expand.bg-body {
 .custom-navbar {
     background: linear-gradient(to right, #006233 70%, #d71920 90%);
     /* rouge & vert */
-    border-bottom: 4px solid #FFD700;
+    border-bottom: 4px solid #ffd700;
     /* bande jaune */
-    background: linear-gradient(135deg, var(--burkina-red) 0%, var(--burkina-green) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--burkina-red) 0%,
+        var(--burkina-green) 100%
+    );
     color: white;
     padding: 1rem 2rem;
     box-shadow: var(--shadow-lg);
@@ -252,7 +259,7 @@ nav.app-header.navbar.navbar-expand.bg-body {
 }
 
 .custom-navbar::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
@@ -267,7 +274,7 @@ nav.app-header.navbar.navbar-expand.bg-body {
 }
 
 .custom-navbar .nav-link:hover {
-    color: #FFD700 !important;
+    color: #ffd700 !important;
     /* survol en jaune */
 }
 
@@ -279,7 +286,7 @@ nav.app-header.navbar.navbar-expand.bg-body {
 }
 
 #btnAjouter:hover {
-    background: #FFD700;
+    background: #ffd700;
 }
 
 #btnAjouter:active {
@@ -287,7 +294,7 @@ nav.app-header.navbar.navbar-expand.bg-body {
 }
 
 #btnEditer {
-    background: #FFD700;
+    background: #ffd700;
 }
 
 #btnEditer:hover {
@@ -299,7 +306,11 @@ nav.app-header.navbar.navbar-expand.bg-body {
 }
 
 #btnAjouter {
-    background: linear-gradient(135deg, var(--burkina-green), var(--burkina-dark));
+    background: linear-gradient(
+        135deg,
+        var(--burkina-green),
+        var(--burkina-dark)
+    );
     border: none;
     color: white;
     font-weight: 600;
@@ -312,7 +323,11 @@ nav.app-header.navbar.navbar-expand.bg-body {
 #btnAjouter:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    background: linear-gradient(135deg, var(--burkina-dark), var(--burkina-green));
+    background: linear-gradient(
+        135deg,
+        var(--burkina-dark),
+        var(--burkina-green)
+    );
     color: white;
 }
 
@@ -464,7 +479,11 @@ ul.pagination a {
 }
 
 .table thead th {
-    background: linear-gradient(90deg, var(--burkina-green), var(--burkina-dark));
+    background: linear-gradient(
+        90deg,
+        var(--burkina-green),
+        var(--burkina-dark)
+    );
     color: white;
     border: none;
     font-weight: 600;

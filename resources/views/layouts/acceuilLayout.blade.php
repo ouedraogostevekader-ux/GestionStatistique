@@ -29,7 +29,27 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-               
+                <!-- Liens de navigation à gauche -->
+                {{-- <ul class="navbar-nav navbar-nav-left">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#stats-section">Statistiques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">À Propos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                    @php
+                        $uid = '01k4q706agzangp4rbwpj5cnrb';
+                    @endphp
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('edit.compte', $uid) }}">Modif</a>
+                    </li>
+                </ul> --}}
                 <!-- Bouton de connexion à droite -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -92,7 +112,7 @@
             <h2 class="text-center mb-4">Quelques statistiques</h2>
             <!-- Diagramme (Chart.js - Exemple de Bar Chart) -->
             <div id="chartContainer" class="col-6">
-               <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
+                <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
                 <canvas id="myChart"></canvas>
             </div>
             

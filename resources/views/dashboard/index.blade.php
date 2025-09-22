@@ -260,126 +260,22 @@
         </div>
     </div>
 
-    <!-- Activités récentes et tableau de bord détaillé -->
-    <div class="row">
-        <!-- Activités récentes -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Activités récentes</h3>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 300px;">
-                        <table class="table table-sm">
-                            <tbody>
-                                @foreach ($recentActivities['nouvelles_activites'] as $activite)
-                                    <tr>
-                                        <td>
-                                            <strong>{{ Str::limit($activite->libelle, 30) }}</strong><br>
-                                            <small
-                                                class="text-muted">{{ $activite->created_at->diffForHumans() }}</small>
-                                        </td>
-                                        <td class="text-end">
-                                            <span
-                                                class="badge bg-primary">{{ number_format($activite->cout_previsionnel, 0, ',', ' ') }}
-                                                FCFA</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{{ route('activites.index') }}" class="btn btn-sm btn-outline-primary">Voir toutes</a>
-                </div>
-            </div>
-        </div>
+    <!-- Scripts pour les graphiques -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Script dashboard -->
+    <script>
+        const chartData = @json($chartData ?? []);
 
-        <!-- Derniers suivis -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Derniers suivis</h3>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 300px;">
-                        <table class="table table-sm">
-                            <tbody>
-                                @foreach ($recentActivities['derniers_suivis'] as $suivi)
-                                    <tr>
-                                        <td>
-                                            <strong>{{ Str::limit($suivi->indicateurProgramme->libelle ?? 'N/A', 30) }}</strong><br>
-                                            <small class="text-muted">{{ $suivi->periode }}</small>
-                                        </td>
-                                        <td class="text-end">
-                                            @if ($suivi->resultat_atteint)
-                                                <span class="badge bg-success">{{ $suivi->resultat_atteint }}%</span>
-                                            @else
-                                                <span class="badge bg-secondary">-</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{{ route('suivis.index') }}" class="btn btn-sm btn-outline-primary">Voir tous</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nouveaux utilisateurs -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Nouveaux utilisateurs</h3>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 300px;">
-                        <table class="table table-sm">
-                            <tbody>
-                                @foreach ($recentActivities['nouveaux_utilisateurs'] as $user)
-                                    <tr>
-                                        <td>
-                                            <strong>{{ $user->prenom }} {{ $user->nom }}</strong><br>
-                                            <small class="text-muted">{{ $user->structure->nom ?? 'N/A' }}</small>
-                                        </td>
-                                        <td class="text-end">
-                                            <small class="text-muted">{{ $user->created_at->diffForHumans() }}</small>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{{ route('users.index') }}" class="btn btn-sm btn-outline-primary">Voir tous</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Scripts pour les graphiques -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-<!-- Script dashboard -->
-<script>
-    const chartData = @json($chartData ?? []);
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Attendre un peu pour s'assurer que Chart.js est chargé
-        setTimeout(() => {
-            if (typeof Chart !== 'undefined') {
-                initDashboardCharts(chartData);
-            } else {
-                console.error('Chart.js non disponible');
-            }
-        }, 100);
-    });
-</script>
-<script src="{{ asset('js/dashboard.js') }}"></script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attendre un peu pour s'assurer que Chart.js est chargé
+            setTimeout(() => {
+                if (typeof Chart !== 'undefined') {
+                    initDashboardCharts(chartData);
+                } else {
+                    console.error('Chart.js non disponible');
+                }
+            }, 100);
+        });
+    </script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
 @endsection
