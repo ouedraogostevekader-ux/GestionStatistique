@@ -17,12 +17,7 @@
 
 <body>
 
-    <!-- Barre de défilement en haut -->
-    <div class="ticker-container">
-        <div class="ticker-text">Bienvenue sur la plateforme de la DGESS, dédiée à la gestion des études statistiques du
-            MID. Conçue pour répondre à vos besoins, elle garantit accessibilité, fiabilité, sécurité et performance.
-        </div>
-    </div>
+
 
     <!-- Navbar horizontale dynamique (responsive avec Bootstrap) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -80,22 +75,22 @@
             <div class="carousel-item active">
                 <img src="{{ asset('assets/images/im4.jpg') }}" class="d-block w-100" alt="Image 1">
                 <div class="carousel-caption">
-                    <h1>Suivre et évaluer vos projets d'investissement.</h1>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
+                    <h1>Suivre et évaluer vos projets d'investissement</h1>
+                  
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im2.jpg') }}" class="d-block w-100" alt="Image 2">
                 <div class="carousel-caption">
                     <h1>Élaborer vos activités</h1>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
+                  
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im5.jpg') }}" class="d-block w-100" alt="Image 3">
                 <div class="carousel-caption">
-                    <h1>Élaborer vos annuaires statistiques.</h1>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
+                    <h1>Élaborer vos annuaires statistiques</h1>
+                  
                 </div>
             </div>
         </div>
@@ -120,39 +115,17 @@
                 <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
                 <canvas id="myChart"></canvas>
             </div>
+            
+        </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="row">
-                <!-- Informations de l'entreprise -->
-                <div class="col-md-4 text-center text-md-start">
-                    <h5>DGESS</h5>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
-                </div>
-                <!-- Liens rapides -->
-                <div class="col-md-4 text-center">
-                    <h5>Liens Rapides</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Accueil</a></li>
-                        <li><a href="#">Statistiques</a></li>
-                        <li><a href="#">À Propos</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <!-- Réseaux sociaux -->
-                <div class="col-md-4 text-center text-md-end">
-                    <h5>Suivez-nous</h5>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
+        
             <hr class="bg-light">
             <div class="text-center">
-                <p>&copy; 2025 DSI/MID. Tous droits réservés.</p>
+                <p>&copy; 2025 DSI/MID. Tous droits réservés</p>
             </div>
         </div>
     </footer>
