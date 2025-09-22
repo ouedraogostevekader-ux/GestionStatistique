@@ -11,18 +11,13 @@
     <!-- Chart.js pour les diagrammes -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- notre css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/css_accueil.css') }}">>
+    <link rel="stylesheet" href="{{ asset('assets/css/css_accueil.css') }}">
 
 </head>
 
 <body>
 
-    <!-- Barre de défilement en haut -->
-    <div class="ticker-container">
-        <div class="ticker-text">Bienvenue sur la plateforme de la DGESS, dédiée à la gestion des études statistiques du
-            MID. Conçue pour répondre à vos besoins, elle garantit accessibilité, fiabilité, sécurité et performance.
-        </div>
-    </div>
+
 
     <!-- Navbar horizontale dynamique (responsive avec Bootstrap) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -34,27 +29,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- Liens de navigation à gauche -->
-                <ul class="navbar-nav navbar-nav-left">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                         <a class="nav-link" href="#stats-section">Statistiques</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">À Propos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                    @php
-                        $uid = '01k4q706agzangp4rbwpj5cnrb';
-                    @endphp
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('edit.compte', $uid) }}">Modif</a>
-                    </li>
-                </ul>
+               
                 <!-- Bouton de connexion à droite -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -80,22 +55,22 @@
             <div class="carousel-item active">
                 <img src="{{ asset('assets/images/im4.jpg') }}" class="d-block w-100" alt="Image 1">
                 <div class="carousel-caption">
-                    <h1>Suivre et évaluer vos projets d'investissement.</h1>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
+                    <h1>Suivre et évaluer vos projets d'investissement</h1>
+                  
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im2.jpg') }}" class="d-block w-100" alt="Image 2">
                 <div class="carousel-caption">
                     <h1>Élaborer vos activités</h1>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
+                  
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im5.jpg') }}" class="d-block w-100" alt="Image 3">
                 <div class="carousel-caption">
-                    <h1>Élaborer vos annuaires statistiques.</h1>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
+                    <h1>Élaborer vos annuaires statistiques</h1>
+                  
                 </div>
             </div>
         </div>
@@ -120,39 +95,17 @@
                <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
                 <canvas id="myChart"></canvas>
             </div>
+            
+        </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="row">
-                <!-- Informations de l'entreprise -->
-                <div class="col-md-4 text-center text-md-start">
-                    <h5>DGESS</h5>
-                    <p>vous accompagner au quotidien et vous offrir une expérience utilisateur optimale.</p>
-                </div>
-                <!-- Liens rapides -->
-                <div class="col-md-4 text-center">
-                    <h5>Liens Rapides</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Accueil</a></li>
-                        <li><a href="#">Statistiques</a></li>
-                        <li><a href="#">À Propos</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <!-- Réseaux sociaux -->
-                <div class="col-md-4 text-center text-md-end">
-                    <h5>Suivez-nous</h5>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
+        
             <hr class="bg-light">
             <div class="text-center">
-                <p>&copy; 2025 DSI/MID. Tous droits réservés.</p>
+                <p>&copy; 2025 DSI/MID. Tous droits réservés</p>
             </div>
         </div>
     </footer>

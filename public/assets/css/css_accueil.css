@@ -6,7 +6,7 @@ body {
         }
         .carousel-inner img {
             width: 100%;
-            height: 300px; /* Hauteur réduite pour le slider */
+            height: 500px; /* Hauteur réduite pour le slider */
             object-fit: cover;
         }
         .stats-section {
@@ -75,12 +75,20 @@ body {
         .footer {
             background-color: #51884D;
             color: white;
-            padding: 40px 0;
-            margin-top: 50px;
+          
+            margin-top: 30px;
+            height: 70px;
         }
         .footer a {
             color: #ffffff;
             text-decoration: none;
+            margin: 0 10px;
+            font-size: 18px;
+            transition: color 0.3s;
+            display: inline-block;
+            line-height: 70px; /* Centrer verticalement les liens dans le footer */
+            vertical-align: middle;
+
         }
         .footer a:hover {
             text-decoration: underline;
@@ -97,4 +105,15 @@ body {
             left: 50%;
             transform: translate(-50%, -50%);
             width: 100%;
+
             }
+            .carousel-caption h1 {
+                font-size: 3rem;
+                font-weight: bold;
+                color: #fff;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+        
