@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 
 use App\Models\Categorie;
 use Illuminate\Http\Request;
+use App\Models\Tableau;
 
 class CategorieController extends Controller
 {
@@ -38,8 +40,11 @@ class CategorieController extends Controller
     public function show($id)
     {
         $categorie = Categorie::with('tableaux')->findOrFail($id);
-        return view('categories.show', compact('categorie'));
-    }
+    $tableauxExistants = Tableau::whereDoesntHave('categorie', function ($q) use ($id) {
+    $q->where('id', $id);
+})->get();
+
+return view('categories.show', compact('categorie', 'tableauxExistants'));}
 
     public function edit($id)
     {
@@ -74,4 +79,21 @@ class CategorieController extends Controller
         return redirect()->route('categories.index')
             ->with('success', 'Catégorie supprimée avec succès');
     }
+public function attachTableau(Request $request, $id)
+{
+    $categorie = Categorie::findOrFail($id);
+
+    foreach ($request->tableaux as $tableauId) {
+        $tableau = Tableau::find($tableauId);
+        if ($tableau) {
+            $tableau->categorie_id = $categorie->id;
+            $tableau->save();
+        }
+    }
+
+    return redirect()->route('categories.show', $id)
+        ->with('success', 'Tableaux ajoutés avec succès');
+}
+
+
 }

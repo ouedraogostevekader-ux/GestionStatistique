@@ -19,18 +19,18 @@
 
             <div class="row mb-4">
                 <div class="col-md-4">
-                    <label for="structure_id" class="form-label">Structure *</label>
-                    <select class="form-select" id="structure_id" name="structure_id" required>
-                        <option value="">Sélectionner une structure</option>
-                        @foreach ($structures as $structure)
-                            <option value="{{ $structure->id }}">{{ $structure->nom }}</option>
-                        @endforeach
-                    </select>
+                    
+<div class="mb-3">
+    <label class="form-label">Structure</label>
+    <input type="text" class="form-control" value="{{ $structure->nom }}" disabled>
+    <input type="hidden" name="structure_id" value="{{ $structure->id }}">
+</div>
+
                 </div>
                 <div class="col-md-4">
-                    <label for="assignation_id" class="form-label">Assignation *</label>
+                    <label for="assignation_id" class="form-label">Version *</label>
                     <select class="form-select" id="assignation_id" name="assignation_id" required>
-                        <option value="">Sélectionner une assignation</option>
+                        <option value="">Sélectionner une version</option>
                         @foreach ($assignations as $assignation)
                             <option value="{{ $assignation->id }}">
                                 {{ $assignation->version }} - {{ $assignation->periode }}
