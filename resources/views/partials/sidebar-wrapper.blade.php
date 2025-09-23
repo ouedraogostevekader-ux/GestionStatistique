@@ -251,6 +251,14 @@
                     </a>
                     <ul class="nav nav-treeview">
                         {{-- @can('manageCategorie') --}}
+
+                           <li class="nav-item">
+                            <a href="{{ route('tableaux.index') }}"
+                                class="nav-link {{ Route::is('tableaux.index') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-list"></i>
+                                <p>Liste des tableaux</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ route('categories.index') }}"
                                 class="nav-link {{ Route::is('categorie*') ? 'active' : '' }}">
@@ -260,13 +268,7 @@
                         </li>
                         {{-- @endcan --}}
                         {{-- @can('tableau-list') --}}
-                        <li class="nav-item">
-                            <a href="{{ route('tableaux.index') }}"
-                                class="nav-link {{ Route::is('tableaux.index') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-list"></i>
-                                <p>Liste des tableaux</p>
-                            </a>
-                        </li>
+                     
                         {{-- @endcan --}}
                         {{-- @can('manageAssignation') --}}
                         <li class="nav-item">

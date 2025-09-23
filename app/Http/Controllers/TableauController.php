@@ -48,30 +48,47 @@ class TableauController extends Controller
             ->with('success', 'Tableau créé avec succès');
     }
 
-    public function show($id)
-    {
-        $tableau = Tableau::with(['categorie', 'lignesTableau', 'colonnesTableau'])->findOrFail($id);
+  public function show($id)
+{
+    // Récupère le tableau avec ses relations principales
+    $tableau = Tableau::with(['categorie', 'lignesTableau', 'colonnesTableau'])->findOrFail($id);
 
-        $lignes = LigneTableau::where('tableau_id', $id)
-            ->whereNull('parent_id')
-            ->orderBy('ordre')
-            ->with('enfants')
-            ->get();
+    // Récupère les lignes principales avec leurs enfants
+    $lignes = LigneTableau::where('tableau_id', $id)
+        ->whereNull('parent_id')
+        ->orderBy('ordre')
+        ->with('enfants')
+        ->get();
 
-        $colonnes = ColonneTableau::where('tableau_id', $id)
-            ->whereNull('parent_id')
-            ->orderBy('ordre')
-            ->with('enfants')
-            ->get();
+    // Récupère les colonnes principales avec leurs enfants
+    $colonnes = ColonneTableau::where('tableau_id', $id)
+        ->whereNull('parent_id')
+        ->orderBy('ordre')
+        ->with('enfants')
+        ->get();
 
-        $assignations = Assignation::where('tableau_id', $id)
-            ->with('structure')
-            ->get();
+    // Récupère les assignations du tableau avec les structures associées
+    $assignations = Assignation::where('tableau_id', $id)
+        ->with('structure')
+        ->get();
 
-        $soumissions = $this->getSoumissionsData($id);
+    // Extrait les structures assignées à partir des assignations
+    $structures = $assignations->pluck('structure')->unique('id');
 
-        return view('tableaux.show', compact('tableau', 'lignes', 'colonnes', 'assignations', 'soumissions'));
-    }
+    // Récupère toutes les soumissions liées au tableau
+    $soumissions = $this->getSoumissionsData($id);
+
+    // Envoie les données à la vue
+    return view('tableaux.show', compact(
+        'tableau',
+        'lignes',
+        'colonnes',
+        'assignations',
+        'soumissions',
+        'structures'
+    ));
+}
+
 
 
     public function edit($id)
@@ -173,28 +190,56 @@ class TableauController extends Controller
         return redirect()->back()->with('success', 'Colonne ajoutée avec succès');
     }
 
-    public function saisirDonnees($id)
-    {
-        $tableau = Tableau::with('categorie')->findOrFail($id);
-        $structures = Structure::all();
-        $assignations = Assignation::where('tableau_id', $id)->get();
+public function saisirDonnees($id)
+{
+    $tableau = Tableau::with('categorie')->findOrFail($id);
 
-        $lignes = LigneTableau::where('tableau_id', $id)
-            ->whereNull('parent_id')
-            ->orderBy('ordre')
-            ->with('enfants')
-            ->get();
+    // Structure liée à l'utilisateur connecté
+    $structure = auth()->user()->structure;
 
-        $colonnes = ColonneTableau::where('tableau_id', $id)
-            ->whereNull('parent_id')
-            ->orderBy('ordre')
-            ->with('enfants')
-            ->get();
-
-        $soumissions = $this->getSoumissionsData($id);
-
-        return view('tableaux.saisie', compact('tableau', 'structures', 'assignations', 'lignes', 'colonnes', 'soumissions'));
+    if (!$structure) {
+        return redirect()->route('tableaux.index')
+            ->with('error', 'Aucune structure associée à votre compte.');
     }
+
+    // Vérifie que le tableau est bien assigné à cette structure
+    $assignations = Assignation::where('tableau_id', $id)
+        ->where('structure_id', $structure->id)
+        ->get();
+
+    if ($assignations->isEmpty()) {
+        return redirect()->route('tableaux.index')
+            ->with('error', 'Ce tableau ne vous a pas été assigné. Vous n’êtes pas autorisé à saisir des données.');
+    }
+
+    // Récupère les lignes et colonnes du tableau
+    $lignes = LigneTableau::where('tableau_id', $id)
+        ->whereNull('parent_id')
+        ->orderBy('ordre')
+        ->with('enfants')
+        ->get();
+
+    $colonnes = ColonneTableau::where('tableau_id', $id)
+        ->whereNull('parent_id')
+        ->orderBy('ordre')
+        ->with('enfants')
+        ->get();
+
+    // Récupère les soumissions existantes
+    $soumissions = $this->getSoumissionsData($id);
+
+    return view('tableaux.saisie', compact(
+        'tableau',
+        'structure',
+        'assignations',
+        'lignes',
+        'colonnes',
+        'soumissions'
+    ));
+}
+
+
+
 
     public function saveDonnees(Request $request, $id)
     {
@@ -258,15 +303,16 @@ class TableauController extends Controller
         }
     }
 
-    private function getSoumissionsData($tableau_id)
-    {
-        return SoumissionTableau::where('tableau_id', $tableau_id)
-            ->with(['cellule.ligne', 'cellule.colonne', 'structure'])
-            ->get()
-            ->keyBy(function ($item) {
-                return $item->cellule_id . '_' . $item->structure_id;
-            });
-    }
+   public function getSoumissionsData($tableau_id)
+{
+    return SoumissionTableau::where('tableau_id', $tableau_id)
+        ->with(['cellule', 'structure', 'assignation'])
+        ->get()
+        ->groupBy(function ($item) {
+            return $item->structure_id . '_' . $item->assignation_id;
+        });
+}
+
 
     public function affecterStructures($id)
     {

@@ -181,6 +181,8 @@ Route::middleware('auth')->group(function () {
 
         // Routes categories de tableaux
         route::resource('categories', App\Http\Controllers\CategorieController::class);
+        Route::post('/categories/{id}/attach-tableau', [CategorieController::class, 'attachTableau'])
+    ->name('categories.attachTableau');
 
         // les assignations
         Route::get('/assignations', [AssignationController::class, 'index'])->name('assignations.index');
