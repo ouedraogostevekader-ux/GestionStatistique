@@ -12,9 +12,7 @@ use Illuminate\Routing\Controllers\Middleware;
 
 class IndicateurProgrammeController extends Controller implements HasMiddleware
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function middleware(): array
     {
@@ -49,6 +47,11 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
             $query->where('activites_id', $request->activites_id);
         }
 
+        $indicateursStrat = IndicateurProgramme::whereNotNull('objectif_strategique_id')->get();
+        $indicateursSpecif = IndicateurProgramme::whereNotNull('objectif_specifique_id')->get();
+        $indicateursActivite = IndicateurProgramme::whereNotNull('activites_id')->get();
+
+        // $groupes = $indicateursSpecif->groupBy('objectif_specifique_id');
         $indicateurs = $query->get();
 
         // Pour alimenter les selects
@@ -60,7 +63,11 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
             'indicateurs',
             'objectifsSpecifiques',
             'objectifsStrategiques',
-            'activites'
+            'activites',
+            'indicateursStrat',
+            'indicateursSpecif',
+            'indicateursActivite',
+            // 'groupes'
         ));
     }
 

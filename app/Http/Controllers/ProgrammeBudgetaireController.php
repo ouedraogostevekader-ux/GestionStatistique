@@ -20,9 +20,7 @@ use Illuminate\Support\Str;
 
 class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function middleware(): array
     {
@@ -44,7 +42,7 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
 
         // Filtre par année
         if ($request->filled('annee')) {
-            $query->whereYear('created_at', $request->annee);
+            $query->where('annee', $request->annee);
         }
 
         // Filtre par structure
@@ -222,7 +220,6 @@ class ProgrammeBudgetaireController extends Controller implements HasMiddleware
         //dd(Auth::user(), $responsable);
         if (Auth::user()->id !== $responsable->id) {
             return redirect()->back()->with('error', "Vous n'êtes pas responsable de ce programme. Donc vous ne pouvez pas le valider!");
-
         }
         $programmeBudgetaire->statut = 1;
         $programmeBudgetaire->isActive = false;

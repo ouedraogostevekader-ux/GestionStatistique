@@ -102,7 +102,7 @@
                                     <th>Coût effectif</th>
                                     <th>Résultat atteint</th>
                                     <th>Observations</th>
-                                    <th>Actions</th>
+                                    {{-- <th>Actions</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -112,12 +112,12 @@
                                         <td>{{ $suivi->cout_effectif ?? '-' }}</td>
                                         <td>{{ $suivi->resultat_atteint ?? '-' }}</td>
                                         <td>{{ $suivi->observations ?? '-' }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @can('suivi-list')
                                                 <a href="{{ route('suivis.show', $suivi->id) }}"
                                                     class="btn btn-info btn-sm">Voir</a>
                                             @endcan
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>
