@@ -2,96 +2,12 @@
     <nav class="mt-2">
         <!--begin::Sidebar Menu-->
         <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-
-            @can('manageAdministration')
-                <a href="{{ route('dashboard') }}" class="nav-link {{ Request::is('admin/dashboard*') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-speedometer2"></i>
-                    <p>
-                        Tableau de bord
-                    </p>
-                </a>
-                <li
-                    class="nav-item {{ Route::is('logs.index*') || Route::is('users*') || Route::is('roles*') || Route::is('permissions*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-person-fill-gear"></i>
-                        <p>
-                            Administration
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        @can('manageUser')
-                            <li class="nav-item">
-                                <a href="{{ route('users.index') }}"
-                                    class="nav-link {{ Request::is('users*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-people-fill"></i>
-                                    <p>Utilisateurs</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('manageRole')
-                            <li class="nav-item">
-                                <a href="{{ route('roles.index') }}"
-                                    class="nav-link {{ Request::is('roles*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-person-check-fill"></i>
-                                    <p>Roles</p>
-                                </a>
-                            </li>
-                        @endcan
-
-                        @can('managePermission')
-                            <li class="nav-item">
-                                <a href="{{ route('permissions.index') }}"
-                                    class="nav-link {{ Request::is('permissions*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-shield-fill-check"></i>
-                                    <p>Permissions</p>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('manageLog')
-                            <li class="nav-item">
-                                <a href="{{ route('logs.index') }}"
-                                    class="nav-link {{ Request::is('logs*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-file-text-fill"></i>
-                                    <p>Logs</p>
-                                </a>
-                            </li>
-                        @endcan
-                    </ul>
-                </li>
-            @endcan
-
-            @can('manageParametre')
-                <li class="nav-item {{ Route::is('structures*') || Route::is('imports*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-gear-fill"></i>
-                        <p>
-                            Parametre
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        @can('manageStructure')
-                            <li class="nav-item">
-                                <a href="{{ route('structures.index') }}"
-                                    class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-building"></i>
-                                    <p>Structures</p>
-                                </a>
-                            </li>
-                        @endcan
-                        <li class="nav-item">
-                            <a href="{{ route('imports.index') }}"
-                                class="nav-link {{ Route::is('imports*') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-folder"></i>
-                                <p>Imports</p>
-                            </a>
-                        </li>
-                        {{-- @endcan --}}
-                    </ul>
-                </li>
-            @endcan
-
+            <a href="{{ route('dashboard') }}" class="nav-link {{ Request::is('admin/dashboard*') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-speedometer2"></i>
+                <p>
+                    Tableau de bord
+                </p>
+            </a>
             @can('manageDeProgramme')
                 <li
                     class="nav-item {{ Request::is('programmebudgetaire*') || Request::is('objectifStrategiques*') || Request::is('activites*') || Request::is('indicateurs-programmes*') || Request::is('objectifs-specifiques*') || Request::is('actions*') ? 'menu-open' : '' }}">
@@ -201,9 +117,9 @@
                 <li class="nav-item {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'menu-open' : '' }}">
                     <a href="#"
                         class="nav-link {{ Route::is('rapportActivites*') || Route::is('suivis*') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-journal-text"></i>
+                        <i class="nav-icon bi bi-file-text"></i>
                         <p>
-                            Rapports
+                            Rapports d'activités
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
@@ -287,6 +203,88 @@
                     <p>Statistiques</p>
                 </a>
             </li>
+            @can('manageAdministration')
+                <li
+                    class="nav-item {{ Route::is('logs.index*') || Route::is('users*') || Route::is('roles*') || Route::is('permissions*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-person-fill-gear"></i>
+                        <p>
+                            Administration
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @can('manageUser')
+                            <li class="nav-item">
+                                <a href="{{ route('users.index') }}"
+                                    class="nav-link {{ Request::is('users*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-people-fill"></i>
+                                    <p>Utilisateurs</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('manageRole')
+                            <li class="nav-item">
+                                <a href="{{ route('roles.index') }}"
+                                    class="nav-link {{ Request::is('roles*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-person-check-fill"></i>
+                                    <p>Roles</p>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('managePermission')
+                            <li class="nav-item">
+                                <a href="{{ route('permissions.index') }}"
+                                    class="nav-link {{ Request::is('permissions*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-shield-fill-check"></i>
+                                    <p>Permissions</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('manageLog')
+                            <li class="nav-item">
+                                <a href="{{ route('logs.index') }}"
+                                    class="nav-link {{ Request::is('logs*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-file-text-fill"></i>
+                                    <p>Logs</p>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcan
+
+            @can('manageParametre')
+                <li class="nav-item {{ Route::is('structures*') || Route::is('imports*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-gear-fill"></i>
+                        <p>
+                            Parametre
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @can('manageStructure')
+                            <li class="nav-item">
+                                <a href="{{ route('structures.index') }}"
+                                    class="nav-link {{ Route::is('structures*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-building"></i>
+                                    <p>Structures</p>
+                                </a>
+                            </li>
+                        @endcan
+                        <li class="nav-item">
+                            <a href="{{ route('imports.index') }}"
+                                class="nav-link {{ Route::is('imports*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <p>Imports</p>
+                            </a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </li>
+            @endcan
         </ul>
         <!--end::Sidebar Menu-->
     </nav>
