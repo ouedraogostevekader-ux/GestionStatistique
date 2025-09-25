@@ -14,7 +14,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $programmes = ['Programme_Budgetaire', 'Programme_Activite', 'Rapport_Activite', 'Objectif_Strategique', 'Objectif_Specifique', 'Action', 'Activite', 'Indicateur_Programme', 'Suivi', 'Rapport'];
-        $tableaux = ['Tableau', 'ligne_tableau', 'Colonne', 'Assignation', 'Soumission', 'Categorie', 'Regle_Gestion'];
+        $tableaux = ['Tableau', 'ligne_tableau', 'Colonne', 'Cellule', 'Assignation', 'Soumission', 'Categorie', 'Regle_Gestion'];
         $parametres = ['Structure'];
 
         foreach ($programmes as $entite) {

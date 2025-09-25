@@ -12,23 +12,25 @@
                     </ol>
                 </div>
                 <div class="col-sm-6">
-                    @can('indicateur_Programme-create')
-                        <a class="btn btn-primary float-right" href="{{ route('indicateurs-programmes.create') }}">
-                            Ajouter
-                        </a>
-                    @endcan
+                    <div class="d-flex justify-content-end">
+                        @can('indicateur_Programme-create')
+                            <a class="btn btn-primary float-right" href="{{ route('indicateurs-programmes.create') }}">
+                                Ajouter
+                            </a>
+                        @endcan
+                    </div>
                 </div>
             </div>
         </div>
     </section>
     <div class="container-fluid">
         <div class="row mb-3">
-            <div class="col-sm-6">
+            {{-- <div class="col-sm-12 text-center">
                 <h3>Filtrer les indicateurs</h3>
-            </div>
+            </div> --}}
             <form method="GET" action="{{ route('indicateurs-programmes.index') }}" class="row g-3 mb-3">
-                <div class="col-md-4">
-                    <label for="filter_type" class="form-label">Filtrer par</label>
+                <div class="col-sm-5">
+                    <label for="filter_type" class="form-label">Filtrer par type</label>
                     <select name="filter_type" id="filter_type" class="form-select" onchange="updateFilterOptions()">
                         <option value="">-- Choisir un type --</option>
                         <option value="objectif_strategique"
@@ -45,9 +47,9 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
-                    <label for="filter_value" class="form-label"> </label>
-                    <select name="filter_value" id="filter_value" class="form-select">
+                <div class="col-sm-5">
+                    <label for="filter_value" class="form-label">Filtrer par valeur</label>
+                    <select name="filter_value" class="form-select">
                         <option value="">-- Sélectionner une valeur --</option>
 
                         {{-- Si objectif stratégique est choisi --}}
@@ -82,8 +84,8 @@
                     </select>
                 </div>
 
-                <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+                <div class="col-sm-2 d-flex align-items-end">
+                    <button type="submit" id="filtre" class="btn btn-primary me-2">Filtrer</button>
                     <a href="{{ route('indicateurs-programmes.index') }}" class="btn btn-secondary">Réinitialiser</a>
                 </div>
             </form>
@@ -92,17 +94,22 @@
         <div class="content container">
             <ul class="nav nav-tabs" id="indicateursTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="strat-tab" data-bs-toggle="tab" href="#strat" role="tab">
+                    <a class="nav-link {{ $activeTab == 'strat' ? 'active' : '' }}"
+                        title="indicateurs d'objectifs stratégiques" id="strat-tab" data-bs-toggle="tab" href="#strat"
+                        role="tab">
                         Objectifs Stratégiques
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="specif-tab" data-bs-toggle="tab" href="#specif" role="tab">
+                    <a class="nav-link {{ $activeTab == 'specif' ? 'active' : '' }}"
+                        title="indicateurs d'objectifs spécifiques" id="specif-tab" data-bs-toggle="tab" href="#specif"
+                        role="tab">
                         Objectifs Spécifiques
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="activite-tab" data-bs-toggle="tab" href="#activite" role="tab">
+                    <a class="nav-link {{ $activeTab == 'activite' ? 'active' : '' }}" title="indicateurs d'activités"
+                        id="activite-tab" data-bs-toggle="tab" href="#activite" role="tab">
                         Activités
                     </a>
                 </li>
@@ -111,7 +118,7 @@
             <div class="tab-content mt-3" id="indicateursTabContent">
 
                 <!-- Indicateurs Objectifs Stratégiques -->
-                <div class="tab-pane fade show active" id="strat" role="tabpanel">
+                <div class="tab-pane fade {{ $activeTab == 'strat' ? 'show active' : '' }}" id="strat" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
                             <table class="table table-bordered" id="stratEx">
@@ -170,7 +177,8 @@
                 </div>
 
                 <!-- Indicateurs Objectifs Spécifiques -->
-                <div class="tab-pane fade" id="specif" role="tabpanel">
+                <div class="tab-pane fade {{ $activeTab == 'specif' ? 'show active' : '' }}" id="specif"
+                    role="tabpanel">
                     <div class="card">
                         <div class="card-boday">
                             <table class="table table-bordered" id="specEx">
@@ -198,7 +206,6 @@
                                                         {{ $ind->objectifSpecifique->libelle ?? '-' }}
                                                     </td>
                                                 @endif
-
                                                 <td>{{ $ind->libelle ?? '-' }}</td>
                                                 <td>{{ $ind->unite_mesure ?? '-' }}</td>
                                                 <td>{{ $ind->valeur_cible ?? '-' }}</td>
@@ -226,7 +233,9 @@
                                                                 <i class="bi bi-trash-fill"></i>
                                                             </button>
                                                         @endcan
+                                                    </div>
                                                 </td>
+
                                             </tr>
                                         @endforeach
                                     @endforeach
@@ -242,7 +251,8 @@
                 </div>
 
                 <!-- Indicateurs Activités -->
-                <div class="tab-pane fade" id="activite" role="tabpanel">
+                <div class="tab-pane fade {{ $activeTab == 'activite' ? 'show active' : '' }}" id="activite"
+                    role="tabpanel">
                     <div class="card">
                         <div class="card-boday">
                             <table class="table table-bordered" id="activiteEx">

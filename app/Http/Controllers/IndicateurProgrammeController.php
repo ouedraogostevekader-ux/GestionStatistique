@@ -32,24 +32,41 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
     {
         $query = IndicateurProgramme::with(['objectifSpecifique', 'objectifStrategique', 'activite']);
 
-        // Filtrer par objectif spécifique
-        if ($request->filled('objectif_specifique_id')) {
-            $query->where('objectif_specifique_id', $request->objectif_specifique_id);
+        $activeTab = 'strat'; // valeur par défaut
+
+        // Préparer les requêtes de base
+        $indicateursStrat = IndicateurProgramme::whereNotNull('objectif_strategique_id');
+        $indicateursSpecif = IndicateurProgramme::whereNotNull('objectif_specifique_id');
+        $indicateursActivite = IndicateurProgramme::whereNotNull('activites_id');
+
+        // Vérifier le type de filtre
+        switch ($request->filter_type) {
+            case 'objectif_strategique':
+                $activeTab = 'strat';
+                if ($request->filter_value) {
+                    $indicateursStrat = IndicateurProgramme::where('objectif_strategique_id', $request->filter_value);
+                }
+                break;
+
+            case 'objectif_specifique':
+                $activeTab = 'specif';
+                if ($request->filter_value) {
+                    $indicateursSpecif = IndicateurProgramme::where('objectif_specifique_id', $request->filter_value);
+                }
+                break;
+
+            case 'activite':
+                $activeTab = 'activite';
+                if ($request->filter_value) {
+                    $indicateursActivite = IndicateurProgramme::where('activites_id', $request->filter_value);
+                }
+                break;
         }
 
-        // Filtrer par objectif stratégique
-        if ($request->filled('objectif_strategique_id')) {
-            $query->where('objectif_strategique_id', $request->objectif_strategique_id);
-        }
-
-        // Filtrer par activité
-        if ($request->filled('activites_id')) {
-            $query->where('activites_id', $request->activites_id);
-        }
-
-        $indicateursStrat = IndicateurProgramme::whereNotNull('objectif_strategique_id')->get();
-        $indicateursSpecif = IndicateurProgramme::whereNotNull('objectif_specifique_id')->get();
-        $indicateursActivite = IndicateurProgramme::whereNotNull('activites_id')->get();
+        // Exécuter les requêtes
+        $indicateursStrat = $indicateursStrat->get();
+        $indicateursSpecif = $indicateursSpecif->get();
+        $indicateursActivite = $indicateursActivite->get();
 
         // $groupes = $indicateursSpecif->groupBy('objectif_specifique_id');
         $indicateurs = $query->get();
@@ -67,7 +84,7 @@ class IndicateurProgrammeController extends Controller implements HasMiddleware
             'indicateursStrat',
             'indicateursSpecif',
             'indicateursActivite',
-            // 'groupes'
+            'activeTab'
         ));
     }
 

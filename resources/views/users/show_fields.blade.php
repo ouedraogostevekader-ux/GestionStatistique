@@ -49,8 +49,9 @@
 </div>
 <div class="col-sm-6">
     <div>
-        <label for="form-label">Status</label> : <span
-            class="badge bg-warning">{{ $user->is_active ? 'Actif' : 'Désactivé' }}</span>
+        <label for="form-label">Status</label>
+        :{!! $user->is_active ? '<span class="badge bg-success">Actif</span>' : '<span
+            class="badge bg-success">Désactivé</span>' !! }
         @if ($user->is_active)
             <!-- Bouton désactiver -->
             <form action="{{ route('users.deactivate', $user->id) }}" method="POST" style="display:inline;">
