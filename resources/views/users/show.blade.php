@@ -5,12 +5,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3>
-                        Détails de l'utilisateur
-                    </h3>
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Détails de l'utilisateur</li>
+                    </ol>
                 </div>
                 <div class="col-sm-6">
-                    <div class="d-flex justify-content-end">
+                    <div class="mt-4 d-flex justify-content-end">
                         <a class="btn btn-secondary" href="javascript:history.back()">
                             <i class="bi bi-arrow-left"></i> Retour
                         </a>

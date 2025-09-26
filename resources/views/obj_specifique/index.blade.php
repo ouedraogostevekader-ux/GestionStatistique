@@ -24,6 +24,45 @@
         </div>
     </section>
 
+    <div class="container">
+        <form method="GET" action="{{ route('objectifs-specifiques.index') }}" class="mb-3 row gx-4">
+            <div class="col-md-2">
+                <label for="annee" class="form-label fw-bold">Année</label>
+                <input type="number" name="annee" id="annee" class="form-control" value="{{ request('annee') }}"
+                    placeholder="Ex: 2025">
+            </div>
+
+            <div class="col-md-3">
+                <label for="programme_budgetaire_id" class="form-label fw-bold">Programme Budgetaire</label>
+                <select name="programme_budgetaire_id" id="programme_budgetaire_id" class="form-select">
+                    <option value="">Toutes</option>
+                    @foreach ($programmes as $programme)
+                        <option value="{{ $programme->id }}"
+                            {{ request('programme_budgetaire_id') == $programme->id ? 'selected' : '' }}>
+                            {{ $programme->numero_programme }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-5">
+                <label for="action_id" class="form-label fw-bold">Action</label>
+                <select name="action_id" id="action_id" class="form-select">
+                    <option value="">Toutes</option>
+                    @foreach ($actions as $action)
+                        <option value="{{ $action->id }}" {{ request('action_id') == $action->id ? 'selected' : '' }}>
+                            {{ $action->libelle }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+                <a href="{{ route('actions.index') }}" class="btn btn-secondary">Réinitialiser</a>
+            </div>
+        </form>
+    </div>
+
     <div class="content px-3">
         <div class="clearfix"></div>
 

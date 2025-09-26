@@ -4,10 +4,10 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-12">
-                    <h1>
-                        Ajouter Role
-                    </h1>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item active"> Ajouter Role
+                    </ol>
                 </div>
             </div>
         </div>

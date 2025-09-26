@@ -6,13 +6,13 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Details role</li>
+                        <li class="breadcrumb-item active">Détails de la permission</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
-                    <div class="mt-5 d-flex justify-content-end">
-                        <a class="btn btn-info" href="{{ route('permissions.index') }}">
-                            Retour
+                    <div class="mt-4 d-flex justify-content-end">
+                        <a class="btn btn-secondary" href="{{ route('permissions.index') }}">
+                            <i class="bi bi-arrow-left"></i>Retour
                         </a>
                     </div>
                 </div>

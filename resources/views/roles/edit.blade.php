@@ -4,17 +4,15 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-12">
-                    <h1>
-                        Modifier Role
-                    </h1>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Modifier Rôle</li>
+                    </ol>
                 </div>
             </div>
         </div>
     </section>
     <div class="content px-3">
-
-
         <div class="card">
             @if ($errors->any())
                 <div class="alert alert-danger">

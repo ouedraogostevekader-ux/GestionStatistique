@@ -24,14 +24,14 @@
 </head>
 
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-700 to-green-700">
-    <div class="w-full max-w-2xl bg-white rounded-lg shadow-md p-4">
+    <div class="w-full max-w-xl mx-auto bg-white rounded-lg shadow-md p-4">
         <div class="text-center mb-6" id="logo-login">
             <a href="/">
                 <x-application-logo class="w-24 h-24 fill-current text-gray-500 mx-auto" />
             </a>
         </div>
 
-        <div class="w-full bg-white shadow-md rounded-lg px-6 py-6">
+        <div class="w-full bg-white shadow-md rounded-lg px-4 py-6">
             {{ $slot ?? '' }}
             @yield('content')
         </div>

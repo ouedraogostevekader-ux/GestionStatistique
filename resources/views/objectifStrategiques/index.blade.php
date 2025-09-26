@@ -24,7 +24,7 @@
             <div class="mb-2 d-flex gap-3">
                 {{-- Filtre selon progtramme budgetaire --}}
                 <div>
-                    <label for="filterProgramme" class="form-label">Filtrer par programme budgetaire :</label>
+                    <label for="filterProgramme" class="form-label fw-bold">Filtrer par programme budgetaire :</label>
                     <select id="filterProgramme" class="form-select">
                         <option value="">-- Tous --</option>
                         @foreach ($programmeBudgetaires as $programme)

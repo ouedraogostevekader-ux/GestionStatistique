@@ -11,7 +11,7 @@
                     </ol>
                 </div>
                 <div class="col-sm-6">
-                    <div class="mt-5 d-flex justify-content-end">
+                    <div class="mt-4 d-flex justify-content-end">
                         <a class="btn btn-primary" href="{{ route('permissions.create') }}">
                             + Ajouter
                         </a>

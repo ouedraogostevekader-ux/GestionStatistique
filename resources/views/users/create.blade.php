@@ -5,9 +5,9 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-12">
-                    <h3>
-                        Ajouter un utilisateur
-                    </h3>
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Ajout d'un utilisateur</li>
+                    </ol>
                 </div>
             </div>
         </div>

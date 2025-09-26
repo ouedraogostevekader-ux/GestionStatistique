@@ -3,7 +3,7 @@
 
 <!-- Name Field -->
 <div class="form-group col-sm-6">
-    <label for="nom" class="form-label">Nom</label>
+    <label for="nom" class="form-label fw-bold">Nom<span id="colorant">*</span></label>
     <input type="text" name="nom" id="nom" class="form-control @error('nom') is-invalid @enderror"
         maxlength="255" value="{{ old('nom', $user->nom ?? null) }}" required>
     @error('nom')
@@ -11,7 +11,7 @@
     @enderror
 </div>
 <div class="form-group col-sm-6">
-    <label for="prenom" class="form-label">Prénom</label>
+    <label for="prenom" class="form-label fw-bold">Prénom<span id="colorant">*</span></label>
     <input type="text" name="prenom" id="prenom" class="form-control @error('prenom') is-invalid @enderror"
         maxlength="255" value="{{ old('prenom', $user->prenom ?? null) }}" required>
     @error('prenom')
@@ -20,7 +20,7 @@
 </div>
 
 <div class="form-group col-sm-6">
-    <label for="matricule" class="form-label">Matricule</label>
+    <label for="matricule" class="form-label fw-bold">Matricule<span id="colorant">*</span></label>
     <input type="text" name="matricule" id="matricule" class="form-control @error('matricule') is-invalid @enderror"
         maxlength="255" value="{{ old('matricule', $user->matricule ?? null) }}" required>
     @error('matricule')
@@ -28,7 +28,7 @@
     @enderror
 </div>
 <div class="form-group col-sm-6">
-    <label for="fonction" class="form-label">Fonction</label>
+    <label for="fonction" class="form-label fw-bold">Fonction<span id="colorant">*</span></label>
     <input type="text" name="fonction" id="fonction" class="form-control @error('fonction') is-invalid @enderror"
         maxlength="255" value="{{ old('fonction', $user->fonction ?? null) }}" required>
     @error('fonction')
@@ -36,7 +36,7 @@
     @enderror
 </div>
 <div class="form-group col-sm-6">
-    <label for="telephone" class="form-label">Telephone</label>
+    <label for="telephone" class="form-label fw-bold">Telephone<span id="colorant">*</span></label>
     <input type="text" name="telephone" id="telephone" class="form-control @error('telephone') is-invalid @enderror"
         maxlength="8" minlength="8" value="{{ old('telephone', $user->telephone ?? null) }}" required>
     @error('telephone')
@@ -44,7 +44,7 @@
     @enderror
 </div>
 <div class="form-group col-sm-6">
-    <label for="structure_id" class="form-label">Structure</label>
+    <label for="structure_id" class="form-label fw-bold">Structure<span id="colorant">*</span></label>
     <select class="form-select @error('title') is-invalid @enderror" name="structure_id" data-placeholder="Selectionner"
         style="width: 100%;">
         <option value="">--Veuillez choisir votre structure--</option>
@@ -59,7 +59,7 @@
 
 <!-- Email Field -->
 <div class="form-group col-sm-6">
-    <label for="email" class="form-label">Email</label>
+    <label for="email" class="form-label fw-bold">Email<span id="colorant">*</span></label>
     <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror"
         required maxlength="255" value="{{ old('email', $user->email ?? null) }}">
     @error('email')
@@ -88,7 +88,7 @@
 
 <!-- Roles Field -->
 <div class="form-group col-sm-6">
-    <label class="form-label">Role:</label>
+    <label class="form-label fw-bold">Role<span id="colorant">*</span>:</label>
     <select class="form-select select2" name="roles[]" multiple="multiple" data-placeholder="Selectionner"
         style="width: 100%;">
         @foreach ($roles as $role)
@@ -120,34 +120,3 @@
         </div>
     @endif
 </div> --}}
-
-
-@push('page_scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
-        integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{{ asset('dist/js/select2.js') }}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const nom = document.getElementById("nom");
-            const prenom = document.getElementById("prenom");
-            const Name = document.getElementById("name");
-
-            function updateName() {
-                Name.value = nom.value.trim() + " " + prenom.value.trim();
-            }
-
-            nom.addEventListener("input", updateName);
-            prenom.addEventListener("input", updateName);
-
-            // Initialiser si déjà rempli
-            updateName();
-        });
-    </script>
-@endpush

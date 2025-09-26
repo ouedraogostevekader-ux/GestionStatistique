@@ -30,7 +30,7 @@
             </div> --}}
             <form method="GET" action="{{ route('indicateurs-programmes.index') }}" class="row g-3 mb-3">
                 <div class="col-sm-5">
-                    <label for="filter_type" class="form-label">Filtrer par type</label>
+                    <label for="filter_type" class="form-label fw-bold">Filtrer par type</label>
                     <select name="filter_type" id="filter_type" class="form-select" onchange="updateFilterOptions()">
                         <option value="">-- Choisir un type --</option>
                         <option value="objectif_strategique"
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="col-sm-5">
-                    <label for="filter_value" class="form-label">Filtrer par valeur</label>
+                    <label for="filter_value" class="form-label fw-bold">Filtrer par valeur</label>
                     <select name="filter_value" class="form-select">
                         <option value="">-- Sélectionner une valeur --</option>
 

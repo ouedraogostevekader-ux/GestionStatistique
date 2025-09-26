@@ -191,6 +191,10 @@
     --bs-form-invalid-border-color: #ea868f;
 }
 
+#colorant{
+    color:red;
+}
+
 *,
 *::before,
 *::after {

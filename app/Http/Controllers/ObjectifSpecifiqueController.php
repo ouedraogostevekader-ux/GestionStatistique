@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ObjectifSpecifique;
 use App\Models\Action;
 use App\Models\Periode;
+use App\Models\ProgrammeBudgetaire;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -26,10 +27,34 @@ class ObjectifSpecifiqueController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $objectifsSpecifiques = ObjectifSpecifique::with(['action.objectifStrategique', 'activites'])->get();
-        return view('obj_specifique.index', compact('objectifsSpecifiques'));
+
+        if ($request->action_id) {
+            $objectifsSpecifiques = ObjectifSpecifique::where('action_id', $request->action_id)
+                ->get();
+            // dd($request->action_id);
+        }
+
+        if ($request->annee) {
+            $objectifsSpecifiques = ObjectifSpecifique::where('annee', $request->annee)
+                ->get();
+            // dd($request->action_id);
+        }
+
+        if ($request->programme_budgetaire_id) {
+            $objectifsSpecifiques = ObjectifSpecifique::whereHas('action.objectifStrategique', function ($query) use ($request) {
+                $query->where('programme_budgetaire_id', $request->programme_budgetaire_id);
+            })->get();
+            // dd($objectifsSpecifiques);
+        }
+        // dd($request->action_id);
+
+        $programmes = ProgrammeBudgetaire::all();
+        $actions = Action::all();
+
+        return view('obj_specifique.index', compact('objectifsSpecifiques', 'programmes', 'actions'));
     }
 
     /**

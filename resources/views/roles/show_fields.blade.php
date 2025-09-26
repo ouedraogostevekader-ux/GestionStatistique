@@ -1,6 +1,6 @@
 <!-- Name Field -->
 <div class="form-group col-sm-12">
-    <label for="name">Nom</label>:
+    <label for="name" class="form-label fw-bold">Nom</label>:
     {{ $role->name }}
 </div>
 
@@ -12,24 +12,24 @@
             <legend>{{ $key }}</legend>
             <div class="row">
                 <div class="col-sm-3">
-                    Entité
+                    <strong>Entité</strong>
                 </div>
                 <div class="col-sm-8">
                     <div class="row">
                         <div class="col-sm-2">
-                            Voir menu
+                            <strong>Voir menu</strong>
                         </div>
                         <div class="col-sm-2">
-                            Ajouter
+                            <strong>Ajouter</strong>
                         </div>
                         <div class="col-sm-2">
-                            Modifier
+                            <strong>Modifier</strong>
                         </div>
                         <div class="col-sm-2">
-                            Voir
+                            <strong>Voir</strong>
                         </div>
                         <div class="col-sm-2">
-                            supprimer
+                            <strong>supprimer</strong>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="display table table-striped table-bordered" id="multicolumn_ordering_table" style="width:100%">
+    <table class="display table table-striped table-bordered" id="example2" style="width:100%">
         <thead>
             <tr>
                 <th>No</th>
@@ -48,16 +48,17 @@
                         @elseif($log->description == 'Suppression')
                             Suppression {{ $log->log_name }} :
                             @if (isset($log->changes['old']['nom']))
-                                <a href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['old']['nom'] }}<a>
+                                <a
+                                    href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['old']['nom'] }}<a>
                                     @elseif(isset($log->changes['old']['libelle']))
                                         <a
-                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['old']['libelle'] }}<a>
+                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['old']['libelle'] }}<a>
                                             @elseif(isset($log->changes['old']['name']))
                                                 <a
-                                                    href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['old']['name'] }}<a>
+                                                    href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['old']['name'] }}<a>
                                                     @elseif(isset($log->changes['old']['titre']))
                                                         <a
-                                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['old']['titre'] }}<a>
+                                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['old']['titre'] }}<a>
                                                             @else
                                                                 <a
                                                                     href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->subject->id }}<a>
@@ -65,16 +66,17 @@
                         @elseif($log->description == 'Creation')
                             Creation {{ $log->log_name }} :
                             @if (isset($log->changes['attributes']['nom']))
-                                <a href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['attributes']['nom'] }}<a>
+                                <a
+                                    href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['attributes']['nom'] }}<a>
                                     @elseif(isset($log->changes['attributes']['libelle']))
                                         <a
-                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['attributes']['libelle'] }}<a>
+                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['attributes']['libelle'] }}<a>
                                             @elseif(isset($log->changes['attributes']['name']))
                                                 <a
-                                                    href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['attributes']['name'] }}<a>
+                                                    href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['attributes']['name'] }}<a>
                                                     @elseif(isset($log->changes['attributes']['titre']))
                                                         <a
-                                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id, 'model' => $modP]) }}">{{ $log->changes['attributes']['titre'] }}<a>
+                                                            href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->changes['attributes']['titre'] }}<a>
                                                             @else
                                                                 <a
                                                                     href="{{ route('logs.subjectOn', ['id' => $log->subject->id ?? 0, 'model' => $modP]) }}">{{ $log->subject->id }}<a>

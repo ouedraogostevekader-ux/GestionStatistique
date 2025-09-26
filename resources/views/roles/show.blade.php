@@ -4,18 +4,23 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>
-                        Role Details
-                    </h1>
+                <div class="col-sm-3">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Détails du rôle</li>
+                    </ol>
                 </div>
-                <div class="col-sm-6">
-                    <a class="btn btn-default float-right" href="{{ route('roles.index') }}"> Retour
-                    </a>
+                <div class="col-sm-9">
+                    @can('role-list')
+                        <div class="mt-4 d-flex justify-content-end">
+                            <a class="btn btn-secondary" href="{{ route('roles.index') }}"><i class="bi bi-arrow-left"></i> Retour
+                            </a>
+                        </div>
+                    @endcan
                 </div>
             </div>
         </div>
     </section>
+
     <div class="content px-3">
         <div class="card">
             <div class="card-body">

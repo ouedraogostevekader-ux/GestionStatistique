@@ -4,10 +4,11 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-12">
-                    <h1>
-                        Modification d'un utilisateur
-                    </h1>
+                <div class="col-sm-4">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item active">Modification d'un utilisateur
+                        </li>
+                    </ol>
                 </div>
             </div>
         </div>

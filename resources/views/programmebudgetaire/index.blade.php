@@ -25,20 +25,20 @@
             </div>
             <div class="col-md-12">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-danger text-white d-flex  align-items-center">
                         <h5 class="mb-0">Liste des Programmes Budgétaires</h5>
-                        <a href="{{ route('programmebudgetaire.create') }}" id="nouveauPB" class="btn btn-success btn-sm">
+                        <a href="{{ route('programmebudgetaire.create') }}" id="nouveauPB"
+                            class="btn btn-success btn-sm ms-auto">
                             + Nouveau
                         </a>
-
                     </div>
                     <form method="GET" action="{{ route('programmebudgetaire.index') }}" class="mb-3 row g-2">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="annee" class="form-label fw-bold">Année</label>
                             <input type="number" name="annee" id="annee" class="form-control"
                                 value="{{ request('annee') }}" placeholder="Ex: 2025">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="structure_id" class="form-label fw-bold">Structure</label>
                             <select name="structure_id" id="structure_id" class="form-select">
                                 <option value="">Toutes</option>
@@ -50,7 +50,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="responsable_id" class="form-label fw-bold">Responsable</label>
                             <select name="responsable_id" id="responsable_id" class="form-select">
                                 <option value="">Tous</option>
@@ -62,7 +62,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end">
+                        <div class="col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary me-2">Filtrer</button>
                             <a href="{{ route('programmebudgetaire.index') }}" class="btn btn-secondary">Réinitialiser</a>
                         </div>

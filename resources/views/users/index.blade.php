@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-sm-6">
                     @can('user-create')
-                        <div class="d-flex justify-content-end">
+                        <div class="mt-4 d-flex justify-content-end">
                             <a class="btn btn-primary float-right" href="{{ route('users.create') }}">
                                 Ajouter
                             </a>
