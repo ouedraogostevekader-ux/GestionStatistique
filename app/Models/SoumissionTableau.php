@@ -2,20 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\CausesActivity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class SoumissionTableau extends Model
 {
     use HasFactory, SoftDeletes;
+    use LogsActivity;
+    use CausesActivity;
+    use HasUlids;
+
     protected $table = 'soumissions_tableau';
 
     protected $keyType = 'string';
     public $incrementing = false;
 
     protected $fillable = [
-        'id',
+
         'valeur',
         'tableau_id',
         'structure_id',
@@ -41,5 +49,32 @@ class SoumissionTableau extends Model
     public function cellule()
     {
         return $this->belongsTo(Cellule::class, 'cellule_id');
+    }
+
+    //Methode pour les logs
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        if ($eventName == 'created') {
+            return 'Creation';
+        }
+
+        if ($eventName == 'updated') {
+            return 'Modification';
+        }
+
+        if ($eventName == 'deleted') {
+            return 'Suppression';
+        }
+
+        return "{$eventName}";
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->useLogName('Soumission Tableau')
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

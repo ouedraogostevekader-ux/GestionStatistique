@@ -154,6 +154,8 @@
                     </ul>
                 </li>
             @endcan
+
+            {{-- ManageDeTableau --}}
             @can('manageTableau')
                 <li
                     class="nav-item {{ Route::is('tableau*') || Route::is('categorie*') || Route::is('assignations.dashboard') || Route::is('saisi*') ? 'menu-open' : '' }}">
@@ -166,15 +168,16 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        {{-- @can('manageCategorie') --}}
-
-                           <li class="nav-item">
+                        {{-- @can('manageTableau') --}}
+                        <li class="nav-item">
                             <a href="{{ route('tableaux.index') }}"
                                 class="nav-link {{ Route::is('tableaux.index') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-list"></i>
                                 <p>Liste des tableaux</p>
                             </a>
                         </li>
+                        {{-- @endcan --}}
+                        {{-- @can('manageCategorie') --}}
                         <li class="nav-item">
                             <a href="{{ route('categories.index') }}"
                                 class="nav-link {{ Route::is('categorie*') ? 'active' : '' }}">
@@ -183,15 +186,31 @@
                             </a>
                         </li>
                         {{-- @endcan --}}
-                        {{-- @can('tableau-list') --}}
-                     
-                        {{-- @endcan --}}
+
                         {{-- @can('manageAssignation') --}}
                         <li class="nav-item">
                             <a href="{{ route('assignations.dashboard') }}"
                                 class="nav-link {{ Route::is('assignations.dashboard') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-journal-text"></i>
                                 <p>Assignations</p>
+                            </a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('manageVersion') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('versions.index') }}"
+                                class="nav-link {{ Route::is('versions*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-journal-text"></i>
+                                <p>Versions</p>
+                            </a>
+                        </li>
+                        {{-- @endcan --}}
+                        {{-- @can('manageAnnuaire') --}}
+                        <li class="nav-item">
+                            <a href="{{ route('annuaires.index') }}"
+                                class="nav-link {{ Route::is('annuaires*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-journal-text"></i>
+                                <p>Annuaires Statistiques</p>
                             </a>
                         </li>
                         {{-- @endcan --}}

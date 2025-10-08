@@ -14,11 +14,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Roles
-        //Role::create(['name' => 'Coordonateur']);
         Role::create(['name' => 'Correspondant']);
+        Role::create(['name' => 'Tableau']);
         Permission::create(['name' => 'manageDeProgramme', 'table' => 'interfaceProgramme', 'groupe' => 'Programme']);
-        //Permission::create(['name' => 'manageRapport', 'table' => 'interfaceRapport', 'groupe' => 'Rapport']);
-        //Permission::create(['name' => 'manageTableau', 'table' => 'interfaceTableau', 'groupe' => 'Annuaire']);
+        Permission::create(['name' => 'manageRapport_Activite', 'table' => 'interfaceRapport', 'groupe' => 'Programme']);
+        Permission::create(['name' => 'manageDeTableau', 'table' => 'interfaceTableau', 'groupe' => 'Tableau']);
     }
 }

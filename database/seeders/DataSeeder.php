@@ -52,6 +52,12 @@ class DataSeeder extends Seeder
             ['nom' => 'Direction des Archives et de la Documentation', 'sigle' => 'DAD'],
             ['nom' => 'Direction des Systemes d\'Information', 'sigle' => 'DSI'],
             ['nom' => 'Direction des Ressources Humaines', 'sigle' => 'DRH'],
+            ['nom' => 'Direction Générale des Normalisations et des Etudes Techniques', 'sigle' => 'DGNET'],
+            ['nom' => 'Direction Générale des Etudes Statistiques et Sectorielles', 'sigle' => 'DGESS'],
+            ['nom' => 'Direction Générale des Infrastructures Routieres', 'sigle' => 'DGIR'],
+            ['nom' => 'Direction Générale des E R', 'sigle' => 'DGER'],
+            ['nom' => 'Direction Générale des Pistes Rurales', 'sigle' => 'DGPR'],
+            ['nom' => 'Agence des Travaux d\'Infrastructures du Burkina', 'sigle' => 'Agetib'],
         ];
 
         foreach ($nomsStructures as $index => $struct) {

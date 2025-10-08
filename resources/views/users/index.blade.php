@@ -4,14 +4,14 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <ol class="breadcrumb mb-2">
                         <li class="breadcrumb-item active">Liste des utilisateurs <span
                                 class="btn btn-info">({{ $users->count() }})</span>
                         </li>
                     </ol>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     @can('user-create')
                         <div class="mt-4 d-flex justify-content-end">
                             <a class="btn btn-primary float-right" href="{{ route('users.create') }}">

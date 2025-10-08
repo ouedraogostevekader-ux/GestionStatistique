@@ -8,29 +8,30 @@ use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $programmes = ['Programme_Budgetaire', 'Programme_Activite', 'Rapport_Activite', 'Objectif_Strategique', 'Objectif_Specifique', 'Action', 'Activite', 'Indicateur_Programme', 'Suivi', 'Rapport'];
-        $tableaux = ['Tableau', 'ligne_tableau', 'Colonne', 'Cellule', 'Assignation', 'Soumission', 'Categorie', 'Regle_Gestion'];
+        $tableaux = ['Tableau', 'ligne_tableau', 'Colonne', 'Cellule', 'Assignation', 'Soumission', 'Categorie', 'Regle_Gestion', 'Version'];
         $parametres = ['Structure'];
+        Permission::create(['name' => 'addLigne-create', 'table' => 'ligne_tableau', 'groupe' => 'Tableau']);
+        Permission::create(['name' => 'addLigne-delete', 'table' => 'ligne_tableau', 'groupe' => 'Tableau']);
+        Permission::create(['name' => 'addColonne-create', 'table' => 'colonne_tableau', 'groupe' => 'Tableau']);
+        Permission::create(['name' => 'addColonne-delete', 'table' => 'colonne_tableau', 'groupe' => 'Tableau']);
 
         foreach ($programmes as $entite) {
-            Permission::create(['name' => 'manage' . $entite, 'table' => $entite, 'groupe' => 'Annuaire']);
-            Permission::create(['name' => lcfirst($entite) . '-list', 'table' => $entite, 'groupe' => 'Annuaire']);
-            Permission::create(['name' => lcfirst($entite) . '-create', 'table' => $entite, 'groupe' => 'Annuaire']);
-            Permission::create(['name' => lcfirst($entite) . '-edit', 'table' => $entite, 'groupe' => 'Annuaire']);
-            Permission::create(['name' => lcfirst($entite) . '-delete', 'table' => $entite, 'groupe' => 'Annuaire']);
-        }
-
-        foreach ($tableaux as $entite) {
             Permission::create(['name' => 'manage' . $entite, 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-list', 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-create', 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-edit', 'table' => $entite, 'groupe' => 'Programme']);
             Permission::create(['name' => lcfirst($entite) . '-delete', 'table' => $entite, 'groupe' => 'Programme']);
+        }
+
+        foreach ($tableaux as $entite) {
+            Permission::create(['name' => 'manage' . $entite, 'table' => $entite, 'groupe' => 'Tableau']);
+            Permission::create(['name' => lcfirst($entite) . '-list', 'table' => $entite, 'groupe' => 'Tableau']);
+            Permission::create(['name' => lcfirst($entite) . '-create', 'table' => $entite, 'groupe' => 'Tableau']);
+            Permission::create(['name' => lcfirst($entite) . '-edit', 'table' => $entite, 'groupe' => 'Tableau']);
+            Permission::create(['name' => lcfirst($entite) . '-delete', 'table' => $entite, 'groupe' => 'Tableau']);
         }
 
         foreach ($parametres as $entite) {

@@ -10,37 +10,27 @@ use Illuminate\Support\Facades\DB as DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
-class RoleController extends Controller //implements HasMiddleware
+class RoleController extends Controller implements HasMiddleware
 {
 
-    // function __construct() {}
+    function __construct() {}
 
-    // public static function middleware(): array
-    // {
-    //     return [
-    //         new Middleware('permission:role-list', only: ['index', 'show']),
-    //         new Middleware('permission:role-create', only: ['create', 'store']),
-    //         new Middleware('permission:role-edit', only: ['edit', 'update']),
-    //         new Middleware('permission:role-delete', only: ['destroy']),
-    //     ];
-    // }
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:role-list', only: ['index', 'show']),
+            new Middleware('permission:role-create', only: ['create', 'store']),
+            new Middleware('permission:role-edit', only: ['edit', 'update']),
+            new Middleware('permission:role-delete', only: ['destroy']),
+        ];
+    }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         $roles = Role::all();
         return view('roles.index', compact('roles'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $permission = Permission::orderBy('table', 'ASC')->get()->groupBy('groupe');
@@ -54,12 +44,6 @@ class RoleController extends Controller //implements HasMiddleware
         return view('roles.create', compact('rolePermis', 'rolePermissions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -79,12 +63,7 @@ class RoleController extends Controller //implements HasMiddleware
         return redirect()->route('roles.index')
             ->with('success', 'Role created successfully');
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $role = Role::find($id);
@@ -101,12 +80,6 @@ class RoleController extends Controller //implements HasMiddleware
         return view('roles.show', compact('role', 'rolePermissions', 'permission', 'rolePermis'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $role = Role::find($id);
@@ -122,13 +95,6 @@ class RoleController extends Controller //implements HasMiddleware
         return view('roles.edit', compact('role', 'permission', 'rolePermissions', 'rolePermis'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -150,12 +116,7 @@ class RoleController extends Controller //implements HasMiddleware
         return redirect()->route('roles.index')
             ->with('success', 'Role updated successfully');
     }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         $role = Role::find($id);

@@ -4,13 +4,14 @@
     <section class="content-header">
         <div class="container-fluid px-4">
             <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item active">Listes des permissions <span
-                                class="btn btn-info">({{ $permissions->count() }})</span></li>
+                                class="btn btn-info">({{ $permissions->count() }})</span>
+                        </li>
                     </ol>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     <div class="mt-4 d-flex justify-content-end">
                         <a class="btn btn-primary" href="{{ route('permissions.create') }}">
                             + Ajouter

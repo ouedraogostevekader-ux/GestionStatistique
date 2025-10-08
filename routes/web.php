@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActiviteController;
+use App\Http\Controllers\AnnuaireController;
 use App\Http\Controllers\AssignationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\LigneTableauController;
 use App\Http\Controllers\ColonneTableauController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\TableauController;
+use App\Http\Controllers\VersionController;
 
 Route::get('/', function () {
     return view('layouts.acceuilLayout');
@@ -182,7 +184,7 @@ Route::middleware('auth')->group(function () {
         // Routes categories de tableaux
         route::resource('categories', App\Http\Controllers\CategorieController::class);
         Route::post('/categories/{id}/attach-tableau', [CategorieController::class, 'attachTableau'])
-    ->name('categories.attachTableau');
+            ->name('categories.attachTableau');
 
         // les assignations
         Route::get('/assignations', [AssignationController::class, 'index'])->name('assignations.index');
@@ -195,6 +197,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/assignations/dashboard', [AssignationController::class, 'dashboard'])->name('assignations.dashboard');
         Route::get('tableaux/{id}/affecter', [TableauController::class, 'affecterStructures'])->name('tableaux.affecter');
         Route::post('tableaux/{id}/affecter', [TableauController::class, 'storeAffectation'])->name('tableaux.storeAffectation');
+        Route::resource('annuaires', AnnuaireController::class);
+        Route::resource('versions', VersionController::class);
     });
 });
 

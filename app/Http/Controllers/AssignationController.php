@@ -6,10 +6,26 @@ use App\Models\Assignation;
 use App\Models\Structure;
 use App\Models\Tableau;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-class AssignationController extends Controller
+
+class AssignationController extends Controller implements HasMiddleware
 {
+    public function __construct() {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:assignation-list', only: ['index', 'show']),
+            new Middleware('permission:assignation-create', only: ['create', 'store']),
+            new Middleware('permission:assignation-edit', only: ['edit', 'update']),
+            new Middleware('permission:assignation-delete', only: ['destroy']),
+        ];
+    }
+
+
     public function index()
     {
         $assignations = Assignation::with(['tableau', 'structure'])->paginate(10);
@@ -207,7 +223,6 @@ class AssignationController extends Controller
 
             return redirect()->route('assignations.dashboard', $tableau)
                 ->with('success', $message);
-
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()
@@ -311,7 +326,6 @@ class AssignationController extends Controller
 
             return redirect()->route('assignations.index', $tableauId)
                 ->with('success', 'L\'assignation a été mise à jour avec succès.');
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
@@ -337,7 +351,6 @@ class AssignationController extends Controller
 
             return redirect()->route('assignations.index', $tableauId)
                 ->with('success', "L'assignation de '{$structureName}' a été supprimée avec succès.");
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Une erreur est survenue lors de la suppression : ' . $e->getMessage());
@@ -374,7 +387,6 @@ class AssignationController extends Controller
                 'success' => true,
                 'message' => "Le statut a été changé à '{$statutLabels[$request->statut]}'"
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

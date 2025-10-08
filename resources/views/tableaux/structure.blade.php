@@ -4,8 +4,7 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2>Structure du tableau: {{ $tableau->libelle }}</h2>
-                <p class="text-muted">{{ $tableau->description }}</p>
+                <h2>{{ $tableau->libelle }}</h2>
             </div>
             <div>
                 <a href="{{ route('tableaux.show', $tableau->id) }}" class="btn btn-outline-primary">
@@ -15,68 +14,68 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5>Lignes du tableau</h5>
-                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterLigne">
-                            <i class="fas fa-plus"></i> Ajouter Ligne
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        @forelse($lignes as $ligne)
-                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                                <div>
-                                    <strong>{{ $ligne->ordre }}.</strong> {{ $ligne->nom_ligne }}
-                                    @if ($ligne->parent_id)
-                                        <small class="text-muted">(Sous-ligne)</small>
-                                    @endif
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-outline-danger"
-                                        onclick="supprimerLigne('{{ $ligne->id }}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-muted">Aucune ligne définie</p>
-                        @endforelse
-                    </div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterLigne">
+                        <i class="fas fa-plus"></i> Ajouter Ligne
+                    </button>
+
+                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterColonne">
+                        <i class="fas fa-plus"></i> Ajouter Colonne
+                    </button>
+
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5>Colonnes du tableau</h5>
-                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterColonne">
-                            <i class="fas fa-plus"></i> Ajouter Colonne
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        @forelse($colonnes as $colonne)
-                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                                <div>
-                                    <strong>{{ $colonne->ordre }}.</strong> {{ $colonne->colonne_ligne }}
-                                    @if ($colonne->parent_id)
-                                        <small class="text-muted">(Sous-colonne)</small>
-                                    @endif
-                                </div>
-                                <div>
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            @foreach ($lignes as $ligne)
+                                @if ($ligne->ordre == 1)
+                                    <th>{{ $ligne->nom_ligne }}
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="supprimerLigne('{{ $ligne->id }}')">
+                                            <i class="bi bi-archive"></i>
+                                        </button>
+                                    </th>
+                                @endif
+                            @endforeach
+                            @foreach ($colonnes as $colonne)
+                                <th>{{ $colonne->colonne_ligne }}
                                     <button class="btn btn-sm btn-outline-danger"
                                         onclick="supprimerColonne('{{ $colonne->id }}')">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="bi bi-archive"></i>
                                     </button>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-muted">Aucune colonne définie</p>
-                        @endforelse
-                    </div>
-                </div>
+                                </th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($lignes as $ligne)
+                            @if ($ligne->ordre !== 1)
+                                <tr>
+                                    <td>
+                                        <strong>{{ $ligne->ordre }}.</strong> {{ $ligne->nom_ligne }}
+                                        @if ($ligne->parent_id)
+                                            <small class="text-muted">(Sous-ligne)</small>
+                                        @endif
+                                        <button class="btn btn btn-outline-danger"
+                                            onclick="supprimerLigne('{{ $ligne->id }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                    @foreach ($colonnes as $colonne)
+                                        <td>--</td>
+                                    @endforeach
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
+
+        <p class="text-muted">{{ $tableau->description }}</p>
     </div>
 
     <!-- Modal Ajouter Ligne -->

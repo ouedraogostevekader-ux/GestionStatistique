@@ -25,8 +25,8 @@
                         <h5 class="card-title mb-0">Informations d'assignation</h5>
                     </div>
                     <div class="card-body">
-                       <form method="POST" action="{{ route('tableaux.storeAffectation', $tableau->id) }}"> 
-                        @csrf
+                        <form method="POST" action="{{ route('tableaux.storeAffectation', $tableau->id) }}">
+                            @csrf
 
                             <!-- Structures -->
                             <div class="mb-3">
@@ -63,23 +63,31 @@
                             <!-- Version -->
                             <div class="mb-3">
                                 <label for="version" class="form-label">Version</label>
-                                <input type="text" class="form-control" name="version" id="version" value="{{ old('version') }}">
+                                <select class="form-select @error('version') is-invalid @enderror" name="version"
+                                    data-placeholder="Selectionner" style="width: 100%;">
+                                    <option value="">--Veuillez choisir la version--</option>
+                                    @foreach ($versions as $version)
+                                        <option class="select2-selection__choice" value="{{ $version->id }}">
+                                            {{ $version->code }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('version')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <!-- Période -->
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="periode" class="form-label">Période</label>
                                 <input type="text" class="form-control" name="periode" id="periode" value="{{ old('periode') }}">
                                 @error('periode')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
-                            </div>
+                            </div> --}}
 
                             <!-- Dates -->
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="date_debut" class="form-label">Date début</label>
                                     <input type="date" class="form-control" name="date_debut" id="date_debut" value="{{ old('date_debut') }}">
@@ -94,7 +102,7 @@
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- Bouton -->
                             <div class="d-flex justify-content-end">

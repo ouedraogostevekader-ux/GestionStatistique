@@ -846,4 +846,139 @@ document.addEventListener("DOMContentLoaded", function () {
     updateName();
 });
 
+$(document).ready(function () {
+    function calculerTotaux() {
+        const totauxColonnes = [];
+
+        // Totaux de lignes
+        $("tr:not(.table-primary)").each(function () {
+            let totalLigne = 0;
+            $(this)
+                .find('input[type="number"]')
+                .each(function (index) {
+                    const valeur = parseFloat($(this).val()) || 0;
+                    totalLigne += valeur;
+
+                    if (!totauxColonnes[index]) {
+                        totauxColonnes[index] = 0;
+                    }
+                    totauxColonnes[index] += valeur;
+                });
+
+            $(this).find(".total-ligne").text(totalLigne.toFixed(2));
+        });
+
+        // Totaux de colonnes
+        $(".total-colonne").each(function (index) {
+            $(this).text((totauxColonnes[index] || 0).toFixed(2));
+        });
+
+        // Total général
+        const totalGeneral = totauxColonnes.reduce(
+            (sum, val) => sum + (val || 0),
+            0
+        );
+        $(".total-general").text(totalGeneral.toFixed(2));
+    }
+
+    // Événements
+    $(document).on(
+        "input change focus blur",
+        'input[type="number"]',
+        calculerTotaux
+    );
+
+    // Calculs initiaux
+    calculerTotaux();
+    setTimeout(calculerTotaux, 500);
+});
+
+$(document).ready(function () {
+    function calculerTotaux() {
+        const totauxColonnes = [];
+
+        // Parcourir toutes les lignes (sauf "Ensemble")
+        $("tbody tr:not(.table-primary)").each(function () {
+            let totalLigne = 0;
+
+            // Récupérer les cellules (sauf première et dernière)
+            $(this)
+                .find("td")
+                .slice(1, -1)
+                .each(function (index) {
+                    let texte = $(this).text().trim();
+                    let valeur = 0;
+
+                    if (
+                        texte !== "-" &&
+                        texte !== "" &&
+                        !isNaN(parseFloat(texte))
+                    ) {
+                        valeur = parseFloat(texte);
+                    }
+
+                    totalLigne += valeur;
+
+                    if (!totauxColonnes[index]) {
+                        totauxColonnes[index] = 0;
+                    }
+                    totauxColonnes[index] += valeur;
+                });
+
+            $(this).find(".total-ligne").text(totalLigne.toFixed(2));
+        });
+
+        // Afficher les totaux de colonnes
+        $(".total-colonne").each(function (index) {
+            $(this).text((totauxColonnes[index] || 0).toFixed(2));
+        });
+
+        // Total général
+        const totalGeneral = totauxColonnes.reduce(
+            (sum, val) => sum + (val || 0),
+            0
+        );
+        $(".total-general").text(totalGeneral.toFixed(2));
+    }
+
+    // Lancer les calculs
+    calculerTotaux();
+    setTimeout(calculerTotaux, 500);
+});
+// $(document).ready(function () {
+//     function calculerTotaux() {
+//         // Totaux de lignes
+//         $("tr").each(function () {
+//             let totalLigne = 0;
+//             $(this)
+//                 .find('input[type="number"]')
+//                 .each(function () {
+//                     totalLigne += parseFloat($(this).val()) || 0;
+//                 });
+//             $(this).find(".total-ligne").text(totalLigne.toFixed(2));
+//         });
+
+//         // Totaux de colonnes
+//         const nbColonnes = $("tr").first().find('input[type="number"]').length;
+
+//         for (let col = 0; col < nbColonnes; col++) {
+//             let totalColonne = 0;
+//             $("tr:not(.table-primary)").each(function () {
+//                 const input = $(this).find('input[type="number"]').eq(col);
+//                 totalColonne += parseFloat(input.val()) || 0;
+//             });
+//             $(".total-colonne").eq(col).text(totalColonne.toFixed(2));
+//         }
+
+//         // Total général
+//         let totalGeneral = 0;
+//         $(".total-colonne").each(function () {
+//             totalGeneral += parseFloat($(this).text()) || 0;
+//         });
+//         $(".total-general").text(totalGeneral.toFixed(2));
+//     }
+
+//     $('input[type="number"]').on("input change", calculerTotaux);
+//     calculerTotaux();
+// });
 //# sourceMappingURL=adminlte.js.map
