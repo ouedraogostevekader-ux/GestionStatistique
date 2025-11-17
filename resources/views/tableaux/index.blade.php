@@ -30,7 +30,7 @@
                                 <th>Libellé</th>
                                 <th>Catégorie</th>
                                 <th>Description</th>
-                                <th>Créé le</th>
+                                {{-- <th>Statut</th> --}}
                                 <th>Structure assignées</th>
                                 <th>Actions</th>
                             </tr>
@@ -41,7 +41,11 @@
                                     <td>{{ $tableau->libelle }}</td>
                                     <td>{{ $tableau->categorie->libelle ?? 'N/A' }}</td>
                                     <td>{{ Str::limit($tableau->description, 50) }}</td>
-                                    <td>{{ $tableau->created_at->format('d/m/Y') }}</td>
+                                    {{-- <td>
+                                        <span class="badge bg-{{ $assignation->statut_class }}">
+                                            {{ $assignation->statut_libelle }}
+                                        </span>
+                                    </td> --}}
                                     <td>
                                         @if ($tableau->assignations->count())
                                             <ul class="list-unstyled mb-0">
@@ -82,15 +86,15 @@
                                         </div>
 
                                         <a href="{{ route('tableaux.structure', $tableau->id) }}"
-                                            class="btn btn-sm btn-outline-secondary" title="Structure">
+                                            class="btn btn-sm btn-outline-secondary" title="Forme">
                                             <i class="bi bi-table"></i>
                                         </a>
-
-                                        <a href="{{ route('tableaux.saisie', $tableau->id) }}"
-                                            class="btn btn-sm btn-outline-success" title="Saisir">
-                                            <i class="bi bi-pen-fill"></i>
-                                        </a>
-
+                                        @can('soumission-create')
+                                            <a href="{{ route('tableaux.saisie', $tableau->id) }}"
+                                                class="btn btn-sm btn-outline-success" title="Saisir">
+                                                <i class="bi bi-pen-fill"></i>
+                                            </a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

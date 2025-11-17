@@ -190,15 +190,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/assignations', [AssignationController::class, 'index'])->name('assignations.index');
         Route::get('/assignations/create/{id}', [AssignationController::class, 'create'])->name('assignations.create');
         Route::post('/assignations/store/{id}', [AssignationController::class, 'store'])->name('assignations.store');
-        Route::get('/assignations/{assignation}/edit', [AssignationController::class, 'edit'])->name('assignations.edit');
+        Route::get('/assignations/edit/{id}', [AssignationController::class, 'edit'])->name('assignations.edit');
+        Route::get('/assignations/show/{id}', [AssignationController::class, 'show'])->name('assignations.show');
         Route::put('/assignations/{assignation}', [AssignationController::class, 'update'])->name('assignations.update');
-        Route::delete('/assignations/{assignation}', [AssignationController::class, 'destroy'])->name('destroy');
+        Route::delete('/assignations/{assignation}', [AssignationController::class, 'destroy'])->name('assignations.destroy');
         Route::post('/assignations/{assignation}/status', [AssignationController::class, 'changeStatus'])->name('assignations.changeStatus');
         Route::get('/assignations/dashboard', [AssignationController::class, 'dashboard'])->name('assignations.dashboard');
         Route::get('tableaux/{id}/affecter', [TableauController::class, 'affecterStructures'])->name('tableaux.affecter');
         Route::post('tableaux/{id}/affecter', [TableauController::class, 'storeAffectation'])->name('tableaux.storeAffectation');
+        Route::get('tableaux/affectation/multiple', [AssignationController::class, 'affectionM'])->name('tableaux.affectations');
+        Route::post('tableaux/affectation/multiple/store', [AssignationController::class, 'storeM'])->name('assignations.storeM');
         Route::resource('annuaires', AnnuaireController::class);
         Route::resource('versions', VersionController::class);
+
+        // Routes pour exporter l'annuaire en word et pdf
+        Route::get('/annuaire/export/pdf', [AnnuaireController::class, 'exportPDF'])->name('annuaire.export.pdf');
+        Route::get('/annuaire/export/word', [AnnuaireController::class, 'exportWord'])->name('annuaire.export.word');
     });
 });
 

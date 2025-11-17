@@ -62,7 +62,7 @@
                                     <td class="text-center">{{ $valeur ?? '-' }}</td>
                                 @endif
                             @endforeach
-                            <td class="total-ligne text-center fw-bold">0.00</td>
+                            <td class="total-ligne text-center fw-bold total-colonne">0.00</td>
                         @endif
                     </tr>
 

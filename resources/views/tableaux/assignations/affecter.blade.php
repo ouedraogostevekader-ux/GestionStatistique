@@ -11,7 +11,7 @@
                 <small class="badge bg-info">{{ $tableau->categorie->libelle }}</small>
             </div>
             <div>
-                <a href="{{ route('assignations.index', $tableau->id) }}" class="btn btn-outline-secondary">
+                <a href="{{ route('assignations.dashboard') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Retour aux assignations
                 </a>
             </div>
@@ -30,8 +30,10 @@
 
                             <!-- Structures -->
                             <div class="mb-3">
-                                <label class="form-label">Structures <span class="text-danger">*</span></label>
-                                <div class="row">
+                                <label class="form-label"><strong class="text-success">Veuillez cocher la case de la ou les
+                                        structure(s) à assigner le tableau <span
+                                            class="text-danger">*</span></strong></label>
+                                <div class="row mt-2">
                                     @if ($structures->count() > 0)
                                         @foreach ($structures as $structure)
                                             <div class="col-md-6 mb-2">
@@ -62,13 +64,14 @@
 
                             <!-- Version -->
                             <div class="mb-3">
-                                <label for="version" class="form-label">Version</label>
+                                <label for="version" class="form-label"><strong>Version <span
+                                            class="text-danger">*</span></strong></label>
                                 <select class="form-select @error('version') is-invalid @enderror" name="version"
                                     data-placeholder="Selectionner" style="width: 100%;">
                                     <option value="">--Veuillez choisir la version--</option>
                                     @foreach ($versions as $version)
                                         <option class="select2-selection__choice" value="{{ $version->id }}">
-                                            {{ $version->code }}
+                                            {{ $version->code }}-{{ $version->annee ?? '' }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -77,6 +80,29 @@
                                 @enderror
                             </div>
 
+                            <!-- Date début -->
+                            <div class="mb-3">
+                                <label for="date_debut" class="form-label"><strong>Date de début <span
+                                            class="text-danger">*</span></strong></label>
+                                <input type="date" name="date_debut" id="date_debut"
+                                    class="form-control @error('date_debut') is-invalid @enderror"
+                                    value="{{ old('date_debut') }}">
+                                @error('date_debut')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Date fin -->
+                            <div class="mb-3">
+                                <label for="date_fin" class="form-label"><strong>Date de fin <span
+                                            class="text-danger">*</span></strong></label>
+                                <input type="date" name="date_fin" id="date_fin"
+                                    class="form-control @error('date_fin') is-invalid @enderror"
+                                    value="{{ old('date_fin') }}" placeholder="Ex: 31/12/2024, Fin T1, etc.">
+                                @error('date_fin')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <!-- Période -->
                             {{-- <div class="mb-3">
                                 <label for="periode" class="form-label">Période</label>

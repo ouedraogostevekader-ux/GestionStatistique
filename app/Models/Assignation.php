@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -90,6 +91,47 @@ class Assignation extends Model
 
         return $statuts[$this->statut] ?? 'Inconnu';
     }
+
+
+    public static function determinerStatut($dateDebut, $dateFin)
+    {
+        $now = Carbon::today(); // on compare uniquement la date sans l’heure
+
+        // ✅ Vérification cohérente des dates
+        $dateDebut = $dateDebut ? Carbon::parse($dateDebut) : null;
+        $dateFin = $dateFin ? Carbon::parse($dateFin) : null;
+
+        /*
+        * Codes statut :
+        * 0 = En attente (pas encore commencée)
+        * 1 = En cours
+        * 3 = Expirée
+        */
+
+        // 🔹 Cas 1 : Pas de date de début définie
+        if (!$dateDebut) {
+            return 0; // Considéré comme "en attente"
+        }
+
+        // 🔹 Cas 2 : Si la date de début est dans le futur par rapport à maintenant
+        if ($dateDebut->isFuture() || $dateDebut->greaterThan($now)) {
+            return 0; // "Assignation en attente"
+        }
+
+        // 🔹 Cas 3 : Si la date de fin est définie et déjà passée
+        if ($dateFin && $now->greaterThan($dateFin)) {
+            return 3; // "Assignation expirée"
+        }
+
+        // 🔹 Cas 4 : Si la date actuelle est comprise dans l’intervalle
+        if ($dateDebut->lessThanOrEqualTo($now) && (!$dateFin || $now->lessThanOrEqualTo($dateFin))) {
+            return 1; // "En cours"
+        }
+
+        // 🔹 Cas par défaut (sécurité)
+        return 0;
+    }
+
 
     /**
      * Obtenir la classe CSS pour le statut
@@ -216,6 +258,21 @@ class Assignation extends Model
                 return 0;
         }
     }
+
+    public function getPreviousAssignation()
+    {
+        return Assignation::where('structure_id', $this->structure_id)
+            ->where('tableau_id', $this->tableau_id)
+            ->whereHas('version', function ($q) {
+                $q->where('annee', '<', $this->version->annee);
+            })
+            ->orderByDesc(
+                Version::select('annee')
+                    ->whereColumn('versions.id', 'assignations.version_id')
+            )
+            ->first();
+    }
+
 
     //Methode pour les logs
     public function getDescriptionForEvent(string $eventName): string

@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assignation;
+use App\Models\SoumissionTableau;
 use App\Models\Structure;
 use App\Models\Tableau;
+use App\Models\Version;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Rule;
+
+use function Symfony\Component\Clock\now;
 
 class AssignationController extends Controller implements HasMiddleware
 {
@@ -18,8 +24,8 @@ class AssignationController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:assignation-list', only: ['index', 'show']),
-            new Middleware('permission:assignation-create', only: ['create', 'store']),
+            new Middleware('permission:assignation-list', only: ['index', 'show', 'dashboard']),
+            new Middleware('permission:assignation-create', only: ['create', 'store', 'affectationM', 'storeM']),
             new Middleware('permission:assignation-edit', only: ['edit', 'update']),
             new Middleware('permission:assignation-delete', only: ['destroy']),
         ];
@@ -30,7 +36,7 @@ class AssignationController extends Controller implements HasMiddleware
     {
         $assignations = Assignation::with(['tableau', 'structure'])->paginate(10);
         $structures = Structure::orderBy('nom')->get();
-        return view('tableaux.assignations', compact('assignations', 'structures'));
+        return view('tableaux.assignations.assignations-dashboard', compact('assignations', 'structures'));
     }
 
     /**
@@ -47,7 +53,7 @@ class AssignationController extends Controller implements HasMiddleware
 
         $structures = Structure::orderBy('nom')->get();
 
-        return view('tableaux.assignations', compact('tableau', 'assignations', 'structures'));
+        return view('tableaux.assignations.assignations-dashboard', compact('tableau', 'assignations', 'structures'));
     }
 
     /**
@@ -58,7 +64,7 @@ class AssignationController extends Controller implements HasMiddleware
         $user = auth()->user();
 
         // Base query selon les permissions
-        $baseQuery = Assignation::with(['tableau.categorie', 'structure']);
+        $baseQuery = Assignation::with(['tableau.categorie', 'structure', 'version']);
 
         if (!$user->isAdmin()) {
             $baseQuery->where('structure_id', $user->structure_id);
@@ -67,6 +73,10 @@ class AssignationController extends Controller implements HasMiddleware
         // Filtres
         if ($request->filled('statut')) {
             $baseQuery->where('statut', $request->statut);
+        }
+
+        if ($request->filled('version_id')) {
+            $baseQuery->where('version_id', $request->version_id);
         }
 
         if ($request->filled('annee')) {
@@ -86,17 +96,20 @@ class AssignationController extends Controller implements HasMiddleware
             'suspendues' => (clone $baseQuery)->where('statut', 3)->count(),
         ];
 
+        $versions = Version::all();
+
         // Assignations récentes
         $assignations = (clone $baseQuery)
             ->orderBy('created_at', 'desc')
-            ->limit(10)
+            ->where('statut', '<', 3)
+            //->limit(10)
             ->get();
 
         // Assignations en retard (exemple - à adapter selon vos besoins)
         $assignationsEnRetard = (clone $baseQuery)
-            ->where('statut', '!=', 2) // Pas terminées
+            ->where('statut', 3) // Pas terminées
             ->whereNotNull('date_fin')
-            ->where('date_fin', '<', now()->toDateString())
+            //->where('date_fin', '<', Carbon::now()->toDateString())
             ->get();
 
         // Structures (pour les admins)
@@ -113,11 +126,12 @@ class AssignationController extends Controller implements HasMiddleware
                 ->count();
         }
 
-        return view('tableaux.assignations-dashboard', compact(
+        return view('tableaux.assignations.assignations-dashboard', compact(
             'stats',
             'assignations',
             'assignationsEnRetard',
             'structures',
+            'versions',
             'monthlyData'
         ));
     }
@@ -155,7 +169,7 @@ class AssignationController extends Controller implements HasMiddleware
             3 => 'Suspendu'
         ];
 
-        return view('tableaux.assignation-create', compact('tableau', 'structures', 'periodes', 'statuts'));
+        return view('tableaux.assignations.assignationM', compact('tableau', 'structures', 'periodes', 'statuts'));
     }
 
     /**
@@ -166,7 +180,14 @@ class AssignationController extends Controller implements HasMiddleware
         $request->validate([
             'structure_ids' => 'required|array|min:1',
             'structure_ids.*' => 'exists:structures,id',
-            'version' => 'nullable|string|max:250',
+            'version_id' => [
+                'required',
+                Rule::unique('assignations')->where(function ($q) use ($request) {
+                    return $q->where('structure_id', $request->structure_id)
+                        ->where('version_id', $request->version_id)
+                        ->where('tableau_id', $request->tableau_id);
+                })
+            ],
             'source' => 'nullable|string|max:250',
             'statut' => 'required|integer|in:0,1,2,3',
             'responsable' => 'nullable|string|max:250',
@@ -180,6 +201,7 @@ class AssignationController extends Controller implements HasMiddleware
             'structure_ids.*.exists' => 'Une des structures sélectionnées n\'existe pas.',
             'statut.required' => 'Le statut est obligatoire.',
             'statut.in' => 'Le statut sélectionné n\'est pas valide.',
+            'version_id.unique' => 'Ce tableau ne peut pas être assigné plusieurs fois à la même structure avec la même version.',
             'date_debut.date' => 'La date de début doit être une date valide.',
             'annee.integer' => 'L\'année doit être un nombre entier.',
             'annee.min' => 'L\'année ne peut pas être antérieure à 2000.',
@@ -208,8 +230,9 @@ class AssignationController extends Controller implements HasMiddleware
                         'responsable' => $request->responsable,
                         'date_debut' => $request->date_debut,
                         'date_fin' => $request->date_fin,
-                        'annee' => $request->annee,
-                        'periode' => $request->periode,
+                        'annee' => Carbon::now()->year,
+                        'statut' => Assignation::determinerStatut($request->date_debut, $request->date_fin),
+                        // 'periode' => $request->periode,
                     ]);
                 }
             }
@@ -234,58 +257,78 @@ class AssignationController extends Controller implements HasMiddleware
     /**
      * Afficher le formulaire de modification d'une assignation
      */
-    public function edit($tableauId, $assignationId)
+    public function show($id)
     {
-        $tableau = Tableau::with('categorie')->findOrFail($tableauId);
-        $assignation = Assignation::with('structure')->findOrFail($assignationId);
-
-        // Vérifier que l'assignation appartient bien au tableau
-        if ($assignation->tableau_id != $tableauId) {
-            abort(404);
-        }
-
-        $structures = Structure::orderBy('nom')->get();
-
-        $periodes = [
-            'T1' => 'Premier trimestre',
-            'T2' => 'Deuxième trimestre',
-            'T3' => 'Troisième trimestre',
-            'T4' => 'Quatrième trimestre',
-            'S1' => 'Premier semestre',
-            'S2' => 'Deuxième semestre',
-            'ANNUEL' => 'Annuel'
-        ];
-
-        $statuts = [
-            0 => 'En attente',
-            1 => 'En cours',
-            2 => 'Terminé',
-            3 => 'Suspendu'
-        ];
-
-        return view('assignations.edit', compact('tableau', 'assignation', 'structures', 'periodes', 'statuts'));
+        $assignation = Assignation::with(['structure', 'tableau', 'version'])->findOrFail($id);
+        $soumissions = SoumissionTableau::where('assignation_id', $assignation->id)->get();
+        //dd($soumissions);
+        return view('tableaux.assignations.assignation-show', compact('assignation', 'soumissions'));
     }
 
-    /**
-     * Mettre à jour une assignation
-     */
-    public function update(Request $request, $tableauId, $assignationId)
+    public function edit($id)
+    {
+        $assignation = Assignation::findOrFail($id);
+        $structures = Structure::all();
+        $tableaux = Tableau::all();
+        $versions = Version::all();
+
+        return view('tableaux.assignations.assignation-edit', compact('assignation', 'structures', 'tableaux', 'versions'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $assignation = Assignation::findOrFail($id);
+
+        $request->validate([
+            'structure_id' => 'required|exists:structures,id',
+            'tableau_id' => 'required|exists:tableaux,id',
+            'version_id' => 'nullable|exists:versions,id',
+            'date_debut' => 'nullable|date',
+            'date_fin' => 'nullable|date|after_or_equal:date_debut',
+        ]);
+
+        $assignation->update([
+            'structure_id' => $request->structure_id,
+            'tableau_id' => $request->tableau_id,
+            'version_id' => $request->version_id,
+            'date_debut' => $request->date_debut,
+            'date_fin' => $request->date_fin,
+            'statut' => Assignation::determinerStatut($request->date_debut, $request->date_fin),
+        ]);
+
+        return redirect()->route('assignations.dashboard')
+            ->with('success', 'Assignation mise à jour avec succès.');
+    }
+
+
+    public function affectionM()
+    {
+        $tableaux = Tableau::all();
+        $structures = Structure::all();
+        $versions = Version::all();
+        return view('tableaux.assignations.assignationM', compact('tableaux', 'structures', 'versions'));
+    }
+
+    public function storeM(Request $request)
     {
         $request->validate([
             'structure_id' => 'required|exists:structures,id',
-            'version' => 'nullable|string|max:250',
-            'source' => 'nullable|string|max:250',
-            'statut' => 'required|integer|in:0,1,2,3',
+            'tableau_ids' => 'required|array|min:1',
+            'tableau_ids.*' => 'exists:tableaux,id',
+            'version_id' => 'nullable|string|max:250',
+            // 'source' => 'nullable|string|max:250',
+            // 'statut' => 'required|integer|in:0,1,2,3',
             'responsable' => 'nullable|string|max:250',
             'date_debut' => 'nullable|date',
-            'date_fin' => 'nullable|string|max:250',
+            'date_fin' => 'nullable|date',
             'annee' => 'nullable|integer|min:2000|max:2100',
             'periode' => 'nullable|string|max:250',
         ], [
-            'structure_id.required' => 'La structure est obligatoire.',
-            'structure_id.exists' => 'La structure sélectionnée n\'existe pas.',
-            'statut.required' => 'Le statut est obligatoire.',
-            'statut.in' => 'Le statut sélectionné n\'est pas valide.',
+            'structure_id.required' => 'Vous devez sélectionner au moins une structure.',
+            'structure_id.array' => 'Le format des structures sélectionnées n\'est pas valide.',
+            'structure_ids.*.exists' => 'Une des structures sélectionnées n\'existe pas.',
+            // 'statut.required' => 'Le statut est obligatoire.',
+            // 'statut.in' => 'Le statut sélectionné n\'est pas valide.',
             'date_debut.date' => 'La date de début doit être une date valide.',
             'annee.integer' => 'L\'année doit être un nombre entier.',
             'annee.min' => 'L\'année ne peut pas être antérieure à 2000.',
@@ -293,64 +336,56 @@ class AssignationController extends Controller implements HasMiddleware
         ]);
 
         try {
-            $assignation = Assignation::findOrFail($assignationId);
+            DB::beginTransaction();
 
-            // Vérifier que l'assignation appartient bien au tableau
-            if ($assignation->tableau_id != $tableauId) {
-                abort(404);
+            foreach ($request->tableau_ids as $tableauId) {
+
+                $exists = Assignation::where('tableau_id', $tableauId)
+                    ->where('structure_id', $request->structure_id)
+                    ->first();
+
+                if (!$exists) {
+                    Assignation::create([
+                        'tableau_id' => $tableauId,
+                        'structure_id' => $request->structure_id,
+                        'version_id' => $request->version_id,
+                        // 'source' => $request->source,
+                        // 'statut' => $request->statut,
+                        // 'responsable' => $request->responsable,
+                        'date_debut' => $request->date_debut,
+                        'date_fin' => $request->date_fin,
+                        'annee' => Carbon::now()->year,
+                        'statut' => Assignation::determinerStatut($request->date_debut, $request->date_fin),
+                        // 'periode' => $request->periode,
+                    ]);
+                }
             }
 
-            // Vérifier si une autre assignation existe déjà pour cette structure (sauf la courante)
-            $existingAssignation = Assignation::where('tableau_id', $tableauId)
-                ->where('structure_id', $request->structure_id)
-                ->where('id', '!=', $assignationId)
-                ->first();
+            DB::commit();
 
-            if ($existingAssignation) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'Cette structure est déjà assignée à ce tableau.');
-            }
-
-            $assignation->update([
-                'structure_id' => $request->structure_id,
-                'version' => $request->version,
-                'source' => $request->source,
-                'statut' => $request->statut,
-                'responsable' => $request->responsable,
-                'date_debut' => $request->date_debut,
-                'date_fin' => $request->date_fin,
-                'annee' => $request->annee,
-                'periode' => $request->periode,
-            ]);
-
-            return redirect()->route('assignations.index', $tableauId)
-                ->with('success', 'L\'assignation a été mise à jour avec succès.');
+            return redirect()->route('assignations.dashboard')->with(
+                'success',
+                count($request->tableau_ids) . ' tableau(x) assigné(s) à la structure avec succès.'
+            );
         } catch (\Exception $e) {
-            return redirect()->back()
+            DB::rollback();
+            return back()
                 ->withInput()
-                ->with('error', 'Une erreur est survenue lors de la mise à jour : ' . $e->getMessage());
+                ->with('error', 'Erreur lors de l’assignation : ' . $e->getMessage());
         }
     }
 
     /**
      * Supprimer une assignation
      */
-    public function destroy($tableauId, $assignationId)
+    public function destroy($assignationId)
     {
         try {
             $assignation = Assignation::findOrFail($assignationId);
-
-            // Vérifier que l'assignation appartient bien au tableau
-            if ($assignation->tableau_id != $tableauId) {
-                abort(404);
-            }
-
-            $structureName = $assignation->structure->nom;
             $assignation->delete();
 
-            return redirect()->route('assignations.index', $tableauId)
-                ->with('success', "L'assignation de '{$structureName}' a été supprimée avec succès.");
+            return redirect()->route('assignations.dashboard')
+                ->with('success', "L'assignation a été supprimée avec succès.");
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Une erreur est survenue lors de la suppression : ' . $e->getMessage());
@@ -360,38 +395,38 @@ class AssignationController extends Controller implements HasMiddleware
     /**
      * Changer le statut d'une assignation
      */
-    public function changeStatus(Request $request, $tableauId, $assignationId)
-    {
-        $request->validate([
-            'statut' => 'required|integer|in:0,1,2,3'
-        ]);
+    // public function changeStatus(Request $request, $tableauId, $assignationId)
+    // {
+    //     $request->validate([
+    //         'statut' => 'required|integer|in:0,1,2,3'
+    //     ]);
 
-        try {
-            $assignation = Assignation::findOrFail($assignationId);
+    //     try {
+    //         $assignation = Assignation::findOrFail($assignationId);
 
-            // Vérifier que l'assignation appartient bien au tableau
-            if ($assignation->tableau_id != $tableauId) {
-                abort(404);
-            }
+    //         // Vérifier que l'assignation appartient bien au tableau
+    //         if ($assignation->tableau_id != $tableauId) {
+    //             abort(404);
+    //         }
 
-            $assignation->update(['statut' => $request->statut]);
+    //         $assignation->update(['statut' => $request->statut]);
 
-            $statutLabels = [
-                0 => 'En attente',
-                1 => 'En cours',
-                2 => 'Terminé',
-                3 => 'Suspendu'
-            ];
+    //         $statutLabels = [
+    //             0 => 'En attente',
+    //             1 => 'En cours',
+    //             2 => 'Terminé',
+    //             3 => 'Suspendu'
+    //         ];
 
-            return response()->json([
-                'success' => true,
-                'message' => "Le statut a été changé à '{$statutLabels[$request->statut]}'"
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Une erreur est survenue : ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => "Le statut a été changé à '{$statutLabels[$request->statut]}'"
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Une erreur est survenue : ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 }

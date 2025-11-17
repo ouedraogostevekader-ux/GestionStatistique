@@ -2,10 +2,15 @@
 @section('breadcrumb', 'Dashboard Assignations')
 @section('content')
     <div class="container-fluid">
-        <div class="row mb-4">
-            <div class="col-12">
-                <h2>Dashboard des Assignations</h2>
-                <p class="text-muted">Vue d'ensemble des assignations de tableaux par structure</p>
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item active">
+                        <h2>Dashboard des Assignations : (<badge class="text-success">{{ $assignations->count() }}</badge>)
+                        </h2>
+                        <p class="text-muted">Vue d'ensemble des assignations de tableaux par structure</p>
+                    </li>
+                </ol>
             </div>
         </div>
 
@@ -31,6 +36,17 @@
                                 <option value="{{ $i }}" {{ request('annee') == $i ? 'selected' : '' }}>
                                     {{ $i }}</option>
                             @endfor
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="version_id" class="form-label">Version</label>
+                        <select name="version_id" id="version_id" class="form-select form-select-sm">
+                            <option value="">Toutes les versions</option>
+                            @foreach ($versions as $version)
+                                <option value="{{ $version->id }}"
+                                    {{ request('version_id') == $version->id ? 'selected' : '' }}>
+                                    {{ $version->code }}--{{ $version->annee }}</option>
+                            @endforeach
                         </select>
                     </div>
                     @if (auth()->user()->isAdmin())
@@ -59,16 +75,21 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0">Assignations récentes</h6>
+                @can('assignation-create')
+                    <a href="{{ route('tableaux.affectations') }}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Assigner
+                    </a>
+                @endcan
             </div>
             <div class="card-body">
                 @if ($assignations->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-sm">
+                        <table class="table table-sm" id="example2">
                             <thead>
                                 <tr>
                                     <th>Tableau</th>
                                     <th>Structure</th>
-                                    <th>Responsable</th>
+                                    {{-- <th>Responsable</th> --}}
                                     <th>Statut</th>
                                     <th>Progrès</th>
                                     <th>Date début</th>
@@ -87,7 +108,7 @@
                                             {{ $assignation->structure->nom }}
                                             <br><small class="text-muted">{{ $assignation->structure->sigle }}</small>
                                         </td>
-                                        <td>{{ $assignation->responsable ?? '-' }}</td>
+                                        {{-- <td>{{ $assignation->responsable ?? '-' }}</td> --}}
                                         <td>
                                             <span class="badge bg-{{ $assignation->statut_class }}">
                                                 {{ $assignation->statut_libelle }}
@@ -108,15 +129,42 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ route('assignations.edit', [$assignation->tableau_id, $assignation->id]) }}"
-                                                    class="btn btn-outline-primary" title="Modifier">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="{{ route('tableaux.show', $assignation->tableau_id) }}"
-                                                    class="btn btn-outline-info" title="Voir le tableau">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
+                                            <div class="btn-group" role="group">
+                                                @can('assignation-list')
+                                                    <a href="{{ route('assignations.show', $assignation->id) }}"
+                                                        class="btn btn-outline-info" title="Voir les détails de l'assignation">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                @endcan
+                                                {{-- Modifier si l'assignation est en cours c'est a dire avant la date debut, ou est expirer c'est a dire apres la date fin --}}
+                                                @if ($assignation->statut == 0 || $assignation->statut == 3)
+                                                    @can('assignation-edit')
+                                                        <a href="{{ route('assignations.edit', $assignation->id) }}"
+                                                            class="btn btn-outline-warning" title="Modifier l'assignation">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can('assignation-delete')
+                                                        <form action="{{ route('assignations.destroy', $assignation->id) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Voulez-vous vraiment supprimer cette assignation ?')">
+                                                            @csrf
+                                                            @method ('DELETE')
+                                                            <button type="submit" class="btn btn-outline-danger"
+                                                                title="suppression de l'assignation">
+                                                                <i class="bi bi-archive"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endcan
+                                                @endif
+                                                @if ($assignation->statut == 1)
+                                                    @can('soumission-create')
+                                                        <a href="{{ route('tableaux.saisie', $assignation->tableau_id) }}"
+                                                            class="btn btn-outline-success">
+                                                            <i class="bi bi-edit"></i> Saisir Données
+                                                        </a>
+                                                    @endcan
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

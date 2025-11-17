@@ -33,8 +33,7 @@ class TableauSeeder extends Seeder
             'Nord',
             'Plateau-Central',
             'Sahel',
-            'Sud-Ouest',
-            'Ensemble'
+            'Sud-Ouest'
         ];
         $provinces = [
             'Provinces',
@@ -81,12 +80,9 @@ class TableauSeeder extends Seeder
             'Ioba',
             'Noumbiel',
             'Poni',
-            'Zoundwéogo',
-            'Ensemble'
+            'Zoundwéogo'
         ];
         $annees = [
-            '2014',
-            '2015',
             '2016',
             '2017',
             '2018',
@@ -95,9 +91,7 @@ class TableauSeeder extends Seeder
             '2021',
             '2022',
             '2023',
-            '2024',
-            '2025',
-            '2026',
+            '2024'
         ];
         $tabRB = [
             'Tableau I-9: Linéaire des routes nationales selon la classification technique (en km)',
@@ -133,7 +127,6 @@ class TableauSeeder extends Seeder
             'Routes Régionales',
             'Routes Départementales',
             'Pistes Rurales',
-            'Ensemble'
         ];
 
         $tabA = [
@@ -157,13 +150,11 @@ class TableauSeeder extends Seeder
             'Routes en terre ordinaire',
             'Routes améliorées de type A',
             'Routes améliorées de type B',
-            'Pistes ordinaires',
-            'Ensemble'
+            'Pistes ordinaires'
         ];
         $butimes = [
             'Linéaire butimée',
-            'Linéaire non butimée',
-            'Linéaire totale'
+            'Linéaire non butimée'
         ];
 
         $etats = [
@@ -171,8 +162,7 @@ class TableauSeeder extends Seeder
             'Bon',
             'Moyen',
             'Mauvais',
-            'En travaux',
-            'Total'
+            'En travaux'
         ];
 
         $typeO = [
@@ -199,15 +189,13 @@ class TableauSeeder extends Seeder
             'CU23',
             'CU25',
             'CU26',
-            'CU27',
-            'Ensemble'
+            'CU27'
         ];
 
         $rb = [
             'Classification nationale (RN, RR, RD)',
             'Linéaire bitumé',
-            'Linéaire non bitumé',
-            'Linéaire total (km'
+            'Linéaire non bitumé'
         ];
 
         $tr = [
@@ -245,8 +233,7 @@ class TableauSeeder extends Seeder
             'Renforcement et réhabilitation',
             'Entretien périodique',
             'Piste rurale',
-            'Ouvrages',
-            'Ensemble',
+            'Ouvrages'
         ];
 
         $travauxR = [
@@ -272,8 +259,7 @@ class TableauSeeder extends Seeder
             'Entretien périodique',
             'Entretien courant',
             'Piste rurale',
-            'Ouvrages',
-            'Total',
+            'Ouvrages'
         ];
 
         $rubriques = [
@@ -311,8 +297,7 @@ class TableauSeeder extends Seeder
             'Route nationale N°29',
             'Route Régionale 18',
             'Route Régionale 21',
-            'Route Départementale 40',
-            'Ensemble'
+            'Route Départementale 40'
         ];
 
         $ps = [
@@ -333,8 +318,7 @@ class TableauSeeder extends Seeder
             'Études',
             'Gardiennage de barrières de pluies',
             'Travaux en régie',
-            'Comptage de trafic routier',
-            'Ensemble',
+            'Comptage de trafic routier'
         ];
 
 

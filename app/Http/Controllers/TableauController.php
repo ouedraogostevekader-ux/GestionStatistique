@@ -34,6 +34,7 @@ class TableauController extends Controller implements HasMiddleware
             new Middleware('permission:addColonne-create', only: ['addColonne']),
 
             new Middleware('permission:assignation-create', only: ['affecterStructures', 'storeAffectation']),
+            new Middleware('permission:soumission-create', only: ['saisirDonnees', 'saveDonnees']),
         ];
     }
 
@@ -220,6 +221,30 @@ class TableauController extends Controller implements HasMiddleware
         return redirect()->back()->with('success', 'Colonne ajoutée avec succès');
     }
 
+    public function formSoumission($assignation_id)
+    {
+        $assignation = Assignation::findOrFail($assignation_id);
+
+        // Ancienne assignation
+        $previous = $assignation->getPreviousAssignation();
+
+        $oldValues = [];
+
+        if ($previous) {
+            $oldValues = SoumissionTableau::where('assignation_id', $previous->id)
+                ->pluck('valeur', 'cellule_id')
+                ->toArray();
+        }
+
+        $cellules = Cellule::where('tableau_id', $assignation->tableau_id)->get();
+
+        return view('soumissions.form', [
+            'assignation' => $assignation,
+            'cellules' => $cellules,
+            'oldValues' => $oldValues,
+        ]);
+    }
+
     public function saisirDonnees($id)
     {
         $tableau = Tableau::with('categorie')->findOrFail($id);
@@ -235,11 +260,27 @@ class TableauController extends Controller implements HasMiddleware
         // Vérifie que le tableau est bien assigné à cette structure
         $assignations = Assignation::where('tableau_id', $id)
             ->where('structure_id', $structure->id)
+            ->orderBy('version_id', 'desc')
             ->get();
 
         if ($assignations->isEmpty()) {
             return redirect()->route('tableaux.index')
                 ->with('error', 'Ce tableau ne vous a pas été assigné. Vous n’êtes pas autorisé à saisir des données.');
+        }
+
+        // Dernière assignation (version actuelle)
+        $latestAssignation = $assignations->first();
+
+        // Version précédente
+        $previousAssignation = $latestAssignation->getPreviousAssignation();
+
+        // Valeurs précédentes (si une version précédente existe)
+        $oldValues = [];
+
+        if ($previousAssignation) {
+            $oldValues = SoumissionTableau::where('assignation_id', $previousAssignation->id)
+                ->pluck('valeur', 'cellule_id')
+                ->toArray();
         }
 
         // Récupère les lignes et colonnes du tableau
@@ -255,7 +296,7 @@ class TableauController extends Controller implements HasMiddleware
             ->with('enfants')
             ->get();
 
-        // Récupère les soumissions existantes
+        // Pour affichage (utile uniquement si tu veux afficher les anciennes soumissions)
         $soumissions = $this->getSoumissionsData($id);
 
         return view('tableaux.saisie', compact(
@@ -264,9 +305,13 @@ class TableauController extends Controller implements HasMiddleware
             'assignations',
             'lignes',
             'colonnes',
-            'soumissions'
+            'soumissions',
+            'latestAssignation',
+            'previousAssignation',
+            'oldValues'
         ));
     }
+
 
     public function saveDonnees(Request $request, $id)
     {
@@ -345,7 +390,7 @@ class TableauController extends Controller implements HasMiddleware
         $tableau = Tableau::findOrFail($id);
         $structures = Structure::all();
         $versions = Version::all();
-        return view('tableaux.affecter', compact('tableau', 'structures', 'versions'));
+        return view('tableaux.assignations.affecter', compact('tableau', 'structures', 'versions'));
     }
 
     public function storeAffectation(Request $request, $id)
@@ -355,9 +400,39 @@ class TableauController extends Controller implements HasMiddleware
             'structure_ids.*' => 'exists:structures,id',
             'version' => 'required|string|exists:versions,id',
             // 'periode' => 'nullable|string|max:250',
-            // 'date_debut' => 'nullable|date',
-            // 'date_fin' => 'nullable|date',
+            'date_debut' => 'required|date',
+            'date_fin' => 'required|date|after_or_equal:date_debut',
+        ], [
+            'version.required' => 'La version est obligatoire, veuillez donc la choisir.',
+            'structure_ids.required' => 'La structure est obligatoire, veuillez donc choisir au moins une structure.',
+            'date_debut.required' => 'La date de début est obligatoire, veuillez donc la renseigner.',
+            'date_fin.required' => 'La date de fin est obligatoire, veuillez donc la renseigner.',
+            'date_debut.date' => 'La date de début doit être une date valide.',
+            'date_fin.date' => 'La date de fin doit être une date valide.',
+            'date_fin.after_or_equal' => 'La date de fin doit être supérieur à la date début.',
         ]);
+        $versionId = $request->version;
+        $structureIds = $request->structure_ids;
+
+        // Vérification personnalisée : combinaison unique
+        $dejaAssignes = Assignation::where('tableau_id', $id)
+            ->where('version_id', $versionId)
+            ->whereIn('structure_id', $structureIds)
+            ->pluck('structure_id')
+            ->toArray();
+
+        if (!empty($dejaAssignes)) {
+            // Récupérer les noms des structures déjà assignées
+            $noms = Structure::whereIn('id', $dejaAssignes)
+                ->pluck('sigle')
+                ->implode(', ');
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'structure_ids' => "La version sélectionnée est déjà assignée aux structures suivantes : $noms.",
+                ]);
+        }
 
         foreach ($request->structure_ids as $structureId) {
             Assignation::create([
@@ -366,8 +441,10 @@ class TableauController extends Controller implements HasMiddleware
                 'structure_id' => $structureId,
                 'version_id' => $request->version,
                 // 'periode' => $request->periode,
-                // 'date_debut' => $request->date_debut,
-                // 'date_fin' => $request->date_fin,
+                'date_debut' => $request->date_debut,
+                'date_fin' => $request->date_fin,
+                'annee' => now()->year,
+                'statut' => Assignation::determinerStatut($request->date_debut, $request->date_fin),
             ]);
         }
 

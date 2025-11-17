@@ -14,14 +14,20 @@
                 <div class="col-sm-8">
                     {{-- @can('annuaire-create') --}}
                     <div class="mt-4 d-flex justify-content-end">
-                        <a class="btn btn-primary float-right" href="#">
+                        {{-- @can('exportWord') --}}
+                        <a class="btn btn-primary float-right"
+                            href="{{ route('annuaire.export.word', ['version' => request('version')]) }}">
                             Exporter en word
                         </a>
-                        <a class="btn btn-info float-right" href="#">
+                        {{-- @endcan --}}
+                        {{-- @can('exportPdf') --}}
+                        <a class="btn btn-info float-right"
+                            href="{{ route('annuaire.export.pdf', ['version' => request('version')]) }}">
                             Exporter en pdf
                         </a>
+                        {{-- @endcan --}}
                     </div>
-                    {{-- @endcan --}}
+
                 </div>
             </div>
         </div>

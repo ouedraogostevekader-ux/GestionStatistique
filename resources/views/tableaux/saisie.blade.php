@@ -102,11 +102,13 @@
                                                                     ->where('colonne_id', $sousColonne->id)
                                                                     ->first();
                                                             @endphp
+
                                                             @if ($cellule)
                                                                 <input type="number" step="0.01"
                                                                     class="form-control form-control-sm text-center"
                                                                     name="donnees[{{ $cellule->id }}]"
-                                                                    style="width: 100px;">
+                                                                    style="width: 100px;"
+                                                                    value="{{ old('donnees.' . $cellule->id, $oldValues[$cellule->id] ?? '') }}">
                                                             @endif
                                                         </td>
                                                     @endforeach
@@ -123,7 +125,8 @@
                                                         @if ($cellule)
                                                             <input type="number" step="0.01"
                                                                 class="form-control form-control-sm text-center"
-                                                                name="donnees[{{ $cellule->id }}]" style="width: 100px;">
+                                                                name="donnees[{{ $cellule->id }}]" style="width: 100px;"
+                                                                value="{{ old('donnees.' . $cellule->id, $oldValues[$cellule->id] ?? '') }}">
                                                         @endif
                                                     </td>
                                                 @endif
@@ -154,7 +157,8 @@
                                                                 <input type="number" step="0.01"
                                                                     class="form-control form-control-sm text-center"
                                                                     name="donnees[{{ $cellule->id }}]"
-                                                                    style="width: 100px;">
+                                                                    style="width: 100px;"
+                                                                    value="{{ old('donnees.' . $cellule->id, $oldValues[$cellule->id] ?? '') }}">
                                                             @endif
                                                         </td>
                                                     @endforeach
@@ -171,7 +175,8 @@
                                                         @if ($cellule)
                                                             <input type="number" step="0.01"
                                                                 class="form-control form-control-sm text-center"
-                                                                name="donnees[{{ $cellule->id }}]" style="width: 100px;">
+                                                                name="donnees[{{ $cellule->id }}]" style="width: 100px;"
+                                                                value="{{ old('donnees.' . $cellule->id, $oldValues[$cellule->id] ?? '') }}">
                                                         @endif
                                                     </td>
                                                 @endif

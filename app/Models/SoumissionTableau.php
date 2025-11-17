@@ -51,6 +51,35 @@ class SoumissionTableau extends Model
         return $this->belongsTo(Cellule::class, 'cellule_id');
     }
 
+    protected static function booted()
+    {
+        static::created(function ($soumission) {
+            // Lorsqu'une soumission est créée, on met à jour le statut de l'assignation
+            if ($soumission->assignation_id) {
+                $assignation = Assignation::find($soumission->assignation_id);
+
+                if ($assignation && $assignation->statut != 2) {
+                    $assignation->update(['statut' => 2]);
+                }
+            }
+        });
+
+        static::deleted(function ($soumission) {
+            $assignation = Assignation::find($soumission->assignation_id);
+
+            if ($assignation) {
+                $hasSoumissions = SoumissionTableau::where('assignation_id', $assignation->id)->exists();
+
+                if (!$hasSoumissions) {
+                    $assignation->update(['statut' => Assignation::determinerStatut(
+                        $assignation->date_debut,
+                        $assignation->date_fin
+                    )]);
+                }
+            }
+        });
+    }
+
     //Methode pour les logs
     public function getDescriptionForEvent(string $eventName): string
     {

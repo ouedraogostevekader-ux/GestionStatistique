@@ -11,14 +11,18 @@
             <div class="col-sm-6">
                 <div class="mt-4 d-flex justify-content-end">
                     <a href="{{ route('tableaux.structure', $tableau->id) }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-cogs"></i> Structure
+                        <i class="fas fa-cogs"></i> Forme
                     </a>
-                    <a href="{{ route('tableaux.affecter', $tableau->id) }}" class="btn btn-outline-primary">
-                        <i class="bi bi-cogs"></i> Assigner le tableau
-                    </a>
-                    <a href="{{ route('tableaux.saisie', $tableau->id) }}" class="btn btn-success">
-                        <i class="bi bi-edit"></i> Saisir Données
-                    </a>
+                    @can('assignation-create')
+                        <a href="{{ route('tableaux.affecter', $tableau->id) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-cogs"></i> Assigner le tableau
+                        </a>
+                    @endcan
+                    @can('soumission-create')
+                        <a href="{{ route('tableaux.saisie', $tableau->id) }}" class="btn btn-success">
+                            <i class="bi bi-edit"></i> Saisir Données
+                        </a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -27,9 +31,11 @@
         </div>
 
         @if ($lignes->count() > 0 && $colonnes->count() > 0)
+
             @foreach ($structures as $structure)
                 <div class="card mb-5 mt-2">
                     <div class="card-header bg-light">
+
                         <h5 class="mb-0">Structure : <strong>{{ $structure->nom }}</strong></h5>
                         <small class="text-muted">{{ $structure->sigle }}</small>
 
@@ -46,6 +52,7 @@
                                 @endforeach
                             </select>
                         </form>
+
                     </div>
 
                     @php
