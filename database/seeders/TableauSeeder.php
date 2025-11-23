@@ -83,6 +83,8 @@ class TableauSeeder extends Seeder
             'Zoundwéogo'
         ];
         $annees = [
+            '2014',
+            '2015',
             '2016',
             '2017',
             '2018',
@@ -91,7 +93,8 @@ class TableauSeeder extends Seeder
             '2021',
             '2022',
             '2023',
-            '2024'
+            '2024',
+            '2025',
         ];
         $tabRB = [
             'Tableau I-9: Linéaire des routes nationales selon la classification technique (en km)',
@@ -1692,5 +1695,564 @@ class TableauSeeder extends Seeder
         $categorie2 = Categorie::create(
             ['libelle' => 'LES INFRASTRUCTURES FERROVIAIRES']
         );
+        $tab1 = Tableau::create(
+            [
+                'libelle' => 'Tableau I-57: Longueur du réseau ferroviaire (en km)',
+                'description' => 'Source : DGESS/ MTMUSR',
+                'categorie_id' => $categorie2->id
+            ]
+        );
+        $tab2 = Tableau::create(
+            [
+                'libelle' => 'Tableau I-58: Réseau ferroviaire par type de travaux (km)',
+                'description' => 'Source : DGESS/ MTMUSR',
+                'categorie_id' => $categorie2->id
+            ]
+        );
+        $explois = [
+            'Exploité',
+            'Non exploité'
+        ];
+
+        $entrs = [
+            'Entretenue',
+            'Réhabilitée'
+        ];
+
+        foreach ($explois as $i => $exploi) {
+            LigneTableau::create([
+                'nom_ligne'  => $exploi,
+                'ordre'      => $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab1->id,
+            ]);
+        }
+
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab1->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $li1 = LigneTableau::where('tableau_id', $tab1->id)->get();
+        $col1 = ColonneTableau::where('tableau_id', $tab1->id)->get();
+
+        foreach ($li1 as $ligne) {
+            foreach ($col1 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+
+        foreach ($entrs as $i => $entr) {
+            LigneTableau::create([
+                'nom_ligne'  => $entr,
+                'ordre'      => $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab2->id,
+            ]);
+        }
+
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab2->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $li2 = LigneTableau::where('tableau_id', $tab2->id)->get();
+        $col2 = ColonneTableau::where('tableau_id', $tab2->id)->get();
+
+        foreach ($li2 as $ligne) {
+            foreach ($col2 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+
+        $foncts = [
+            'Fonctionnels',
+            'Non fonctionnels'
+        ];
+
+        $categorie3 = Categorie::create(
+            ['libelle' => 'LES INFRASTRUCTURES AEROPORTUAIRES']
+        );
+
+        $tab3 = Tableau::create(
+            [
+                'libelle' => 'Tableau I-59: Évolution du nombre d’aérodromes',
+                'description' => 'Source : ANAC',
+                'categorie_id' => $categorie3->id
+            ]
+        );
+        $tab4 = Tableau::create(
+            [
+                'libelle' => 'Tableau I-60: Nombre d\'aérodromes par région en 2023',
+                'description' => 'Source : ANAC',
+                'categorie_id' => $categorie3->id
+            ]
+        );
+
+        foreach ($foncts as $i => $fonct) {
+            LigneTableau::create([
+                'nom_ligne'  => $fonct,
+                'ordre'      => $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab3->id,
+            ]);
+        }
+
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab3->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $li3 = LigneTableau::where('tableau_id', $tab3->id)->get();
+        $col3 = ColonneTableau::where('tableau_id', $tab3->id)->get();
+
+        foreach ($li3 as $ligne) {
+            foreach ($col3 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        foreach ($regions as $i => $region) {
+            LigneTableau::create([
+                'nom_ligne'  => $region,
+                'ordre'      => $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab4->id,
+            ]);
+        }
+
+        foreach ($foncts as $i => $fonct) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $fonct,
+                'ordre'      =>  $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tab4->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $li4 = LigneTableau::where('tableau_id', $tab4->id)->get();
+        $col4 = ColonneTableau::where('tableau_id', $tab4->id)->get();
+
+        foreach ($li4 as $ligne) {
+            foreach ($col4 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        $categorie4 = Categorie::create(
+            ['libelle' => 'LA CARTOGRAPHIE']
+        );
+
+        $tabigb = [
+            'Tableau I-61: Taux de couverture du territoire national en bornes géodésiques fonctionnelles',
+            'Tableau I-62: Taux de réhabilitation du réseau de nivellement',
+            'Tableau I-63: Taux de production de cartes administratives des plans des villes',
+            'Tableau I-64: Taux de couverture du territoire national en cartes de base à l’échelle 1/50000ème',
+        ];
+
+        foreach ($tabigb as $index => $titre) {
+            // Création du tableau avec numérotation automatique
+            $tableau = Tableau::create([
+                'libelle'      => $titre,
+                'description'  => 'Source : IGB',
+                'categorie_id' => $categorie4->id,
+            ]);
+
+            switch ($index) {
+                case 0:
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux/Année',
+                        'ordre'      => 1,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux de couverture (en %)',
+                        'ordre'      => 2,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    break;
+                case 1:
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux/Année',
+                        'ordre'      => 1,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux de réhabilitation (en %)',
+                        'ordre'      => 2,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    break;
+                case 2:
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux/Année',
+                        'ordre'      => 1,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux de production (en %)',
+                        'ordre'      => 2,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    break;
+                case 3:
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux/Année',
+                        'ordre'      => 1,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    LigneTableau::create([
+                        'nom_ligne'  => 'Taux de couverture (en %)',
+                        'ordre'      => 2,
+                        'tableau_id' => $tableau->id,
+                    ]);
+                    break;
+            }
+
+            foreach ($annees as $i => $annee) {
+                ColonneTableau::create([
+                    'colonne_ligne'  => $annee,
+                    'ordre'      => $i + 1, // incrémentation de 1 à 13
+                    'tableau_id' => $tableau->id,
+                ]);
+            }
+            // Création des cellules (croisement ligne × colonne)
+            $lignes = LigneTableau::where('tableau_id', $tableau->id)->get();
+            $colonnes = ColonneTableau::where('tableau_id', $tableau->id)->get();
+
+            foreach ($lignes as $ligne) {
+                foreach ($colonnes as $colonne) {
+                    Cellule::create([
+                        'ligne_id'   => $ligne->id,
+                        'colonne_id' => $colonne->id,
+                    ]);
+                }
+            }
+        }
+
+        $categorie5 = Categorie::create(
+            ['libelle' => 'LES POSTES DE PÉAGE']
+        );
+
+        $tabfsrb = [
+            'Tableau II-1: Nombre de postes de péage existants par région',
+            'Tableau II-2: Nombre de postes de péage fonctionnels par région',
+        ];
+
+        foreach ($tabfsrb as $index => $titre) {
+            // Création du tableau avec numérotation automatique
+            $tableau = Tableau::create([
+                'libelle'      => $titre,
+                'description'  => 'Source : FSR-B',
+                'categorie_id' => $categorie5->id,
+            ]);
+
+            foreach ($regions as $i => $region) {
+                LigneTableau::create([
+                    'nom_ligne'  => $region,
+                    'ordre'      => $i + 1,
+                    'tableau_id' => $tableau->id,
+                ]);
+            }
+
+            foreach ($annees as $i => $annee) {
+                ColonneTableau::create([
+                    'colonne_ligne'  => $annee,
+                    'ordre'      => $i + 1, // incrémentation de 1 à 13
+                    'tableau_id' => $tableau->id,
+                ]);
+            }
+            // Création des cellules (croisement ligne × colonne)
+            $lignes = LigneTableau::where('tableau_id', $tableau->id)->get();
+            $colonnes = ColonneTableau::where('tableau_id', $tableau->id)->get();
+
+            foreach ($lignes as $ligne) {
+                foreach ($colonnes as $colonne) {
+                    Cellule::create([
+                        'ligne_id'   => $ligne->id,
+                        'colonne_id' => $colonne->id,
+                    ]);
+                }
+            }
+        }
+
+        $tabfsrb3 = Tableau::create(
+            [
+                'libelle' => 'Tableau II-3: État des postes de péage fonctionnel',
+                'description' => 'Source : FSR-B',
+                'categorie_id' => $categorie5->id
+            ]
+        );
+        foreach ($etats as $e => $etat) {
+            LigneTableau::create([
+                'nom_ligne'  => $etat,
+                'ordre'      => $e + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tabfsrb3->id,
+            ]);
+        }
+
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1, // incrémentation de 1 à 13
+                'tableau_id' => $tabfsrb3->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $lif3 = LigneTableau::where('tableau_id', $tabfsrb3->id)->get();
+        $colf3 = ColonneTableau::where('tableau_id', $tabfsrb3->id)->get();
+
+        foreach ($lif3 as $ligne) {
+            foreach ($colf3 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+
+        // Barrieres de pluie
+        $categorie6 = Categorie::create(
+            ['libelle' => 'LES BARRIÈRES DE PLUIE']
+        );
+
+
+        $tabe2 = [
+            'Tableau II-4: Nombre de barrières de pluie existantes par région',
+            'Tableau II-5: Nombre de barrières de pluie fonctionnelles par région',
+        ];
+
+        foreach ($tabe2 as $index => $titre) {
+            // Création du tableau avec numérotation automatique
+            $tableau = Tableau::create([
+                'libelle'      => $titre,
+                'description'  => 'Source : DGESS à partir des données des DRID',
+                'categorie_id' => $categorie6->id,
+            ]);
+
+            foreach ($regions as $i => $region) {
+                LigneTableau::create([
+                    'nom_ligne'  => $region,
+                    'ordre'      => $i + 1,
+                    'tableau_id' => $tableau->id,
+                ]);
+            }
+
+            foreach ($annees as $i => $annee) {
+                ColonneTableau::create([
+                    'colonne_ligne'  => $annee,
+                    'ordre'      => $i + 1, // incrémentation de 1 à 13
+                    'tableau_id' => $tableau->id,
+                ]);
+            }
+            // Création des cellules (croisement ligne × colonne)
+            $lignes = LigneTableau::where('tableau_id', $tableau->id)->get();
+            $colonnes = ColonneTableau::where('tableau_id', $tableau->id)->get();
+
+            foreach ($lignes as $ligne) {
+                foreach ($colonnes as $colonne) {
+                    Cellule::create([
+                        'ligne_id'   => $ligne->id,
+                        'colonne_id' => $colonne->id,
+                    ]);
+                }
+            }
+        }
+
+        $tabf2 = Tableau::create(
+            [
+                'libelle' => 'Tableau II-6: État des barrières de pluies fonctionnelles',
+                'description' => 'Source : DGESS à partir des données des DRID',
+                'categorie_id' => $categorie6->id
+            ]
+        );
+        LigneTableau::create([
+            'nom_ligne'  => "Etat",
+            'ordre'      =>  1,
+            'tableau_id' => $tabf2->id,
+        ]);
+        LigneTableau::create([
+            'nom_ligne'  => "Bon",
+            'ordre'      =>  2,
+            'tableau_id' => $tabf2->id,
+        ]);
+        LigneTableau::create([
+            'nom_ligne'  => "Mauvais",
+            'ordre'      =>  3,
+            'tableau_id' => $tabf2->id,
+        ]);
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $tabf2->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $lif3 = LigneTableau::where('tableau_id', $tabf2->id)->get();
+        $colf3 = ColonneTableau::where('tableau_id', $tabf2->id)->get();
+
+        foreach ($lif3 as $ligne) {
+            foreach ($colf3 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //II-7 a II-LES POSTES DE PESAGE
+        $categorie7 = Categorie::create(
+            ['libelle' => 'LES POSTES DE PESAGE']
+        );
+
+        $tap2 = Tableau::create(
+            [
+                'libelle' => 'Tableau II-7: Évolution du nombre de postes de pesage par région',
+                'description' => 'Source : DGESS/MTMUSR',
+                'categorie_id' => $categorie7->id
+            ]
+        );
+        foreach ($regions as $i => $region)
+            LigneTableau::create([
+                'nom_ligne'  => $region,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $tap2->id,
+            ]);
+
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $tap2->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $lifp3 = LigneTableau::where('tableau_id', $tap2->id)->get();
+        $colfp3 = ColonneTableau::where('tableau_id', $tap2->id)->get();
+
+        foreach ($lifp3 as $ligne) {
+            foreach ($colfp3 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        $tape3 = Tableau::create(
+            [
+                'libelle' => 'Tableau II-8: Nombre de véhicules contrôlés à la surcharge',
+                'description' => 'Source : DGESS/MTMUSR',
+                'categorie_id' => $categorie7->id
+            ]
+        );
+        LigneTableau::create([
+            'nom_ligne'  => 'Véhicule/année',
+            'ordre'      =>  1,
+            'tableau_id' => $tape3->id,
+        ]);
+        LigneTableau::create([
+            'nom_ligne'  => 'Véhicule en règle',
+            'ordre'      =>  2,
+            'tableau_id' => $tape3->id,
+        ]);
+        LigneTableau::create([
+            'nom_ligne'  => 'Véhicule en surcharge',
+            'ordre'      =>  3,
+            'tableau_id' => $tape3->id,
+        ]);
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $tape3->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $lifee3 = LigneTableau::where('tableau_id', $tape3->id)->get();
+        $colfee3 = ColonneTableau::where('tableau_id', $tape3->id)->get();
+
+        foreach ($lifee3 as $ligne) {
+            foreach ($colfee3 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //LE PERSONNEL DU MINISTÈRE
+        // $cat1 = Categorie::create(
+        //     ['libelle' => 'LE PERSONNEL DU MINISTÈRE']
+        // );
+        // $sexes = [
+        //     'Sexe',
+        //     'H',
+        //     'F'
+        // ];
+        // $strus = [
+        //     'Structures',
+        //     'Centrales',
+        //     'Déconcentrées',
+        //     'Rattachées',
+        //     'Mission',
+        // ];
+        // $cats = [
+        //     'Catégorie',
+        //     'P',
+        //     'A',
+        //     'B',
+        //     'C',
+        //     'D',
+        //     'E',
+        // ];
+        // $positions = [
+        //     'Position',
+        //     'Organismes internationaux',
+        //     'Secteur public',
+        //     'Secteur privé',
+
+        // ];
+        // $tranches = [
+        //     'Age',
+        //     '<20',
+        //     '20-25',
+        //     '26-30',
+        //     '31-35',
+        //     '36-40',
+        //     '41-45',
+        //     '46-50',
+        //     '51-55',
+        //     '56-60',
+        //     '61 et plus'
+        // ];
     }
 }

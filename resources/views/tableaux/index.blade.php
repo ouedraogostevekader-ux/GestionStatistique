@@ -31,7 +31,7 @@
                                 <th>Catégorie</th>
                                 <th>Description</th>
                                 {{-- <th>Statut</th> --}}
-                                <th>Structure assignées</th>
+                                <th>Structure(s) assignée(s)</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -86,12 +86,12 @@
                                         </div>
 
                                         <a href="{{ route('tableaux.structure', $tableau->id) }}"
-                                            class="btn btn-sm btn-outline-secondary" title="Forme">
+                                            class="btn btn-xs btn-outline-secondary" title="Forme du tableau">
                                             <i class="bi bi-table"></i>
                                         </a>
                                         @can('soumission-create')
                                             <a href="{{ route('tableaux.saisie', $tableau->id) }}"
-                                                class="btn btn-sm btn-outline-success" title="Saisir">
+                                                class="btn btn-xs btn-outline-success" title="Renseigner le tableau">
                                                 <i class="bi bi-pen-fill"></i>
                                             </a>
                                         @endcan

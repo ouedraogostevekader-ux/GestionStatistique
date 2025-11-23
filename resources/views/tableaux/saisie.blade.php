@@ -10,6 +10,9 @@
             </div>
             <div class="col-sm-6">
                 <div class="mt-4 d-flex justify-content-end">
+                    <a href="{{ route('tableaux.show', $tableau->id) }}" class="btn btn-outline-secondary">
+                        <i class="bi  bi-arrow-bar-left"></i> Retour
+                    </a>
                     <a class="btn btn-outline-primary" href="{{ route('tableaux.show', $tableau->id) }}">
                         <i class="fas fa-eye"></i> Visualiser
                     </a>

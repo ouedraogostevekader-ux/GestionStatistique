@@ -63,13 +63,12 @@ class TableauController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $request->validate([
-            'libelle' => 'required|string|max:250',
-            'description' => 'nullable|string|max:250',
+            'libelle' => 'required|string|max:500',
+            'description' => 'nullable|string|max:500',
             'categorie_id' => 'required|exists:categories,id'
         ]);
 
         $tableau = Tableau::create([
-            'id' => Str::ulid(),
             'libelle' => $request->libelle,
             'description' => $request->description,
             'categorie_id' => $request->categorie_id

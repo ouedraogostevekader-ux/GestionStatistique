@@ -40,11 +40,11 @@ class CategorieController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $request->validate([
-            'libelle' => 'required|string|max:250|unique:categories,libelle'
+            'libelle' => 'required|string|max:1000|unique:categories,libelle'
         ]);
 
         Categorie::create([
-            'id' => Str::ulid(),
+            // 'id' => Str::ulid(),
             'libelle' => $request->libelle
         ]);
 

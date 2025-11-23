@@ -2,7 +2,7 @@
 
 {{-- resources/views/tableaux/edit.blade.php --}}
 @extends('layouts.admin')
-@section('breadcrumb', 'Tableaux')
+@section('breadcrumb', 'Modifier le tableau')
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -17,7 +17,7 @@
                             @method('PUT')
 
                             <div class="mb-3">
-                                <label for="libelle" class="form-label">Libellé *</label>
+                                <label for="libelle" class="form-label"><strong>Libellé</strong></label>
                                 <input type="text" class="form-control @error('libelle') is-invalid @enderror"
                                     id="libelle" name="libelle" value="{{ old('libelle', $tableau->libelle) }}" required>
                                 @error('libelle')
@@ -26,7 +26,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
+                                <label for="description" class="form-label"><strong>Description(Source)</strong></label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
                                     rows="3">{{ old('description', $tableau->description) }}</textarea>
                                 @error('description')
@@ -35,7 +35,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="categorie_id" class="form-label">Catégorie *</label>
+                                <label for="categorie_id" class="form-label"><strong>Catégorie</strong></label>
                                 <select class="form-select @error('categorie_id') is-invalid @enderror" id="categorie_id"
                                     name="categorie_id" required>
                                     <option value="">Sélectionner une catégorie</option>
@@ -52,7 +52,7 @@
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('tableaux.show', $tableau->id) }}" class="btn btn-secondary">Annuler</a>
+                                <a href="{{ route('tableaux.index') }}" class="btn btn-secondary">Annuler</a>
                                 <button type="submit" class="btn btn-success">Mettre à jour</button>
                             </div>
                         </form>

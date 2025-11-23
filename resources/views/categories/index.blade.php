@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('breadcrumb', 'Tableaux/categories')
+@section('breadcrumb', 'Catégories des tableaux')
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -14,12 +14,12 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="example2">
                         <thead>
                             <tr>
                                 <th>Libellé</th>
                                 <th>Nombre de Tableaux</th>
-                                <th>Créé le</th>
+                                {{-- <th>Créé le</th> --}}
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -30,18 +30,18 @@
                                     <td>
                                         <span class="badge bg-info">{{ $categorie->tableaux_count }}</span>
                                     </td>
-                                    <td>{{ $categorie->created_at->format('d/m/Y') }}</td>
+                                    {{-- <td>{{ $categorie->created_at->format('d/m/Y') }}</td> --}}
                                     <td>
                                         <div class="btn-group" role="group">
                                             @can('categorie-list')
                                                 <a href="{{ route('categories.show', $categorie->id) }}"
-                                                    class="btn btn-sm btn-outline-primary" title="Voir">
+                                                    class="btn btn-outline-primary" title="Voir">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                             @endcan
                                             @can('categorie-edit')
                                                 <a href="{{ route('categories.edit', $categorie->id) }}"
-                                                    class="btn btn-sm btn-outline-warning" title="Modifier">
+                                                    class="btn btn-outline-warning" title="Modifier">
                                                     <i class="bi bi-pencil-fill"></i>
                                                 </a>
                                             @endcan
@@ -52,8 +52,7 @@
                                                         onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                            title="Supprimer">
+                                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
@@ -70,8 +69,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                {{ $categories->links() }}
             </div>
         </div>
     </div>

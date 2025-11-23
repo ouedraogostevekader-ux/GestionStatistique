@@ -6,7 +6,10 @@
             <div>
                 <h2>{{ $tableau->libelle }}</h2>
             </div>
-            <div>
+            <div class="d-flex justify-align-between">
+                <a href="{{ route('tableaux.show', $tableau->id) }}" class="btn btn-outline-secondary">
+                    <i class="bi  bi-arrow-bar-left"></i> Retour
+                </a>
                 <a href="{{ route('tableaux.show', $tableau->id) }}" class="btn btn-outline-primary">
                     <i class="fas fa-eye"></i> Visualiser
                 </a>
