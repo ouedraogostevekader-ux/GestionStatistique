@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // PeriodeSeeder::class,
-            // DataSeeder::class,
-            // StructureSeeder::class,
-            // PermissionSeeder::class,
+            PeriodeSeeder::class,
+            //DataSeeder::class,
+            StructureSeeder::class,
+            PermissionSeeder::class,
             RoleSeeder::class,
             TableauSeeder::class,
         ]);

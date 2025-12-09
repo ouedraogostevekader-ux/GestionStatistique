@@ -2210,49 +2210,795 @@ class TableauSeeder extends Seeder
         }
 
         //LE PERSONNEL DU MINISTÈRE
-        // $cat1 = Categorie::create(
-        //     ['libelle' => 'LE PERSONNEL DU MINISTÈRE']
-        // );
-        // $sexes = [
-        //     'Sexe',
-        //     'H',
-        //     'F'
-        // ];
-        // $strus = [
-        //     'Structures',
-        //     'Centrales',
-        //     'Déconcentrées',
-        //     'Rattachées',
-        //     'Mission',
-        // ];
-        // $cats = [
-        //     'Catégorie',
-        //     'P',
-        //     'A',
-        //     'B',
-        //     'C',
-        //     'D',
-        //     'E',
-        // ];
-        // $positions = [
-        //     'Position',
-        //     'Organismes internationaux',
-        //     'Secteur public',
-        //     'Secteur privé',
+        $cat1 = Categorie::create(
+            ['libelle' => 'LE PERSONNEL DU MINISTÈRE']
+        );
+        $sexes = [
+            'Sexe',
+            'H',
+            'F'
+        ];
+        $strus = [
+            'Structures',
+            'Centrales',
+            'Déconcentrées',
+            'Rattachées',
+            'Mission',
+        ];
+        $cats = [
+            'Catégorie',
+            'P',
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+        ];
+        $positions = [
+            'Position',
+            'Organismes internationaux',
+            'Secteur public',
+            'Secteur privé',
+        ];
+        $tranches = [
+            'Age',
+            '<20',
+            '20-25',
+            '26-30',
+            '31-35',
+            '36-40',
+            '41-45',
+            '46-50',
+            '51-55',
+            '56-60',
+            '61 et plus'
+        ];
 
-        // ];
-        // $tranches = [
-        //     'Age',
-        //     '<20',
-        //     '20-25',
-        //     '26-30',
-        //     '31-35',
-        //     '36-40',
-        //     '41-45',
-        //     '46-50',
-        //     '51-55',
-        //     '56-60',
-        //     '61 et plus'
-        // ];
+        $pos = [
+            'Position',
+            'En activité',
+            'En disponibilité',
+        ];
+
+        $empls = [
+            'Emplois',
+            'Emplois spécifiques',
+            'Emplois non spécifiques'
+        ];
+        $postesR = [
+            'Fonction',
+            'Chef de service',
+            'Directeur de service',
+            'Directeur général',
+            'Directeur régional',
+            'Conseiller technique',
+            'Chargé de mission',
+            'Chargé d’études',
+            'Secrétaire général',
+            'Ministre',
+        ];
+        $profils = [
+            'Administration économique et financière',
+            'Communication, Culture et tourisme',
+            'Eau, agriculture et environnement',
+            'Éducation, formation et promotion de l’emploi',
+            'Gouvernance administrative',
+            'Infrastructures',
+            'Mines et énergie',
+            'Promotion et protection des droits humains',
+            'Santé humaine et animale',
+            'Structurant',
+        ];
+        $formations = [
+            'Type Formation',
+            'Formation métiers',
+            'Formation managériale',
+            'Formation outils informatiques',
+        ];
+        $structurs = [
+            'Agetib',
+            'BCMP',
+            'Cabinet',
+            'DAD',
+            'DGF',
+            'DAJC',
+            'DCRP',
+            'DDII',
+            'DGER',
+            'DGESS',
+            'DGIR',
+            'DGNET',
+            'DGTRU',
+            'DGPR',
+            'DMP',
+            'DRH',
+            'DSI',
+            'ENTP',
+            'FSR-B',
+            'IGB',
+            'ITS',
+            'LNBTP',
+            'PAYO',
+            'ST-TRHIMO',
+            'SG',
+            'SP-PIFAM',
+        ];
+
+        //Tableau III-1: Effectifs des agents par type de structure et selon le genre
+        $t1 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-1: Effectifs des agents par type de structure et selon le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($strus as $i => $stru) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $stru,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t1->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t1->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l1 = LigneTableau::where('tableau_id', $t1->id)->whereNotNull('parent_id')->get();
+        $c1 = ColonneTableau::where('tableau_id', $t1->id)->get();
+
+        foreach ($l1 as $ligne) {
+            foreach ($c1 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-2: Effectifs des agents de l’État par catégorie selon le sexe
+        $t2 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-2: Effectifs des agents de l’État par catégorie selon le sexe',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($cats as $i => $cat) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $cat,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t2->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t2->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l2 = LigneTableau::where('tableau_id', $t2->id)->WhereNotNull('parent_id')->get();
+        $c2 = ColonneTableau::where('tableau_id', $t2->id)->get();
+
+        foreach ($l2 as $ligne) {
+            foreach ($c2 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-3: Effectif des agents exerçant hors du ministère selon le genre
+        $t3 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-3: Effectif des agents exerçant hors du ministère selon le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($positions as $i => $position) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $position,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t3->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t3->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l3 = LigneTableau::where('tableau_id', $t3->id)->WhereNotNull('parent_id')->get();
+        $c3 = ColonneTableau::where('tableau_id', $t3->id)->get();
+
+        foreach ($l3 as $ligne) {
+            foreach ($c3 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-4: Effectif des agents de l’État mis à la disposition du ministère par catégorie et selon le genre
+        $t4 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-4: Effectif des agents de l’État mis à la disposition du ministère par catégorie et selon le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($cats as $i => $cat) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $cat,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t4->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t4->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l4 = LigneTableau::where('tableau_id', $t4->id)->WhereNotNull('parent_id')->get();
+        $c4 = ColonneTableau::where('tableau_id', $t4->id)->get();
+
+        foreach ($l4 as $ligne) {
+            foreach ($c4 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-5: Effectifs des agents de l’État au MI par tranche d’âge selon le genre
+        $t5 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-5: Effectifs des agents de l’État au MI par tranche d’âge selon le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($tranches as $i => $tranche) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $tranche,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t5->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t5->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l5 = LigneTableau::where('tableau_id', $t5->id)->WhereNotNull('parent_id')->get();
+        $c5 = ColonneTableau::where('tableau_id', $t5->id)->get();
+
+        foreach ($l5 as $ligne) {
+            foreach ($c5 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-6: Effectifs des agents de l’État selon la position et le genre
+        $t6 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-6: Effectifs des agents de l’État selon la position et le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($pos as $i => $po) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $po,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t6->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t6->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l6 = LigneTableau::where('tableau_id', $t6->id)->WhereNotNull('parent_id')->get();
+        $c6 = ColonneTableau::where('tableau_id', $t6->id)->get();
+
+        foreach ($l6 as $ligne) {
+            foreach ($c6 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-7: Effectifs des agents de l’État par type d’emploi et selon le genre
+        $t7 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-7: Effectifs des agents de l’État par type d’emploi et selon le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($empls as $i => $empl) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $empl,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t7->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t7->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l7 = LigneTableau::where('tableau_id', $t7->id)->WhereNotNull('parent_id')->get();
+        $c7 = ColonneTableau::where('tableau_id', $t7->id)->get();
+
+        foreach ($l7 as $ligne) {
+            foreach ($c7 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-8: Effectif des agents des emplois spécifiques par catégorie et selon le genre
+        $t8 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-8: Effectif des agents des emplois spécifiques par catégorie et selon le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($cats as $i => $cat) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $cat,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t8->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t8->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l8 = LigneTableau::where('tableau_id', $t8->id)->WhereNotNull('parent_id')->get();
+        $c8 = ColonneTableau::where('tableau_id', $t8->id)->get();
+
+        foreach ($l8 as $ligne) {
+            foreach ($c8 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-9: Effectif des agents nommés à des postes de responsabilité selon le genre
+        $t9 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-9: Effectif des agents nommés à des postes de responsabilité selon le genre',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($postesR as $i => $poste) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $poste,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t9->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t9->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l9 = LigneTableau::where('tableau_id', $t9->id)->WhereNotNull('parent_id')->get();
+        $c9 = ColonneTableau::where('tableau_id', $t9->id)->get();
+
+        foreach ($l9 as $ligne) {
+            foreach ($c9 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-10: Effectif des agents nommés par profil
+        $t10 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-10: Effectif des agents nommés par profil',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($profils as $i => $profil) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $profil,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t10->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t10->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l10 = LigneTableau::where('tableau_id', $t10->id)->WhereNotNull('parent_id')->get();
+        $c10 = ColonneTableau::where('tableau_id', $t10->id)->get();
+
+        foreach ($l10 as $ligne) {
+            foreach ($c10 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-11: Nombre d’agents formés par la DRH selon la thématique
+        $t11 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-11: Nombre d’agents formés par la DRH selon la thématique',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($formations as $i => $formation) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $formation,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t11->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t11->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l11 = LigneTableau::where('tableau_id', $t11->id)->WhereNotNull('parent_id')->get();
+        $c11 = ColonneTableau::where('tableau_id', $t11->id)->get();
+
+        foreach ($l11 as $ligne) {
+            foreach ($c11 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-12: Effectif des agents par direction régionale
+        $t12 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-12: Effectif des agents par direction régionale',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($regions as $i => $region) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $region,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t12->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t12->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l12 = LigneTableau::where('tableau_id', $t12->id)->WhereNotNull('parent_id')->get();
+        $c12 = ColonneTableau::where('tableau_id', $t12->id)->get();
+
+        foreach ($l12 as $ligne) {
+            foreach ($c12 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
+
+        //Tableau III-13: Effectif des agents par structure centrale
+        $t13 = Tableau::create(
+            [
+                'libelle' => 'Tableau III-13: Effectif des agents par structure centrale',
+                'description' => 'Source : DRH/ MID',
+                'categorie_id' => $cat1->id
+            ]
+        );
+        foreach ($structurs as $i => $structur) {
+            $ligne = LigneTableau::create([
+                'nom_ligne'  => $structur,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t13->id,
+            ]);
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'H',
+                    'ordre'      => $i + 2,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+            LigneTableau::Create(
+                [
+                    'nom_ligne'  => 'F',
+                    'ordre'      => $i + 3,
+                    'tableau_id' => $t1->id,
+                    'parent_id' => $ligne->id,
+                ]
+            );
+        }
+        foreach ($annees as $i => $annee) {
+            ColonneTableau::create([
+                'colonne_ligne'  => $annee,
+                'ordre'      =>  $i + 1,
+                'tableau_id' => $t13->id,
+            ]);
+        }
+
+        // Création des cellules (croisement ligne × colonne)
+        $l13 = LigneTableau::where('tableau_id', $t13->id)->WhereNotNull('parent_id')->get();
+        $c13 = ColonneTableau::where('tableau_id', $t13->id)->get();
+
+        foreach ($l13 as $ligne) {
+            foreach ($c13 as $colonne) {
+                Cellule::create([
+                    'ligne_id'   => $ligne->id,
+                    'colonne_id' => $colonne->id,
+                ]);
+            }
+        }
     }
 }
