@@ -12,13 +12,13 @@
                     </ol>
                 </div>
                 <div class="col-sm-8">
-                    {{-- @can('version-create') --}}
-                    <div class="mt-4 d-flex justify-content-end">
-                        <a class="btn btn-primary float-right" href="{{ route('versions.create') }}">
-                            Ajouter
-                        </a>
-                    </div>
-                    {{-- @endcan --}}
+                    @can('version-create')
+                        <div class="mt-4 d-flex justify-content-end">
+                            <a class="btn btn-primary float-right" href="{{ route('versions.create') }}">
+                                Ajouter
+                            </a>
+                        </div>
+                    @endcan
                 </div>
             </div>
         </div>

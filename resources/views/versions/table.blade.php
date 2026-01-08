@@ -22,25 +22,25 @@
                                 @csrf
                                 @method('DELETE')
                                 <div class='btn-group'>
-                                    {{-- @can('version-list') --}}
-                                    <a href="{{ route('versions.show', $version->id) }}" class="btn btn-info btn-xs"
-                                        title="Voir">
-                                        <i class="bi bi-eye-fill"></i>
-                                    </a>
-                                    {{-- @endcan --}}
-                                    {{-- @can('version-edit') --}}
-                                    <a href="{{ route('versions.edit', $version->id) }}" class="btn btn-primary btn-xs"
-                                        title="Modifier">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
-                                    {{-- @endcan --}}
-                                    {{-- @can('version-delete') --}}
-                                    <button class="btn btn-outline-danger delete-btn"
-                                        data-url="{{ route('versions.destroy', $version->id) }}"
-                                        data-message="La version <strong>{{ $version->code }} {{ $version->annee }}</strong> sera supprimé. Continuer ?">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                    {{-- @endcan --}}
+                                    @can('version-list')
+                                        <a href="{{ route('versions.show', $version->id) }}" class="btn btn-info btn-xs"
+                                            title="Voir">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    @endcan
+                                    @can('version-edit')
+                                        <a href="{{ route('versions.edit', $version->id) }}" class="btn btn-primary btn-xs"
+                                            title="Modifier">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    @endcan
+                                    @can('version-delete')
+                                        <button class="btn btn-outline-danger delete-btn"
+                                            data-url="{{ route('versions.destroy', $version->id) }}"
+                                            data-message="La version <strong>{{ $version->code }} {{ $version->annee }}</strong> sera supprimé. Continuer ?">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    @endcan
                                 </div>
                             </form>
                         </td>

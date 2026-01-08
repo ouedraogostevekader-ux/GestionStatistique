@@ -17,18 +17,21 @@
         </div>
 
         <div class="row">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterLigne">
-                        <i class="fas fa-plus"></i> Ajouter Ligne
-                    </button>
-
-                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterColonne">
-                        <i class="fas fa-plus"></i> Ajouter Colonne
-                    </button>
-
+            <div class="card-header">
+                <div class="row">
+                    <div class="col text-start">
+                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterLigne">
+                            <i class="fas fa-plus"></i> Ajouter Ligne
+                        </button>
+                    </div>
+                    <div class="col text-end">
+                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterColonne">
+                            <i class="fas fa-plus"></i> Ajouter Colonne
+                        </button>
+                    </div>
                 </div>
             </div>
+
             <div class="card-body table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -36,20 +39,112 @@
                             @foreach ($lignes as $ligne)
                                 @if ($ligne->ordre == 1)
                                     <th>{{ $ligne->nom_ligne }}
-                                        <button class="btn btn-sm btn-outline-danger"
-                                            onclick="supprimerLigne('{{ $ligne->id }}')">
-                                            <i class="bi bi-archive"></i>
-                                        </button>
+                                        <div class="btn btn-group">
+                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteLigneModal-{{ $ligne->id ?? '' }}">
+                                                <i class="bi bi-archive"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                                data-bs-target="#editLigneModal-{{ $ligne->id ?? '' }}">
+                                                <i class="bi bi-pen"></i>
+                                            </button>
+                                        </div>
                                     </th>
                                 @endif
                             @endforeach
                             @foreach ($colonnes as $colonne)
                                 <th>{{ $colonne->colonne_ligne }}
-                                    <button class="btn btn-sm btn-outline-danger"
-                                        onclick="supprimerColonne('{{ $colonne->id }}')">
-                                        <i class="bi bi-archive"></i>
-                                    </button>
+                                    <div class="btn btn-group">
+                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteColonneModal-{{ $colonne->id ?? '' }}">
+                                            <i class="bi bi-archive"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                            data-bs-target="#editColonneModal-{{ $colonne->id ?? '' }}">
+                                            <i class="bi bi-pen"></i>
+                                        </button>
+                                    </div>
+
                                 </th>
+                                <!-- Modal Delete Colonne-->
+                                <div class="modal fade" id="deleteColonneModal-{{ $colonne->id ?? '' }}" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form method="POST"
+                                                action="{{ route('tableaux.destroy-colonne', $colonne->id) }}">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Confirmation de suppression</h5>
+                                                    <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <p class="mb-0">
+                                                        Voulez-vous vraiment supprimer cet élément ?
+                                                        <br>
+                                                        <strong class="text-danger">Cette action est irréversible.</strong>
+                                                    </p>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                        Annuler
+                                                    </button>
+                                                    <button type="submit" class="btn btn-danger">
+                                                        Supprimer
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal update Colonne-->
+                                <div class="modal fade" id="editColonneModal-{{ $colonne->id ?? '' }}" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form method="POST"
+                                                action="{{ route('tableaux.update-colonne', $colonne->id) }}">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <div class="modal-header bg-warning">
+                                                    <h5 class="modal-title">Modifier</h5>
+                                                    <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Libellé</label>
+                                                        <input type="text" name="colonne_ligne" class="form-control"
+                                                            value="{{ $colonne->colonne_ligne }}" required>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Ordre</label>
+                                                        <input type="number" name="ordre" value="{{ $colonne->ordre }}"
+                                                            class="form-control" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                        Annuler
+                                                    </button>
+                                                    <button type="submit" class="btn btn-warning">
+                                                        Enregistrer
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         </tr>
                     </thead>
@@ -62,16 +157,99 @@
                                         @if ($ligne->parent_id)
                                             <small class="text-muted">(Sous-ligne)</small>
                                         @endif
-                                        <button class="btn btn btn-outline-danger"
-                                            onclick="supprimerLigne('{{ $ligne->id }}')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <div class="btn btn-group">
+                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteLigneModal-{{ $ligne->id ?? '' }}">
+                                                <i class="bi bi-archive"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                                data-bs-target="#editLigneModal-{{ $ligne->id ?? '' }}">
+                                                <i class="bi bi-pen"></i>
+                                            </button>
+                                        </div>
+
                                     </td>
                                     @foreach ($colonnes as $colonne)
                                         <td>--</td>
                                     @endforeach
                                 </tr>
                             @endif
+                            <!-- Modal Delete Ligne-->
+                            <div class="modal fade" id="deleteLigneModal-{{ $ligne->id ?? '' }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form method="POST" action="{{ route('tableaux.destroy-ligne', $ligne->id) }}">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title">Confirmation de suppression</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <p class="mb-0">
+                                                    Voulez-vous vraiment supprimer cet élément ?
+                                                    <br>
+                                                    <strong class="text-danger">Cette action est
+                                                        irréversible.</strong>
+                                                </p>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Annuler
+                                                </button>
+                                                <button type="submit" class="btn btn-danger">
+                                                    Supprimer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal update Ligne-->
+                            <div class="modal fade" id="editLigneModal-{{ $ligne->id ?? '' }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form method="POST" action="{{ route('tableaux.update-ligne', $ligne->id) }}">
+                                            @csrf
+                                            @method('PUT')
+
+                                            <div class="modal-header bg-warning">
+                                                <h5 class="modal-title">Modifier</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Libellé</label>
+                                                    <input type="text" name="nom_ligne"
+                                                        value="{{ $ligne->nom_ligne }}" class="form-control" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Ordre</label>
+                                                    <input type="number" name="ordre" value="{{ $ligne->ordre }}"
+                                                        class="form-control" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Annuler
+                                                </button>
+                                                <button type="submit" class="btn btn-warning">
+                                                    Enregistrer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -156,6 +334,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('scripts')

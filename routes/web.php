@@ -172,6 +172,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/tableaux/{id}/structure', [TableauController::class, 'structureTableau'])->name('tableaux.structure');
         Route::post('/tableaux/{id}/add-ligne', [TableauController::class, 'addLigne'])->name('tableaux.add-ligne');
         Route::post('/tableaux/{id}/add-colonne', [TableauController::class, 'addColonne'])->name('tableaux.add-colonne');
+        Route::put('/tableaux/{id}/update-ligne', [TableauController::class, 'updateLigne'])->name('tableaux.update-ligne');
+        Route::put('/tableaux/{id}/update-colonne', [TableauController::class, 'updateColonne'])->name('tableaux.update-colonne');
+        Route::delete('/tableaux/{id}/destroy-ligne', [TableauController::class, 'destroyLigne'])->name('tableaux.destroy-ligne');
+        Route::delete('/tableaux/{id}/destroy-colonne', [TableauController::class, 'destroyColonne'])->name('tableaux.destroy-colonne');
 
         // Routes pour la saisie de données
         Route::get('/tableaux/{id}/saisie', [TableauController::class, 'saisirDonnees'])->name('tableaux.saisie');

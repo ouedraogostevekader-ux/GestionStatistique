@@ -65,7 +65,6 @@ class ActiviteController extends Controller implements HasMiddleware
 
             // Pour les admins, récupérer toutes les structures
             $structures = Structure::orderBy('nom')->get();
-
         } else {
             $activitesQuery = Activite::with([
                 'objectifSpecifique.action.objectifStrategique.programmeBudgetaire.structures',
@@ -284,7 +283,6 @@ class ActiviteController extends Controller implements HasMiddleware
 
             return redirect()->route('activites.index')
                 ->with('success', "L'activité '{$activite->libelle}' avec ses indicateurs a été enregistrée avec succès.");
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -421,7 +419,6 @@ class ActiviteController extends Controller implements HasMiddleware
 
             return redirect()->route('activites.index')
                 ->with('success', "L'activité '{$activite->libelle}' avec ses indicateurs a été mise à jour avec succès.");
-
         } catch (\Exception $e) {
             DB::rollback();
 

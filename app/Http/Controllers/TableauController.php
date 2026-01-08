@@ -30,8 +30,15 @@ class TableauController extends Controller implements HasMiddleware
             new Middleware('permission:tableau-edit', only: ['edit', 'update']),
             new Middleware('permission:tableau-delete', only: ['destroy']),
 
-            new Middleware('permission:addLigne-create', only: ['addLigne']),
-            new Middleware('permission:addColonne-create', only: ['addColonne']),
+            // new Middleware('permission:ligne_tableau-list', only: ['index', 'show']),
+            new Middleware('permission:ligne_tableau-create', only: ['addLigne', 'storeLigne']),
+            new Middleware('permission:ligne_tableau-edit', only: ['editLigne', 'updateLigne']),
+            new Middleware('permission:ligne_tableau-delete', only: ['destroyLigne']),
+
+            // new Middleware('permission:colonne-list', only: ['index', 'show']),
+            new Middleware('permission:colonne-create', only: ['addColonne', 'storeColonne']),
+            new Middleware('permission:colonne-edit', only: ['editColonne', 'updateColonne']),
+            new Middleware('permission:colonne-delete', only: ['destroyColonne']),
 
             new Middleware('permission:assignation-create', only: ['affecterStructures', 'storeAffectation']),
             new Middleware('permission:soumission-create', only: ['saisirDonnees', 'saveDonnees']),
@@ -448,5 +455,52 @@ class TableauController extends Controller implements HasMiddleware
         }
 
         return redirect()->route('tableaux.show', $id)->with('success', 'Structures assignées avec succès');
+    }
+
+    public function editLigne() {}
+    public function updateLigne(Request $request, $id)
+    {
+        $request->validate([
+            'nom_ligne' => 'required|string|max:250',
+            'ordre' => 'required|integer|max:250',
+        ]);
+
+        $ligne = LigneTableau::findOrFail($id);
+        $ligne->update($request->only(['nom_ligne', 'ordre']));
+
+        return redirect()->back()
+            ->with('success', 'Ligne du tableau mis à jour avec succès');
+    }
+    public function editColonne() {}
+    public function updateColonne(Request $request, $id)
+    {
+        $request->validate([
+            'colonne_ligne' => 'required|string|max:250',
+            'ordre' => 'required|integer|max:250'
+        ]);
+
+        $colonne = ColonneTableau::findOrFail($id);
+        $colonne->update($request->only(['colonne_ligne', 'ordre']));
+
+        return redirect()->back()
+            ->with('success', 'Colonne du tableau mis à jour avec succès');
+    }
+
+    public function destroyLigne($id)
+    {
+        $ligne = LigneTableau::findOrFail($id);
+        $ligne->delete();
+
+        return redirect()->back()
+            ->with('success', 'ligne du tableau supprimé avec succès');
+    }
+
+    public function destroyColonne($id)
+    {
+        $colonne = ColonneTableau::findOrFail($id);
+        $colonne->delete();
+
+        return redirect()->back()
+            ->with('success', 'Colonne du tableau supprimé avec succès');
     }
 }
