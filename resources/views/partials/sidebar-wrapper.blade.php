@@ -306,6 +306,7 @@
                     </ul>
                 </li>
             @endcan
+
         </ul>
         <!--end::Sidebar Menu-->
     </nav>

@@ -508,3 +508,54 @@ ul.pagination a {
 #maxHeightStatistique {
     max-height: 400px;
 }
+
+/* ===== Modals: enlarge sizes and enable scrolling in body ===== */
+/* T5: Programmation budgétaire */
+#t5_modal .modal-dialog {
+    width: 90vw;
+    max-width: 1200px;
+}
+#t5_modal .modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* T4: Programmation des dépenses d'investissement */
+#t4_modal .modal-dialog {
+    width: 95vw;
+    max-width: 1400px;
+}
+#t4_modal .modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* DP: Dépenses projet (pivot) */
+#dp_modal .modal-dialog {
+    width: 85vw;
+    max-width: 1100px;
+}
+#dp_modal .modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* LV: Livrables */
+#lv_modal .modal-dialog {
+    width: 80vw;
+    max-width: 1000px;
+}
+#lv_modal .modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* Zones d'intervention */
+#add_zone_modal .modal-dialog {
+    width: 70vw;
+    max-width: 900px;
+}
+#add_zone_modal .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}

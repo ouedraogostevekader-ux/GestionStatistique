@@ -20,14 +20,18 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col text-start">
-                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterLigne">
-                            <i class="fas fa-plus"></i> Ajouter Ligne
-                        </button>
+                        @can('ligne_colonne-create')
+                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterLigne">
+                                <i class="fas fa-plus"></i> Ajouter Ligne
+                            </button>
+                        @endcan
                     </div>
                     <div class="col text-end">
-                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterColonne">
-                            <i class="fas fa-plus"></i> Ajouter Colonne
-                        </button>
+                        @can('colonne_tableau-create')
+                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterColonne">
+                                <i class="fas fa-plus"></i> Ajouter Colonne
+                            </button>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -40,14 +44,18 @@
                                 @if ($ligne->ordre == 1)
                                     <th>{{ $ligne->nom_ligne }}
                                         <div class="btn btn-group">
-                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                                data-bs-target="#deleteLigneModal-{{ $ligne->id ?? '' }}">
-                                                <i class="bi bi-archive"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
-                                                data-bs-target="#editLigneModal-{{ $ligne->id ?? '' }}">
-                                                <i class="bi bi-pen"></i>
-                                            </button>
+                                            @can('ligne_tableau-delete')
+                                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteLigneModal-{{ $ligne->id ?? '' }}">
+                                                    <i class="bi bi-archive"></i>
+                                                </button>
+                                            @endcan
+                                            @can('ligne_tableau-edit')
+                                                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                                    data-bs-target="#editLigneModal-{{ $ligne->id ?? '' }}">
+                                                    <i class="bi bi-pen"></i>
+                                                </button>
+                                            @endcan
                                         </div>
                                     </th>
                                 @endif
@@ -55,14 +63,18 @@
                             @foreach ($colonnes as $colonne)
                                 <th>{{ $colonne->colonne_ligne }}
                                     <div class="btn btn-group">
-                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                            data-bs-target="#deleteColonneModal-{{ $colonne->id ?? '' }}">
-                                            <i class="bi bi-archive"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
-                                            data-bs-target="#editColonneModal-{{ $colonne->id ?? '' }}">
-                                            <i class="bi bi-pen"></i>
-                                        </button>
+                                        @can('colonne_tableau-delete')
+                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteColonneModal-{{ $colonne->id ?? '' }}">
+                                                <i class="bi bi-archive"></i>
+                                            </button>
+                                        @endcan
+                                        @can('colonne_tableau-edit')
+                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                                data-bs-target="#editColonneModal-{{ $colonne->id ?? '' }}">
+                                                <i class="bi bi-pen"></i>
+                                            </button>
+                                        @endcan
                                     </div>
 
                                 </th>
@@ -158,14 +170,18 @@
                                             <small class="text-muted">(Sous-ligne)</small>
                                         @endif
                                         <div class="btn btn-group">
-                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                                data-bs-target="#deleteLigneModal-{{ $ligne->id ?? '' }}">
-                                                <i class="bi bi-archive"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
-                                                data-bs-target="#editLigneModal-{{ $ligne->id ?? '' }}">
-                                                <i class="bi bi-pen"></i>
-                                            </button>
+                                            @can('ligne_tableau-delete')
+                                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteLigneModal-{{ $ligne->id ?? '' }}">
+                                                    <i class="bi bi-archive"></i>
+                                                </button>
+                                            @endcan
+                                            @can('ligne_tableau-edit')
+                                                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                                    data-bs-target="#editLigneModal-{{ $ligne->id ?? '' }}">
+                                                    <i class="bi bi-pen"></i>
+                                                </button>
+                                            @endcan
                                         </div>
 
                                     </td>

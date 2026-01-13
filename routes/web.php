@@ -18,6 +18,10 @@ use App\Http\Controllers\ProgrammeActiviteController;
 use App\Http\Controllers\LigneTableauController;
 use App\Http\Controllers\ColonneTableauController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\Pip\BailleurController;
+use App\Http\Controllers\Pip\ProgrammeController;
+use App\Http\Controllers\Pip\ProjetController;
+use App\Http\Controllers\Pip\SecteurController;
 use App\Http\Controllers\TableauController;
 use App\Http\Controllers\VersionController;
 
@@ -211,6 +215,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/annuaire/export/pdf', [AnnuaireController::class, 'exportPDF'])->name('annuaire.export.pdf');
         Route::get('/annuaire/export/word', [AnnuaireController::class, 'exportWord'])->name('annuaire.export.word');
     });
+
 });
 
 

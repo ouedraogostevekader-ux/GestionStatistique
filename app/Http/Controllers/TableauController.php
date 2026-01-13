@@ -32,13 +32,13 @@ class TableauController extends Controller implements HasMiddleware
 
             // new Middleware('permission:ligne_tableau-list', only: ['index', 'show']),
             new Middleware('permission:ligne_tableau-create', only: ['addLigne', 'storeLigne']),
-            new Middleware('permission:ligne_tableau-edit', only: ['editLigne', 'updateLigne']),
+            new Middleware('permission:ligne_tableau-edit', only: ['updateLigne']),
             new Middleware('permission:ligne_tableau-delete', only: ['destroyLigne']),
 
             // new Middleware('permission:colonne-list', only: ['index', 'show']),
-            new Middleware('permission:colonne-create', only: ['addColonne', 'storeColonne']),
-            new Middleware('permission:colonne-edit', only: ['editColonne', 'updateColonne']),
-            new Middleware('permission:colonne-delete', only: ['destroyColonne']),
+            new Middleware('permission:colonne_tableau-create', only: ['addColonne', 'storeColonne']),
+            new Middleware('permission:colonne_tableau-edit', only: ['updateColonne']),
+            new Middleware('permission:colonne_tableau-delete', only: ['destroyColonne']),
 
             new Middleware('permission:assignation-create', only: ['affecterStructures', 'storeAffectation']),
             new Middleware('permission:soumission-create', only: ['saisirDonnees', 'saveDonnees']),
