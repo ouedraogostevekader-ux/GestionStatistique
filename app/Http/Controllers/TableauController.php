@@ -347,7 +347,7 @@ class TableauController extends Controller implements HasMiddleware
             }
 
             DB::commit();
-            return redirect()->back()->with('success', 'Données sauvegardées avec succès');
+            return redirect()->route('tableaux.show', $id)->with('success', 'Données sauvegardées avec succès');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Erreur lors de la sauvegarde');

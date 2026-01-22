@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AnnuaireController;
 use App\Http\Controllers\AssignationController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ObjectifStrategiqueController;
@@ -25,16 +26,22 @@ use App\Http\Controllers\Pip\SecteurController;
 use App\Http\Controllers\TableauController;
 use App\Http\Controllers\VersionController;
 
+// Route::get('/', function () {
+//     return view('layouts.acceuilLayout');
+// })->name('acceuil');
+
 Route::get('/', function () {
-    return view('layouts.acceuilLayout');
+    return redirect()->route('login');
 })->name('acceuil');
 
 Route::get('/user/{id}/confirm-compte/', [UserController::class, 'edit_perso'])->name('edit.compte');
 Route::patch('/user/{id}/confirm-compte/enregistre', [UserController::class, 'update_perso'])->name('update.compte');
+
 /* Route::get('/dashboard', function () {
     return view('layouts.admin');
 })->middleware(['auth', 'verified'])->name('dashboard');
  */
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -215,7 +222,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/annuaire/export/pdf', [AnnuaireController::class, 'exportPDF'])->name('annuaire.export.pdf');
         Route::get('/annuaire/export/word', [AnnuaireController::class, 'exportWord'])->name('annuaire.export.word');
     });
-
 });
 
 

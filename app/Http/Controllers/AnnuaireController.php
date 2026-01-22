@@ -54,20 +54,20 @@ class AnnuaireController extends Controller implements HasMiddleware
         return view('annuaires.index', compact('versions', 'version', 'tableaux', 'cellules', 'assignations', 'soumissions'));
     }
 
+    private function getTableauxIds($versionId)
+    {
+        return Assignation::where('version_id', $versionId)
+            //->where('structure_id', auth()->user()->structure_id)
+            ->pluck('tableau_id');
+    }
+
     public function exportPDF(Request $request)
     {
         $version = Version::find($request->version);
         $tableaux = Tableau::whereIn('id', $this->getTableauxIds($request->version))->get();
-
+        //dd($tableaux);
         $pdf = Pdf::loadView('annuaires.export', compact('tableaux', 'version'));
         return $pdf->download('Annuaire-' . $version->annee . '.pdf');
-    }
-
-    private function getTableauxIds($versionId)
-    {
-        return Assignation::where('version_id', $versionId)
-            ->where('structure_id', auth()->user()->structure_id)
-            ->pluck('tableau_id');
     }
 
     public function exportWord(Request $request)

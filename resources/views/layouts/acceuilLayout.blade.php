@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil-Etude statistiques</title>
+    <title> GestStat | MID</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -16,9 +16,6 @@
 </head>
 
 <body>
-
-
-
     <!-- Navbar horizontale dynamique (responsive avec Bootstrap) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid armoiries">
@@ -76,21 +73,21 @@
                 <img src="{{ asset('assets/images/im4.jpg') }}" class="d-block w-100" alt="Image 1">
                 <div class="carousel-caption">
                     <h1>Suivre et évaluer vos projets d'investissement</h1>
-                  
+
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im2.jpg') }}" class="d-block w-100" alt="Image 2">
                 <div class="carousel-caption">
                     <h1>Élaborer vos activités</h1>
-                  
+
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="{{ asset('assets/images/im5.jpg') }}" class="d-block w-100" alt="Image 3">
                 <div class="carousel-caption">
                     <h1>Élaborer vos annuaires statistiques</h1>
-                  
+
                 </div>
             </div>
         </div>
@@ -115,14 +112,14 @@
                 <h3 class="text-center">Évolution de l’état du réseau routier (en %)</h3>
                 <canvas id="myChart"></canvas>
             </div>
-            
+
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-        
+
             <hr class="bg-light">
             <div class="text-center">
                 <p>&copy; 2025 DSI/MID. Tous droits réservés</p>
