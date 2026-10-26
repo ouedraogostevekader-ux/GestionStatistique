@@ -59,7 +59,7 @@ class VersionController extends Controller implements HasMiddleware
      */
     public function show($id)
     {
-        $version = Version::findOrFail($id);
+        $version = Version::with(['assignations.tableau.categorie', 'assignations.structure'])->findOrFail($id);
         return view('versions.show', compact('version'));
     }
 
