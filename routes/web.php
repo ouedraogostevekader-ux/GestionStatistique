@@ -218,9 +218,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('annuaires', AnnuaireController::class);
         Route::resource('versions', VersionController::class);
 
-        // Routes pour exporter l'annuaire en word et pdf
+        // Routes pour exporter l'annuaire en word, pdf et excel
         Route::get('/annuaire/export/pdf', [AnnuaireController::class, 'exportPDF'])->name('annuaire.export.pdf');
         Route::get('/annuaire/export/word', [AnnuaireController::class, 'exportWord'])->name('annuaire.export.word');
+        Route::get('/annuaire/export/excel', [AnnuaireController::class, 'exportExcel'])->name('annuaire.export.excel');
     });
 });
 

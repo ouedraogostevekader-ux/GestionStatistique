@@ -11,7 +11,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $programmes = ['Programme_Budgetaire', 'Programme_Activite', 'Rapport_Activite', 'Objectif_Strategique', 'Objectif_Specifique', 'Action', 'Activite', 'Indicateur_Programme', 'Suivi', 'Rapport'];
-        $tableaux = ['Tableau', 'Ligne_tableau', 'Colonne_tableau', 'Cellule', 'Assignation', 'Soumission', 'Categorie', 'Regle_Gestion', 'Version', 'ExportPdf', 'ExportWord'];
+        $tableaux = ['Tableau', 'Ligne_tableau', 'Colonne_tableau', 'Cellule', 'Assignation', 'Soumission', 'Categorie', 'Regle_Gestion', 'Version', 'ExportPdf', 'ExportWord', 'ExportExcel'];
         //$pips = ['Pip', 'Projet', 'Programme_Pip', 'Bailleur', 'Secteur_Planification'];
         $parametres = ['Structure'];
         Permission::create(['name' => 'addLigne-create', 'table' => 'ligne_tableau', 'groupe' => 'Tableau']);

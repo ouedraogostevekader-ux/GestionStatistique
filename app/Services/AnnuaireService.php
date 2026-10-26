@@ -16,9 +16,11 @@ class AnnuaireService
      * Élimine toutes les requêtes N+1 et calcule les totaux en mémoire.
      *
      * @param string|null $versionId
+     * @param string|null $categorieId
+     * @param string|null $tableauId
      * @return array
      */
-    public function getDonneesAnnuaire(?string $versionId = null): array
+    public function getDonneesAnnuaire(?string $versionId = null, ?string $categorieId = null, ?string $tableauId = null): array
     {
         $versions = Version::orderByDesc('annee')->get();
 
@@ -33,11 +35,13 @@ class AnnuaireService
                 'versions' => $versions,
                 'version' => null,
                 'tableaux' => collect(),
+                'categories' => collect(),
                 'matrice' => [],
                 'totauxLignes' => [],
                 'totauxColonnes' => [],
                 'totalGeneral' => [],
                 'cellulesMap' => [],
+                'assignations' => collect(),
             ];
         }
 
@@ -45,23 +49,38 @@ class AnnuaireService
         $assignations = Assignation::where('version_id', $versionId)->get();
         $assignationIds = $assignations->pluck('id')->filter()->unique();
 
-        // 2. Récupérer les tableaux assignés avec leurs lignes et colonnes ordonnées (racines uniquement)
-        $tableaux = Tableau::whereIn('id', function ($query) use ($assignationIds) {
+        // Extraire toutes les catégories disponibles pour cette version
+        $allVersionTableaux = Tableau::whereIn('id', function ($query) use ($assignationIds) {
             $query->select('tableau_id')
                 ->from('assignations')
                 ->whereIn('id', $assignationIds);
-        })
-        ->with([
+        })->with('categorie')->get();
+        $categoriesDisponibles = $allVersionTableaux->pluck('categorie')->filter()->unique('id')->values();
+
+        // 2. Récupérer les tableaux assignés avec leurs lignes et colonnes ordonnées (racines uniquement)
+        $tableauxQuery = Tableau::whereIn('id', function ($query) use ($assignationIds) {
+            $query->select('tableau_id')
+                ->from('assignations')
+                ->whereIn('id', $assignationIds);
+        });
+
+        if ($categorieId) {
+            $tableauxQuery->where('categorie_id', $categorieId);
+        }
+        if ($tableauId) {
+            $tableauxQuery->where('id', $tableauId);
+        }
+
+        $tableaux = $tableauxQuery->with([
             'categorie',
             'lignesTableau' => fn($q) => $q->whereNull('parent_id')->orderBy('ordre'),
             'lignesTableau.enfants' => fn($q) => $q->orderBy('ordre'),
             'colonnesTableau' => fn($q) => $q->whereNull('parent_id')->orderBy('ordre'),
             'colonnesTableau.enfants' => fn($q) => $q->orderBy('ordre'),
-        ])
-        ->get();
+        ])->get();
 
         // Si aucun tableau n'est assigné, chercher les tableaux ayant des soumissions sur ces assignations
-        if ($tableaux->isEmpty() && $assignationIds->isNotEmpty()) {
+        if ($tableaux->isEmpty() && $assignationIds->isNotEmpty() && !$categorieId && !$tableauId) {
             $tableaux = Tableau::whereIn('id', function ($query) use ($assignationIds) {
                 $query->select('tableau_id')
                     ->from('soumissions_tableau')
@@ -239,6 +258,7 @@ class AnnuaireService
             'versions' => $versions,
             'version' => $versionActive,
             'tableaux' => $tableaux,
+            'categories' => $categoriesDisponibles,
             'matrice' => $matrice,
             'totauxLignes' => $totauxLignes,
             'totauxColonnes' => $totauxColonnes,
