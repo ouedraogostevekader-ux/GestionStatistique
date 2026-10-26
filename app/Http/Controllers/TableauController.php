@@ -12,6 +12,8 @@ use App\Models\SoumissionTableau;
 use App\Models\Structure;
 use App\Models\Assignation;
 use App\Models\Version;
+use App\Exports\TableauCanevasExport;
+use App\Services\TableauImportService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -41,7 +43,7 @@ class TableauController extends Controller implements HasMiddleware
             new Middleware('permission:colonne_tableau-delete', only: ['destroyColonne']),
 
             new Middleware('permission:assignation-create', only: ['affecterStructures', 'storeAffectation']),
-            new Middleware('permission:soumission-create', only: ['saisirDonnees', 'saveDonnees']),
+            new Middleware('permission:soumission-create', only: ['saisirDonnees', 'saveDonnees', 'telechargerCanevas', 'importerCanevas']),
         ];
     }
 
@@ -502,5 +504,105 @@ class TableauController extends Controller implements HasMiddleware
 
         return redirect()->back()
             ->with('success', 'Colonne du tableau supprimé avec succès');
+    }
+
+    /**
+     * Génère et télécharge le canevas Excel (.xlsx) pré-formaté pour un tableau
+     */
+    public function telechargerCanevas(Request $request, $id)
+    {
+        $tableau = Tableau::with('categorie')->findOrFail($id);
+        $user = auth()->user();
+
+        // Si une assignation_id est fournie en paramètre
+        if ($request->filled('assignation_id')) {
+            $assignation = Assignation::with(['structure', 'version'])->findOrFail($request->assignation_id);
+            if ($assignation->tableau_id !== $tableau->id) {
+                return redirect()->back()->with('error', 'L\'assignation sélectionnée ne correspond pas à ce tableau.');
+            }
+        } else {
+            // Rechercher l'assignation par défaut selon l'utilisateur
+            $query = Assignation::with(['structure', 'version'])
+                ->where('tableau_id', $tableau->id);
+
+            if (!$user->isAdmin() && $user->structure_id && $user->structure?->sigle !== 'DGESS') {
+                $query->where('structure_id', $user->structure_id);
+            }
+
+            $assignation = $query->orderBy('version_id', 'desc')->first();
+        }
+
+        if (!$assignation) {
+            return redirect()->back()->with('error', 'Aucune assignation active trouvée pour ce tableau. Impossible de générer le canevas.');
+        }
+
+        // Vérification des droits d'accès
+        if (!$user->isAdmin() && $user->structure?->sigle !== 'DGESS' && $user->structure_id !== $assignation->structure_id) {
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à accéder au canevas de cette structure.');
+        }
+
+        $codeVersion = $assignation->version->code ?? ($assignation->version->annee ?? date('Y'));
+        $filename = 'Canevas-' . Str::slug($tableau->libelle) . '-' . Str::slug($codeVersion) . '.xlsx';
+
+        return (new TableauCanevasExport($tableau, $assignation))->download($filename);
+    }
+
+    /**
+     * Importe un fichier Excel complété par une structure sectorielle
+     */
+    public function importerCanevas(Request $request, $id, TableauImportService $importService)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls|max:10240',
+            'assignation_id' => 'required|exists:assignations,id',
+        ], [
+            'excel_file.required' => 'Veuillez sélectionner un fichier Excel à téléverser.',
+            'excel_file.file' => 'Le fichier téléversé est invalide.',
+            'excel_file.mimes' => 'Le fichier doit être au format Excel (.xlsx ou .xls).',
+            'excel_file.max' => 'La taille du fichier ne doit pas dépasser 10 Mo.',
+            'assignation_id.required' => 'L\'assignation cible est obligatoire.',
+            'assignation_id.exists' => 'L\'assignation sélectionnée n\'existe pas.',
+        ]);
+
+        $tableau = Tableau::findOrFail($id);
+        $assignation = Assignation::with(['structure', 'version'])->findOrFail($request->assignation_id);
+        $user = auth()->user();
+
+        // Vérifier que l'assignation appartient bien à ce tableau
+        if ($assignation->tableau_id !== $tableau->id) {
+            return redirect()->back()->with('error', 'L\'assignation ne correspond pas à ce tableau statistique.');
+        }
+
+        // Vérifier l'habilitation de la structure
+        if (!$user->isAdmin() && $user->structure?->sigle !== 'DGESS' && $user->structure_id !== $assignation->structure_id) {
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à soumettre des données pour cette structure.');
+        }
+
+        // Vérifier si l'assignation est suspendue/expirée
+        if ($assignation->statut === 3 && !$user->isAdmin()) {
+            return redirect()->back()->with('error', 'Cette assignation est expirée ou suspendue. Impossible d\'importer des données.');
+        }
+
+        $result = $importService->importer(
+            $request->file('excel_file'),
+            $tableau,
+            $assignation,
+            $assignation->structure,
+            $request->boolean('ecraser', true)
+        );
+
+        if ($result['success']) {
+            return redirect()->back()->with('success', $result['message']);
+        }
+
+        $errorMessage = $result['message'];
+        if (!empty($result['errors'])) {
+            $errorMessage .= '<br><ul class="mb-0 text-start small">' . implode('', array_map(fn($e) => '<li>' . e($e) . '</li>', array_slice($result['errors'], 0, 8))) . '</ul>';
+            if (count($result['errors']) > 8) {
+                $errorMessage .= '<small class="text-muted">(' . (count($result['errors']) - 8) . ' autre(s) erreur(s))</small>';
+            }
+        }
+
+        return redirect()->back()->with('error', $errorMessage);
     }
 }

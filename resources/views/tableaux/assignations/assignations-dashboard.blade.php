@@ -157,14 +157,18 @@
                                                         </form>
                                                     @endcan
                                                 @endif
-                                                @if ($assignation->statut == 1)
-                                                    @can('soumission-create')
+                                                @can('soumission-create')
+                                                    <a href="{{ route('tableaux.canevas-excel', ['id' => $assignation->tableau_id, 'assignation_id' => $assignation->id]) }}"
+                                                        class="btn btn-outline-success" title="Télécharger le canevas Excel (.xlsx)">
+                                                        <i class="fas fa-file-excel"></i>
+                                                    </a>
+                                                    @if ($assignation->statut == 1 || $assignation->statut == 2)
                                                         <a href="{{ route('tableaux.saisie', $assignation->tableau_id) }}"
-                                                            class="btn btn-outline-success">
-                                                            <i class="bi bi-edit"></i> Saisir Données
+                                                            class="btn btn-outline-primary" title="Saisir ou importer des données">
+                                                            <i class="bi bi-edit"></i>
                                                         </a>
-                                                    @endcan
-                                                @endif
+                                                    @endif
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>

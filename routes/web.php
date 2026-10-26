@@ -188,9 +188,11 @@ Route::middleware('auth')->group(function () {
         Route::delete('/tableaux/{id}/destroy-ligne', [TableauController::class, 'destroyLigne'])->name('tableaux.destroy-ligne');
         Route::delete('/tableaux/{id}/destroy-colonne', [TableauController::class, 'destroyColonne'])->name('tableaux.destroy-colonne');
 
-        // Routes pour la saisie de données
+        // Routes pour la saisie de données et canevas Excel
         Route::get('/tableaux/{id}/saisie', [TableauController::class, 'saisirDonnees'])->name('tableaux.saisie');
         Route::post('/tableaux/{id}/save-donnees', [TableauController::class, 'saveDonnees'])->name('tableaux.save-donnees');
+        Route::get('/tableaux/{id}/canevas-excel', [TableauController::class, 'telechargerCanevas'])->name('tableaux.canevas-excel');
+        Route::post('/tableaux/{id}/import-excel', [TableauController::class, 'importerCanevas'])->name('tableaux.import-excel');
 
         // Routes pour supprimer lignes et colonnes
         Route::delete('/lignes/{id}', [LigneTableauController::class, 'destroy'])->name('lignes.destroy');

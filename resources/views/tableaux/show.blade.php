@@ -9,7 +9,7 @@
                 </ol>
             </div>
             <div class="col-sm-6">
-                <div class="mt-4 d-flex justify-content-end">
+                <div class="mt-4 d-flex justify-content-end gap-2 flex-wrap">
                     <a href="{{ route('tableaux.structure', $tableau->id) }}" class="btn btn-outline-secondary">
                         <i class="fas fa-cogs"></i> Forme
                     </a>
@@ -19,6 +19,12 @@
                         </a>
                     @endcan
                     @can('soumission-create')
+                        <a href="{{ route('tableaux.canevas-excel', ['id' => $tableau->id, 'assignation_id' => request('assignation_id')]) }}" class="btn btn-outline-success" title="Télécharger le canevas Excel pré-formaté">
+                            <i class="fas fa-file-excel me-1"></i> Canevas Excel
+                        </a>
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
+                            <i class="fas fa-file-upload me-1"></i> Importer Excel
+                        </button>
                         <a href="{{ route('tableaux.saisie', $tableau->id) }}" class="btn btn-success">
                             <i class="bi bi-edit"></i> Saisir Données
                         </a>
@@ -227,4 +233,5 @@
             </div>
         @endif
     </div>
+    @include('tableaux.modals.import-excel')
 @endsection

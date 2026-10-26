@@ -85,7 +85,7 @@ class Assignation extends Model
         $statuts = [
             0 => 'En attente',
             1 => 'En cours',
-            2 => 'Terminé',
+            2 => 'Transmis / En attente de validation',
             3 => 'Suspendu'
         ];
 
@@ -171,7 +171,7 @@ class Assignation extends Model
      */
     public function isActive()
     {
-        return $this->statut === 1;
+        return (int) $this->statut === 1;
     }
 
     /**
@@ -179,7 +179,15 @@ class Assignation extends Model
      */
     public function isCompleted()
     {
-        return $this->statut === 2;
+        return (int) $this->statut === 2;
+    }
+
+    /**
+     * Vérifier si l'assignation est transmise / en attente de validation
+     */
+    public function isSubmitted()
+    {
+        return (int) $this->statut === 2;
     }
 
     /**
@@ -187,7 +195,7 @@ class Assignation extends Model
      */
     public function isSuspended()
     {
-        return $this->statut === 3;
+        return (int) $this->statut === 3;
     }
 
     /**
@@ -195,7 +203,7 @@ class Assignation extends Model
      */
     public function isPending()
     {
-        return $this->statut === 0;
+        return (int) $this->statut === 0;
     }
 
     /**
