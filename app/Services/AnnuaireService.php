@@ -81,8 +81,15 @@ class AnnuaireService
         $allLigneIds = [];
         $allColonneIds = [];
 
+        $isLigneIgnoree = function ($ligne) {
+            return $ligne->ordre == 1 || in_array(mb_strtolower(trim($ligne->nom_ligne)), ['ensemble', 'total', 'total général', 'totaux']);
+        };
+
         foreach ($tableaux as $tableau) {
             foreach ($tableau->lignesTableau as $ligne) {
+                if ($isLigneIgnoree($ligne)) {
+                    continue;
+                }
                 $allLigneIds[] = $ligne->id;
                 foreach ($ligne->enfants as $sousLigne) {
                     $allLigneIds[] = $sousLigne->id;
@@ -154,6 +161,10 @@ class AnnuaireService
 
             // Calculer par ligne et sous-ligne
             foreach ($tableau->lignesTableau as $ligne) {
+                if ($isLigneIgnoree($ligne)) {
+                    continue;
+                }
+
                 $hasChildren = $ligne->enfants && $ligne->enfants->count() > 0;
                 $totauxLignes[$tabId][$ligne->id] = 0.0;
 

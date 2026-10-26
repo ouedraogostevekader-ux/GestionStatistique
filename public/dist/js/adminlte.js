@@ -846,101 +846,60 @@ document.addEventListener("DOMContentLoaded", function () {
     updateName();
 });
 
-//script somme des colonnes et lignes d'un tableau
+// Script calcul des totaux isolé par tableau (exclut les tables annuaires déjà agrégées côté serveur)
 $(document).ready(function () {
-    function calculerTotaux() {
+    function calculerTotauxTableau($table) {
+        // Ne jamais recalculer côté client les tableaux de l'annuaire statistique (déjà agrégés par le serveur)
+        if ($table.hasClass('table-annuaire') || $table.closest('.annuaire-container').length > 0) {
+            return;
+        }
+
+        const isInputTable = $table.find('input[type="number"]').length > 0;
         const totauxColonnes = [];
 
-        // Parcourir toutes les lignes (sauf "Ensemble")
-        $("tbody tr:not(.table-primary)").each(function () {
+        $table.find('tbody tr:not(.table-primary)').each(function () {
             let totalLigne = 0;
+            const $cells = isInputTable
+                ? $(this).find('input[type="number"]')
+                : $(this).find('td').slice(1, -1);
 
-            // Récupérer les cellules (sauf première et dernière)
-            $(this)
-                .find("td")
-                .slice(1, -1)
-                .each(function (index) {
-                    let texte = $(this).text().trim();
-                    let valeur = 0;
+            $cells.each(function (index) {
+                let val = 0;
+                if (isInputTable) {
+                    val = parseFloat($(this).val()) || 0;
+                } else {
+                    let texte = $(this).text().trim().replace(/\s/g, '').replace(',', '.');
+                    val = (!isNaN(parseFloat(texte))) ? parseFloat(texte) : 0;
+                }
 
-                    if (
-                        texte !== "-" &&
-                        texte !== "" &&
-                        !isNaN(parseFloat(texte))
-                    ) {
-                        valeur = parseFloat(texte);
-                    }
+                totalLigne += val;
+                if (!totauxColonnes[index]) totauxColonnes[index] = 0;
+                totauxColonnes[index] += val;
+            });
 
-                    totalLigne += valeur;
-
-                    if (!totauxColonnes[index]) {
-                        totauxColonnes[index] = 0;
-                    }
-                    totauxColonnes[index] += valeur;
-                });
-
-            $(this).find(".total-ligne").text(totalLigne.toFixed(2));
+            $(this).find('.total-ligne').text(totalLigne.toFixed(2));
         });
 
-        // Afficher les totaux de colonnes
-        $(".total-colonne").each(function (index) {
+        $table.find('.total-colonne').each(function (index) {
             $(this).text((totauxColonnes[index] || 0).toFixed(2));
         });
 
-        // Total général
-        const totalGeneral = totauxColonnes.reduce(
-            (sum, val) => sum + (val || 0),
-            0
-        );
-        $(".total-general").text(totalGeneral.toFixed(2));
+        const totalGeneral = totauxColonnes.reduce((sum, val) => sum + (val || 0), 0);
+        $table.find('.total-general').text(totalGeneral.toFixed(2));
     }
 
-    // Lancer les calculs
-    calculerTotaux();
-    setTimeout(calculerTotaux, 500);
-});
-
-$(document).ready(function () {
-    function calculerTotaux() {
-        const totauxColonnes = [];
-
-        // Parcourir toutes les lignes sauf la ligne "Ensemble"
-        $("tbody tr:not(.table-primary)").each(function () {
-            let totalLigne = 0;
-
-            // Parcourir les cellules numériques de la ligne
-            $(this)
-                .find('input[type="number"]')
-                .each(function (index) {
-                    let val = parseFloat($(this).val());
-                    if (isNaN(val)) val = 0;
-
-                    totalLigne += val;
-
-                    if (!totauxColonnes[index]) totauxColonnes[index] = 0;
-                    totauxColonnes[index] += val;
-                });
-
-            // Afficher le total de la ligne
-            $(this).find(".total-ligne").text(totalLigne.toFixed(2));
+    function recalculerToutesLesTables() {
+        $('table:not(.table-annuaire)').each(function () {
+            calculerTotauxTableau($(this));
         });
-
-        // Afficher les totaux des colonnes
-        $(".total-colonne").each(function (index) {
-            $(this).text((totauxColonnes[index] || 0).toFixed(2));
-        });
-
-        // Total général (somme de toutes les cellules)
-        const totalGeneral = totauxColonnes.reduce(
-            (sum, val) => sum + (val || 0),
-            0
-        );
-        $(".total-general").text(totalGeneral.toFixed(2));
     }
 
-    // Lancer le calcul au chargement
-    calculerTotaux();
+    recalculerToutesLesTables();
+    setTimeout(recalculerToutesLesTables, 500);
 
-    // Recalculer à chaque modification d'une cellule
-    $('input[type="number"]').on("input", calculerTotaux);
+    $(document).on('input', 'table:not(.table-annuaire) input[type="number"]', function () {
+        const $table = $(this).closest('table');
+        calculerTotauxTableau($table);
+    });
 });
+

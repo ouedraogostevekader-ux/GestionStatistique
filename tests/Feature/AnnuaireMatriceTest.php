@@ -365,4 +365,104 @@ class AnnuaireMatriceTest extends TestCase
         // L’en-tête de la ligne ordre=1 est bien utilisé comme titre de la colonne libellé
         $this->assertStringContainsString('Indicateurs de transport', $view);
     }
+
+    public function test_elimination_ligne_ensemble_redondante_et_isolation_totaux(): void
+    {
+        $version = Version::create([
+            'code' => 'V_ENS_' . uniqid(),
+            'libelle' => 'Version Test Ensemble',
+            'annee' => 2025,
+        ]);
+
+        $structure = Structure::create([
+            'nom' => 'Direction Routière ' . uniqid(),
+            'sigle' => 'DR_' . substr(uniqid(), -4),
+            'type_structure' => 'Centrale',
+        ]);
+
+        $categorie = Categorie::create([
+            'libelle' => 'Catégorie Tests ' . uniqid(),
+        ]);
+
+        // Tableau 1 avec une ligne "Ensemble" en base (comme dans le dump réel data_dgess.sql)
+        $tableau1 = Tableau::create([
+            'libelle' => 'Tableau Avec Ligne Ensemble ' . uniqid(),
+            'categorie_id' => $categorie->id,
+        ]);
+
+        $t1_lHeader = LigneTableau::create(['nom_ligne' => 'Classe de routes', 'ordre' => 1, 'tableau_id' => $tableau1->id]);
+        $t1_lParent = LigneTableau::create(['nom_ligne' => 'Routes classées', 'ordre' => 2, 'tableau_id' => $tableau1->id]);
+        $t1_lSub1   = LigneTableau::create(['nom_ligne' => 'Routes nationales', 'ordre' => 1, 'tableau_id' => $tableau1->id, 'parent_id' => $t1_lParent->id]);
+        $t1_lSub2   = LigneTableau::create(['nom_ligne' => 'Routes départementales', 'ordre' => 2, 'tableau_id' => $tableau1->id, 'parent_id' => $t1_lParent->id]);
+        $t1_lIndep  = LigneTableau::create(['nom_ligne' => 'Pistes rurales', 'ordre' => 3, 'tableau_id' => $tableau1->id]);
+        $t1_lEnsemble = LigneTableau::create(['nom_ligne' => 'Ensemble', 'ordre' => 4, 'tableau_id' => $tableau1->id]);
+
+        $t1_col = ColonneTableau::create(['colonne_ligne' => 'Linéaire (km)', 'ordre' => 1, 'tableau_id' => $tableau1->id]);
+
+        $t1_cell_sub1 = Cellule::create(['ligne_id' => $t1_lSub1->id, 'colonne_id' => $t1_col->id]);
+        $t1_cell_sub2 = Cellule::create(['ligne_id' => $t1_lSub2->id, 'colonne_id' => $t1_col->id]);
+        $t1_cell_indep = Cellule::create(['ligne_id' => $t1_lIndep->id, 'colonne_id' => $t1_col->id]);
+        $t1_cell_ensemble = Cellule::create(['ligne_id' => $t1_lEnsemble->id, 'colonne_id' => $t1_col->id]);
+
+        $assignation1 = Assignation::create([
+            'tableau_id' => $tableau1->id,
+            'structure_id' => $structure->id,
+            'version_id' => $version->id,
+            'statut' => 2,
+            'annee' => 2025,
+        ]);
+
+        // Données : Nationales=2000, Départementales=1000 => Routes classées=3000. Pistes rurales=500.
+        // La ligne Ensemble en base avait une valeur arbitraire 9999 qui ne doit PAS être prise en compte !
+        SoumissionTableau::create(['tableau_id' => $tableau1->id, 'structure_id' => $structure->id, 'assignation_id' => $assignation1->id, 'cellule_id' => $t1_cell_sub1->id, 'valeur' => '2000']);
+        SoumissionTableau::create(['tableau_id' => $tableau1->id, 'structure_id' => $structure->id, 'assignation_id' => $assignation1->id, 'cellule_id' => $t1_cell_sub2->id, 'valeur' => '1000']);
+        SoumissionTableau::create(['tableau_id' => $tableau1->id, 'structure_id' => $structure->id, 'assignation_id' => $assignation1->id, 'cellule_id' => $t1_cell_indep->id, 'valeur' => '500']);
+        SoumissionTableau::create(['tableau_id' => $tableau1->id, 'structure_id' => $structure->id, 'assignation_id' => $assignation1->id, 'cellule_id' => $t1_cell_ensemble->id, 'valeur' => '9999']);
+
+        // Tableau 2 (distinct, vide ou avec ses propres données) pour tester l'isolation stricte des totaux
+        $tableau2 = Tableau::create([
+            'libelle' => 'Tableau 2 Indépendant ' . uniqid(),
+            'categorie_id' => $categorie->id,
+        ]);
+        $t2_lHeader = LigneTableau::create(['nom_ligne' => 'Régions', 'ordre' => 1, 'tableau_id' => $tableau2->id]);
+        $t2_l1 = LigneTableau::create(['nom_ligne' => 'Centre', 'ordre' => 2, 'tableau_id' => $tableau2->id]);
+        $t2_col = ColonneTableau::create(['colonne_ligne' => 'Valeur', 'ordre' => 1, 'tableau_id' => $tableau2->id]);
+        $t2_cell = Cellule::create(['ligne_id' => $t2_l1->id, 'colonne_id' => $t2_col->id]);
+
+        $assignation2 = Assignation::create([
+            'tableau_id' => $tableau2->id,
+            'structure_id' => $structure->id,
+            'version_id' => $version->id,
+            'statut' => 2,
+            'annee' => 2025,
+        ]);
+        SoumissionTableau::create(['tableau_id' => $tableau2->id, 'structure_id' => $structure->id, 'assignation_id' => $assignation2->id, 'cellule_id' => $t2_cell->id, 'valeur' => '50']);
+
+        // Exécuter AnnuaireService
+        $service = app(AnnuaireService::class);
+        $donnees = $service->getDonneesAnnuaire($version->id);
+
+        // 1. Vérification Tableau 1 : Le total général doit valoir 3000 + 500 = 3500 (la ligne 'Ensemble' 9999 est ignorée)
+        $this->assertEquals(3500.0, $donnees['totalGeneral'][$tableau1->id], 'La ligne Ensemble en base ne doit pas être additionnée au total général.');
+        $this->assertEquals(3500.0, $donnees['totauxColonnes'][$tableau1->id][$t1_col->id]);
+
+        // 2. Vérification Tableau 2 : Isolation parfaite, total = 50, aucune fuite depuis Tableau 1
+        $this->assertEquals(50.0, $donnees['totalGeneral'][$tableau2->id], 'Les totaux du tableau 2 doivent être strictement isolés.');
+        $this->assertEquals(50.0, $donnees['totauxColonnes'][$tableau2->id][$t2_col->id]);
+
+        // 3. Rendu Blade de Tableau 1 : "Ensemble" ne doit apparaître qu'une seule fois (dans le footer table-primary)
+        $tableau1Charge = $donnees['tableaux']->firstWhere('id', $tableau1->id);
+        $view = view('annuaires.table', [
+            'tableau' => $tableau1Charge,
+            'matrice' => $donnees['matrice'],
+            'totauxLignes' => $donnees['totauxLignes'],
+            'totauxColonnes' => $donnees['totauxColonnes'],
+            'totalGeneral' => $donnees['totalGeneral'],
+        ])->render();
+
+        $this->assertEquals(1, substr_count($view, '>Ensemble<'), "Le libellé 'Ensemble' ne doit apparaître qu'une seule fois dans la table (pied de page total).");
+        $this->assertStringContainsString('3 500,00', $view, 'Le montant total formaté 3 500,00 doit être présent.');
+        $this->assertStringNotContainsString('9 999', $view, 'La valeur arbitraire de la ligne Ensemble ne doit pas apparaître.');
+    }
 }
+
