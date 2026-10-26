@@ -396,4 +396,47 @@ class TableauCanevasImportTest extends TestCase
 
         @unlink($tempFile);
     }
+
+    public function test_admin_ou_dgess_peut_acceder_saisie_tableau_assigne_a_autre_structure(): void
+    {
+        // Récupérer ou créer la structure DGESS
+        $structureDgess = Structure::firstOrCreate(
+            ['sigle' => 'DGESS'],
+            [
+                'nom' => 'Direction Générale des Études et des Statistiques Sectorielles',
+                'type_structure' => 'Centrale',
+            ]
+        );
+
+        $adminUser = User::factory()->create([
+            'structure_id' => $structureDgess->id,
+            'nom' => 'Kader',
+            'prenom' => 'Steve Admin',
+            'matricule' => 'MAT-ADM-' . substr(uniqid(), -4),
+        ]);
+        $adminUser->givePermissionTo(['soumission-create', 'tableau-list']);
+
+        // Assigner le rôle Super-Admin s'il existe
+        $role = \App\Models\Role::where('name', 'Super-Admin')->first();
+        if ($role) {
+            $adminUser->assignRole($role);
+        }
+
+        // L'assignation actuelle appartient à DRC (une autre structure)
+        // L'admin doit pouvoir accéder à la page de saisie avec le paramètre assignation_id
+        $response = $this->actingAs($adminUser)
+            ->get(route('tableaux.saisie', [
+                'id' => $this->tableau->id,
+                'assignation_id' => $this->assignation->id,
+            ]));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('tableaux.saisie');
+        $response->assertViewHas('structure', function ($struct) {
+            return $struct->id === $this->structure->id;
+        });
+        $response->assertViewHas('latestAssignation', function ($asgn) {
+            return $asgn->id === $this->assignation->id;
+        });
+    }
 }

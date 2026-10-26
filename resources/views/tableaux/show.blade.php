@@ -25,7 +25,7 @@
                         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
                             <i class="bi bi-cloud-arrow-up-fill me-1"></i> Importer Excel
                         </button>
-                        <a href="{{ route('tableaux.saisie', $tableau->id) }}" class="btn btn-success">
+                        <a href="{{ route('tableaux.saisie', ['id' => $tableau->id, 'assignation_id' => request('assignation_id')]) }}" class="btn btn-success">
                             <i class="bi bi-pencil-square me-1"></i> Saisir Données
                         </a>
                     @endcan

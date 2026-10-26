@@ -170,7 +170,7 @@
                                                         <i class="bi bi-file-earmark-excel-fill"></i>
                                                     </a>
                                                     @if ($assignation->statut == 1 || $assignation->statut == 2)
-                                                        <a href="{{ route('tableaux.saisie', $assignation->tableau_id) }}"
+                                                        <a href="{{ route('tableaux.saisie', ['id' => $assignation->tableau_id, 'assignation_id' => $assignation->id]) }}"
                                                             class="btn btn-sm btn-primary text-white shadow-sm"
                                                             style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
                                                             title="Saisir ou importer des données" data-bs-toggle="tooltip">
