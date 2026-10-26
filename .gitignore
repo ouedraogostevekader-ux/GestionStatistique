@@ -21,3 +21,19 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# BMad & Agents
+/.agent
+/.agents
+/_bmad
+/_bmad-output
+
+# Documents & Scripts locaux
+/*.pdf
+/*.docx
+/*.txt
+composer.phar
+composer.bat
+serve.bat
+serve.ps1
+
