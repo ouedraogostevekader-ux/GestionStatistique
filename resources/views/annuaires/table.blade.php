@@ -1,42 +1,52 @@
 <div class="card-body">
     <div class="table-responsive">
+        @php
+            $lignesRacines = $tableau->lignesTableau->whereNull('parent_id');
+            $colonnesRacines = $tableau->colonnesTableau->whereNull('parent_id');
+            $headerLigne = $lignesRacines->firstWhere('ordre', 1) ?? $tableau->lignesTableau->firstWhere('ordre', 1);
+            $headerTitre = $headerLigne ? $headerLigne->nom_ligne : 'Libellé';
+            $hasSousColonnes = $colonnesRacines->contains(fn($c) => $c->enfants && $c->enfants->count() > 0);
+        @endphp
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
-                    {{-- <th rowspan="2">Libellé</th> --}}
-                    @foreach ($tableau->lignesTableau as $ligne)
-                        @if ($ligne->ordre == 1)
-                            <th>{{ $ligne->nom_ligne }}
-                            </th>
-                        @endif
-                    @endforeach
-                    @foreach ($tableau->colonnesTableau as $colonne)
-                        @if ($colonne->enfants->count() > 0)
+                    <th @if($hasSousColonnes) rowspan="2" @endif class="align-middle">
+                        {{ $headerTitre }}
+                    </th>
+                    @foreach ($colonnesRacines as $colonne)
+                        @if ($colonne->enfants && $colonne->enfants->count() > 0)
                             <th colspan="{{ $colonne->enfants->count() }}" class="text-center">
                                 {{ $colonne->colonne_ligne }}
                             </th>
                         @else
-                            <th rowspan="2" class="text-center">{{ $colonne->colonne_ligne }}
+                            <th @if($hasSousColonnes) rowspan="2" @endif class="text-center align-middle">
+                                {{ $colonne->colonne_ligne }}
                             </th>
                         @endif
                     @endforeach
-                    <th rowspan="2" class="text-center">Total</th>
+                    <th @if($hasSousColonnes) rowspan="2" @endif class="text-center align-middle">
+                        Total
+                    </th>
                 </tr>
-                <tr>
-                    @foreach ($tableau->colonnesTableau as $colonne)
-                        @foreach ($colonne->enfants as $sousColonne)
-                            <th class="text-center">{{ $sousColonne->colonne_ligne }}</th>
+                @if ($hasSousColonnes)
+                    <tr>
+                        @foreach ($colonnesRacines as $colonne)
+                            @if ($colonne->enfants && $colonne->enfants->count() > 0)
+                                @foreach ($colonne->enfants as $sousColonne)
+                                    <th class="text-center">{{ $sousColonne->colonne_ligne }}</th>
+                                @endforeach
+                            @endif
                         @endforeach
-                    @endforeach
-                </tr>
+                    </tr>
+                @endif
             </thead>
             <tbody>
-                @foreach ($tableau->lignesTableau as $ligne)
-                    <tr>
-                        @if ($ligne->ordre != 1)
+                @foreach ($lignesRacines as $ligne)
+                    @if ($ligne->ordre != 1)
+                        <tr>
                             <td class="fw-bold">{{ $ligne->nom_ligne }}</td>
-                            @foreach ($tableau->colonnesTableau as $colonne)
-                                @if ($colonne->enfants->count() > 0)
+                            @foreach ($colonnesRacines as $colonne)
+                                @if ($colonne->enfants && $colonne->enfants->count() > 0)
                                     @foreach ($colonne->enfants as $sousColonne)
                                         <td class="text-center">
                                             {{ $matrice[$tableau->id][$ligne->id][$sousColonne->id] ?? '-' }}
@@ -51,37 +61,40 @@
                             <td class="total-ligne text-center fw-bold">
                                 {{ isset($totauxLignes[$tableau->id][$ligne->id]) ? number_format($totauxLignes[$tableau->id][$ligne->id], 2, ',', ' ') : '0,00' }}
                             </td>
-                        @endif
-                    </tr>
-
-                    {{-- Sous-lignes --}}
-                    @foreach ($ligne->enfants as $sousLigne)
-                        <tr class="table-secondary">
-                            <td class="ps-4">{{ $sousLigne->nom_ligne }}</td>
-                            @foreach ($tableau->colonnesTableau as $colonne)
-                                @if ($colonne->enfants->count() > 0)
-                                    @foreach ($colonne->enfants as $sousColonne)
-                                        <td class="text-center">
-                                            {{ $matrice[$tableau->id][$sousLigne->id][$sousColonne->id] ?? '-' }}
-                                        </td>
-                                    @endforeach
-                                @else
-                                    <td class="text-center">
-                                        {{ $matrice[$tableau->id][$sousLigne->id][$colonne->id] ?? '-' }}
-                                    </td>
-                                @endif
-                            @endforeach
-                            <td class="total-ligne text-center">
-                                {{ isset($totauxLignes[$tableau->id][$sousLigne->id]) ? number_format($totauxLignes[$tableau->id][$sousLigne->id], 2, ',', ' ') : '0,00' }}
-                            </td>
                         </tr>
-                    @endforeach
+
+                        {{-- Sous-lignes --}}
+                        @if ($ligne->enfants && $ligne->enfants->count() > 0)
+                            @foreach ($ligne->enfants as $sousLigne)
+                                <tr class="table-secondary">
+                                    <td class="ps-4">{{ $sousLigne->nom_ligne }}</td>
+                                    @foreach ($colonnesRacines as $colonne)
+                                        @if ($colonne->enfants && $colonne->enfants->count() > 0)
+                                            @foreach ($colonne->enfants as $sousColonne)
+                                                <td class="text-center">
+                                                    {{ $matrice[$tableau->id][$sousLigne->id][$sousColonne->id] ?? '-' }}
+                                                </td>
+                                            @endforeach
+                                        @else
+                                            <td class="text-center">
+                                                {{ $matrice[$tableau->id][$sousLigne->id][$colonne->id] ?? '-' }}
+                                            </td>
+                                        @endif
+                                    @endforeach
+                                    <td class="total-ligne text-center">
+                                        {{ isset($totauxLignes[$tableau->id][$sousLigne->id]) ? number_format($totauxLignes[$tableau->id][$sousLigne->id], 2, ',', ' ') : '0,00' }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    @endif
                 @endforeach
+
                 {{-- Ligne Ensemble (Total) --}}
                 <tr class="table-primary fw-bold">
                     <td>Ensemble</td>
-                    @foreach ($tableau->colonnesTableau as $colonne)
-                        @if ($colonne->enfants->count() > 0)
+                    @foreach ($colonnesRacines as $colonne)
+                        @if ($colonne->enfants && $colonne->enfants->count() > 0)
                             @foreach ($colonne->enfants as $sousColonne)
                                 <td class="text-center">
                                     <span class="total-colonne">

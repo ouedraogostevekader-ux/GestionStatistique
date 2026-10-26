@@ -45,7 +45,7 @@ class AnnuaireService
         $assignations = Assignation::where('version_id', $versionId)->get();
         $assignationIds = $assignations->pluck('id')->filter()->unique();
 
-        // 2. Récupérer les tableaux assignés avec leurs lignes et colonnes ordonnées
+        // 2. Récupérer les tableaux assignés avec leurs lignes et colonnes ordonnées (racines uniquement)
         $tableaux = Tableau::whereIn('id', function ($query) use ($assignationIds) {
             $query->select('tableau_id')
                 ->from('assignations')
@@ -53,9 +53,9 @@ class AnnuaireService
         })
         ->with([
             'categorie',
-            'lignesTableau' => fn($q) => $q->orderBy('ordre'),
+            'lignesTableau' => fn($q) => $q->whereNull('parent_id')->orderBy('ordre'),
             'lignesTableau.enfants' => fn($q) => $q->orderBy('ordre'),
-            'colonnesTableau' => fn($q) => $q->orderBy('ordre'),
+            'colonnesTableau' => fn($q) => $q->whereNull('parent_id')->orderBy('ordre'),
             'colonnesTableau.enfants' => fn($q) => $q->orderBy('ordre'),
         ])
         ->get();
@@ -69,9 +69,9 @@ class AnnuaireService
             })
             ->with([
                 'categorie',
-                'lignesTableau' => fn($q) => $q->orderBy('ordre'),
+                'lignesTableau' => fn($q) => $q->whereNull('parent_id')->orderBy('ordre'),
                 'lignesTableau.enfants' => fn($q) => $q->orderBy('ordre'),
-                'colonnesTableau' => fn($q) => $q->orderBy('ordre'),
+                'colonnesTableau' => fn($q) => $q->whereNull('parent_id')->orderBy('ordre'),
                 'colonnesTableau.enfants' => fn($q) => $q->orderBy('ordre'),
             ])
             ->get();
@@ -175,6 +175,14 @@ class AnnuaireService
                 } else {
                     // Si des sous-lignes existent, on calcule pour chaque sous-ligne et on agrège sur le parent
                     $totalParent = 0.0;
+                    $parentColSums = [];
+                    $parentColHasVal = [];
+
+                    foreach ($colonnesFeuilles as $col) {
+                        $parentColSums[$col->id] = 0.0;
+                        $parentColHasVal[$col->id] = false;
+                    }
+
                     foreach ($ligne->enfants as $sousLigne) {
                         $totauxLignes[$tabId][$sousLigne->id] = 0.0;
 
@@ -190,9 +198,27 @@ class AnnuaireService
                                 $totauxColonnes[$tabId][$col->id] += $numVal;
                                 $totalGeneral[$tabId] += $numVal;
                                 $totalParent += $numVal;
+
+                                $parentColSums[$col->id] += $numVal;
+                                $parentColHasVal[$col->id] = true;
                             }
                         }
                     }
+
+                    // Déterminer la valeur affichée pour chaque colonne de la ligne parente
+                    foreach ($colonnesFeuilles as $col) {
+                        $cellParentId = $cellulesMap[$ligne->id][$col->id] ?? null;
+                        $valParent = $cellParentId && isset($valeursParCellule[$cellParentId]) ? $valeursParCellule[$cellParentId] : null;
+
+                        if ($valParent !== null) {
+                            $matrice[$tabId][$ligne->id][$col->id] = $valParent;
+                        } elseif ($parentColHasVal[$col->id]) {
+                            $matrice[$tabId][$ligne->id][$col->id] = $parentColSums[$col->id];
+                        } else {
+                            $matrice[$tabId][$ligne->id][$col->id] = '-';
+                        }
+                    }
+
                     $totauxLignes[$tabId][$ligne->id] = $totalParent;
                 }
             }
