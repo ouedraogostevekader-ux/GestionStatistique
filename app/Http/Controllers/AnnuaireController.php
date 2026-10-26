@@ -64,6 +64,9 @@ class AnnuaireController extends Controller implements HasMiddleware
 
     public function exportPDF(Request $request)
     {
+        set_time_limit(300);
+        ini_set('memory_limit', '512M');
+
         $versionId = $request->input('version');
         $categorieId = $request->input('categorie');
         $tableauId = $request->input('tableau');
@@ -89,6 +92,9 @@ class AnnuaireController extends Controller implements HasMiddleware
 
     public function exportExcel(Request $request)
     {
+        set_time_limit(300);
+        ini_set('memory_limit', '512M');
+
         $versionId = $request->input('version');
         $categorieId = $request->input('categorie');
         $tableauId = $request->input('tableau');
@@ -102,11 +108,14 @@ class AnnuaireController extends Controller implements HasMiddleware
 
         $filename = 'Annuaire-' . ($version->annee ?? 'statistique') . '.xlsx';
 
-        return Excel::download(new AnnuaireExport($donnees), $filename);
+        return (new AnnuaireExport($donnees))->download($filename);
     }
 
     public function exportWord(Request $request)
     {
+        set_time_limit(300);
+        ini_set('memory_limit', '512M');
+
         $versionId = $request->input('version');
         $categorieId = $request->input('categorie');
         $tableauId = $request->input('tableau');
