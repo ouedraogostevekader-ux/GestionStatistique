@@ -397,9 +397,9 @@ class TableauCanevasImportTest extends TestCase
         @unlink($tempFile);
     }
 
-    public function test_admin_ou_dgess_peut_acceder_saisie_tableau_assigne_a_autre_structure(): void
+    public function test_bouton_saisie_masque_pour_utilisateur_autre_structure(): void
     {
-        // Récupérer ou créer la structure DGESS
+        // Utilisateur DGESS
         $structureDgess = Structure::firstOrCreate(
             ['sigle' => 'DGESS'],
             [
@@ -408,35 +408,42 @@ class TableauCanevasImportTest extends TestCase
             ]
         );
 
-        $adminUser = User::factory()->create([
+        $adminDgess = User::factory()->create([
             'structure_id' => $structureDgess->id,
             'nom' => 'Kader',
-            'prenom' => 'Steve Admin',
-            'matricule' => 'MAT-ADM-' . substr(uniqid(), -4),
+            'prenom' => 'Steve',
         ]);
-        $adminUser->givePermissionTo(['soumission-create', 'tableau-list']);
+        $adminDgess->givePermissionTo(['assignation-list', 'soumission-create']);
 
-        // Assigner le rôle Super-Admin s'il existe
         $role = \App\Models\Role::where('name', 'Super-Admin')->first();
         if ($role) {
-            $adminUser->assignRole($role);
+            $adminDgess->assignRole($role);
         }
 
-        // L'assignation actuelle appartient à DRC (une autre structure)
-        // L'admin doit pouvoir accéder à la page de saisie avec le paramètre assignation_id
-        $response = $this->actingAs($adminUser)
-            ->get(route('tableaux.saisie', [
-                'id' => $this->tableau->id,
-                'assignation_id' => $this->assignation->id,
-            ]));
+        // Assigner le statut 1 à l'assignation de DRC
+        $this->assignation->update(['statut' => 1]);
 
+        // Dashboard vu par DGESS : l'assignation appartient à DRC
+        $response = $this->actingAs($adminDgess)->get(route('assignations.dashboard'));
         $response->assertStatus(200);
-        $response->assertViewIs('tableaux.saisie');
-        $response->assertViewHas('structure', function ($struct) {
-            return $struct->id === $this->structure->id;
-        });
-        $response->assertViewHas('latestAssignation', function ($asgn) {
-            return $asgn->id === $this->assignation->id;
-        });
+
+        // L'icône de téléchargement canevas est présente
+        $canevasUrl = e(route('tableaux.canevas-excel', [
+            'id' => $this->tableau->id,
+            'assignation_id' => $this->assignation->id,
+        ]));
+        $response->assertSee($canevasUrl, false);
+
+        // Mais le lien de saisie pour cette assignation n'est PAS visible pour DGESS
+        $saisieUrl = e(route('tableaux.saisie', [
+            'id' => $this->tableau->id,
+            'assignation_id' => $this->assignation->id,
+        ]));
+        $response->assertDontSee($saisieUrl, false);
+
+        // En revanche, pour l'utilisateur DRC (propriétaire de l'assignation) :
+        $responseOwner = $this->actingAs($this->user)->get(route('assignations.dashboard'));
+        $responseOwner->assertStatus(200);
+        $responseOwner->assertSee($saisieUrl, false);
     }
 }

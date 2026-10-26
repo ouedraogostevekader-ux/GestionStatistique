@@ -22,12 +22,14 @@
                         <a href="{{ route('tableaux.canevas-excel', ['id' => $tableau->id, 'assignation_id' => request('assignation_id')]) }}" class="btn btn-outline-success" title="Télécharger le canevas Excel pré-formaté">
                             <i class="bi bi-file-earmark-excel-fill me-1"></i> Canevas Excel
                         </a>
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
-                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Importer Excel
-                        </button>
-                        <a href="{{ route('tableaux.saisie', ['id' => $tableau->id, 'assignation_id' => request('assignation_id')]) }}" class="btn btn-success">
-                            <i class="bi bi-pencil-square me-1"></i> Saisir Données
-                        </a>
+                        @if ($tableau->assignations->contains('structure_id', auth()->user()->structure_id))
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
+                                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Importer Excel
+                            </button>
+                            <a href="{{ route('tableaux.saisie', ['id' => $tableau->id, 'assignation_id' => request('assignation_id')]) }}" class="btn btn-success">
+                                <i class="bi bi-pencil-square me-1"></i> Saisir Données
+                            </a>
+                        @endif
                     @endcan
                 </div>
             </div>

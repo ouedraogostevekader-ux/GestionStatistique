@@ -253,57 +253,19 @@ class TableauController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function saisirDonnees(Request $request, $id)
+    public function saisirDonnees($id)
     {
         $tableau = Tableau::with('categorie')->findOrFail($id);
-        $user = auth()->user();
 
-        // 1. Déterminer l'assignation cible si fournie en paramètre
-        $assignationId = $request->query('assignation_id');
-        $targetAssignation = null;
+        // Structure liée à l'utilisateur connecté
+        $structure = auth()->user()->structure;
 
-        if ($assignationId) {
-            $targetAssignation = Assignation::with(['structure', 'version'])->find($assignationId);
-            if ($targetAssignation && $targetAssignation->tableau_id !== $tableau->id) {
-                $targetAssignation = null;
-            }
+        if (!$structure) {
+            return redirect()->route('tableaux.index')
+                ->with('error', 'Aucune structure associée à votre compte.');
         }
 
-        // 2. Déterminer la structure et vérifier les habilitations
-        $isAdminOrDgess = $user->isAdmin() || $user->structure?->sigle === 'DGESS';
-
-        if ($targetAssignation) {
-            // Si une assignation précise est demandée, vérifier l'habilitation
-            if (!$isAdminOrDgess && $user->structure_id !== $targetAssignation->structure_id) {
-                return redirect()->route('tableaux.index')
-                    ->with('error', 'Ce tableau ne vous a pas été assigné. Vous n’êtes pas autorisé à saisir des données.');
-            }
-            $structure = $targetAssignation->structure;
-        } else {
-            // Pas d'assignation_id spécifiée dans la requête
-            if ($isAdminOrDgess) {
-                // Admin ou DGESS : priorité à sa propre structure si assignée, sinon la première assignation active du tableau
-                if ($user->structure_id && Assignation::where('tableau_id', $id)->where('structure_id', $user->structure_id)->exists()) {
-                    $structure = $user->structure;
-                } else {
-                    $firstAssignation = Assignation::with('structure')->where('tableau_id', $id)->orderBy('version_id', 'desc')->first();
-                    if (!$firstAssignation) {
-                        return redirect()->route('tableaux.index')
-                            ->with('error', 'Aucune structure n\'a été assignée à ce tableau pour le moment.');
-                    }
-                    $structure = $firstAssignation->structure;
-                }
-            } else {
-                // Structure sectorielle classique
-                $structure = $user->structure;
-                if (!$structure) {
-                    return redirect()->route('tableaux.index')
-                        ->with('error', 'Aucune structure associée à votre compte.');
-                }
-            }
-        }
-
-        // 3. Récupère les assignations du tableau pour cette structure
+        // Vérifie que le tableau est bien assigné à cette structure
         $assignations = Assignation::where('tableau_id', $id)
             ->where('structure_id', $structure->id)
             ->orderBy('version_id', 'desc')
@@ -314,8 +276,8 @@ class TableauController extends Controller implements HasMiddleware
                 ->with('error', 'Ce tableau ne vous a pas été assigné. Vous n’êtes pas autorisé à saisir des données.');
         }
 
-        // Dernière assignation (version sélectionnée ou la plus récente)
-        $latestAssignation = $targetAssignation ?? $assignations->first();
+        // Dernière assignation (version actuelle)
+        $latestAssignation = $assignations->first();
 
         // Version précédente
         $previousAssignation = $latestAssignation->getPreviousAssignation();
