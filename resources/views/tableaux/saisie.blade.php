@@ -11,16 +11,16 @@
             <div class="col-sm-8">
                 <div class="mt-4 d-flex justify-content-end gap-2 flex-wrap">
                     <a href="{{ route('tableaux.show', $tableau->id) }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-bar-left"></i> Retour
+                        <i class="bi bi-arrow-left me-1"></i> Retour
                     </a>
                     <a href="{{ route('tableaux.canevas-excel', ['id' => $tableau->id, 'assignation_id' => $latestAssignation->id ?? null]) }}" class="btn btn-outline-success" title="Télécharger le canevas Excel pré-formaté">
-                        <i class="fas fa-file-excel me-1"></i> Canevas Excel
+                        <i class="bi bi-file-earmark-excel-fill me-1"></i> Canevas Excel
                     </a>
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
-                        <i class="fas fa-file-upload me-1"></i> Importer Excel
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Importer Excel
                     </button>
                     <a class="btn btn-outline-primary" href="{{ route('tableaux.show', $tableau->id) }}">
-                        <i class="fas fa-eye"></i> Visualiser
+                        <i class="bi bi-eye me-1"></i> Visualiser
                     </a>
                 </div>
             </div>
@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-2 mt-4">
                 <button type="submit" class="btn btn-success">
-                    <i class="fas fa-save"></i> Enregistrer
+                    <i class="bi bi-floppy-fill me-1"></i> Enregistrer
                 </button>
             </div>
         </div>

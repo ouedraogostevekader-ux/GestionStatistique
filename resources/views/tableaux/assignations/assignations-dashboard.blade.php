@@ -129,10 +129,12 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group">
+                                            <div class="d-flex align-items-center gap-1">
                                                 @can('assignation-list')
                                                     <a href="{{ route('assignations.show', $assignation->id) }}"
-                                                        class="btn btn-outline-info" title="Voir les détails de l'assignation">
+                                                        class="btn btn-sm btn-info text-white shadow-sm"
+                                                        style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                        title="Voir les détails de l'assignation" data-bs-toggle="tooltip">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
                                                 @endcan
@@ -140,8 +142,10 @@
                                                 @if ($assignation->statut == 0 || $assignation->statut == 3)
                                                     @can('assignation-edit')
                                                         <a href="{{ route('assignations.edit', $assignation->id) }}"
-                                                            class="btn btn-outline-warning" title="Modifier l'assignation">
-                                                            <i class="bi bi-pencil"></i>
+                                                            class="btn btn-sm btn-warning text-dark shadow-sm"
+                                                            style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                            title="Modifier l'assignation" data-bs-toggle="tooltip">
+                                                            <i class="bi bi-pencil-square"></i>
                                                         </a>
                                                     @endcan
                                                     @can('assignation-delete')
@@ -150,22 +154,27 @@
                                                             onsubmit="return confirm('Voulez-vous vraiment supprimer cette assignation ?')">
                                                             @csrf
                                                             @method ('DELETE')
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="suppression de l'assignation">
-                                                                <i class="bi bi-archive"></i>
+                                                            <button type="submit" class="btn btn-sm btn-danger shadow-sm"
+                                                                style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                                title="Supprimer l'assignation" data-bs-toggle="tooltip">
+                                                                <i class="bi bi-trash-fill"></i>
                                                             </button>
                                                         </form>
                                                     @endcan
                                                 @endif
                                                 @can('soumission-create')
                                                     <a href="{{ route('tableaux.canevas-excel', ['id' => $assignation->tableau_id, 'assignation_id' => $assignation->id]) }}"
-                                                        class="btn btn-outline-success" title="Télécharger le canevas Excel (.xlsx)">
-                                                        <i class="fas fa-file-excel"></i>
+                                                        class="btn btn-sm btn-success text-white shadow-sm"
+                                                        style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                        title="Télécharger le canevas Excel (.xlsx)" data-bs-toggle="tooltip">
+                                                        <i class="bi bi-file-earmark-excel-fill"></i>
                                                     </a>
                                                     @if ($assignation->statut == 1 || $assignation->statut == 2)
                                                         <a href="{{ route('tableaux.saisie', $assignation->tableau_id) }}"
-                                                            class="btn btn-outline-primary" title="Saisir ou importer des données">
-                                                            <i class="bi bi-edit"></i>
+                                                            class="btn btn-sm btn-primary text-white shadow-sm"
+                                                            style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                            title="Saisir ou importer des données" data-bs-toggle="tooltip">
+                                                            <i class="bi bi-pencil-square"></i>
                                                         </a>
                                                     @endif
                                                 @endcan

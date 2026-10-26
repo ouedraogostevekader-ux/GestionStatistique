@@ -5,7 +5,7 @@
                 @csrf
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title d-flex align-items-center" id="modalImportExcelLabel">
-                        <i class="fas fa-file-excel me-2"></i> Importer le Canevas Excel
+                        <i class="bi bi-file-earmark-excel-fill me-2"></i> Importer le Canevas Excel
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
@@ -32,7 +32,7 @@
                     @elseif (isset($latestAssignation) && $latestAssignation)
                         <input type="hidden" name="assignation_id" value="{{ $latestAssignation->id }}">
                         <div class="alert alert-light border d-flex align-items-center mb-3 py-2 px-3">
-                            <i class="fas fa-calendar-alt text-primary me-2"></i>
+                            <i class="bi bi-calendar-event text-primary me-2"></i>
                             <div>
                                 <small class="text-muted d-block">Assignation ciblée :</small>
                                 <strong>{{ $latestAssignation->version->code ?? 'Version' }} ({{ $latestAssignation->version->annee ?? '' }})</strong>
@@ -42,7 +42,7 @@
                     @elseif (isset($assignation) && $assignation)
                         <input type="hidden" name="assignation_id" value="{{ $assignation->id }}">
                         <div class="alert alert-light border d-flex align-items-center mb-3 py-2 px-3">
-                            <i class="fas fa-calendar-alt text-primary me-2"></i>
+                            <i class="bi bi-calendar-event text-primary me-2"></i>
                             <div>
                                 <small class="text-muted d-block">Assignation ciblée :</small>
                                 <strong>{{ $assignation->version->code ?? 'Version' }} ({{ $assignation->version->annee ?? '' }})</strong>
@@ -55,18 +55,18 @@
                     <div class="dropzone-area p-4 text-center rounded border border-2 border-dashed bg-light position-relative" id="excelDropzone" style="cursor: pointer; transition: all 0.2s ease;">
                         <input type="file" name="excel_file" id="excelFileInput" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" accept=".xlsx, .xls" required style="cursor: pointer;">
                         <div id="dropzonePrompt">
-                            <i class="fas fa-cloud-upload-alt text-success fa-3x mb-2"></i>
+                            <i class="bi bi-cloud-arrow-up-fill text-success display-4 mb-2"></i>
                             <h6 class="fw-bold mb-1">Glissez-déposez votre fichier Excel ici</h6>
                             <p class="text-muted small mb-1">ou cliquez pour parcourir vos dossiers</p>
                             <span class="badge bg-light text-secondary border">Formats acceptés : .xlsx, .xls (max 10 Mo)</span>
                         </div>
                         <div id="fileSelectedDisplay" class="d-none">
-                            <i class="fas fa-file-excel text-success fa-3x mb-2"></i>
+                            <i class="bi bi-file-earmark-excel-fill text-success display-4 mb-2"></i>
                             <h6 class="fw-bold text-dark mb-1" id="selectedFileName">fichier.xlsx</h6>
                             <span class="badge bg-success" id="selectedFileSize">0 Ko</span>
                             <div class="mt-2">
                                 <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" id="btnRemoveFile">
-                                    <i class="fas fa-times-circle me-1"></i> Choisir un autre fichier
+                                    <i class="bi bi-x-circle-fill me-1"></i> Choisir un autre fichier
                                 </button>
                             </div>
                         </div>
@@ -83,10 +83,10 @@
 
                 <div class="modal-footer bg-light px-4 py-3">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i> Annuler
+                        <i class="bi bi-x-circle me-1"></i> Annuler
                     </button>
                     <button type="submit" class="btn btn-success fw-bold px-4" id="btnSubmitImport">
-                        <i class="fas fa-check-circle me-1"></i> Téléverser & Valider
+                        <i class="bi bi-check-circle-fill me-1"></i> Téléverser & Valider
                     </button>
                 </div>
             </form>
