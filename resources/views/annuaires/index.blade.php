@@ -77,7 +77,73 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            {{-- Bandeau de Consolidation & Verrouillage Officiel --}}
+            @if ($versionActive)
+                <div class="card shadow-sm border-0 mb-4 {{ $versionActive->isLocked() ? 'border-start border-4 border-success' : 'border-start border-4 border-primary' }}">
+                    <div class="card-body py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-7">
+                                <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
+                                    <h5 class="fw-bold mb-0 me-2 text-dark">
+                                        Consolidation : Édition {{ $versionActive->annee }} ({{ $versionActive->code }})
+                                    </h5>
+                                    @if ($versionActive->isLocked())
+                                        <span class="badge bg-success px-3 py-1">
+                                            <i class="fas fa-lock me-1"></i> Verrouillé / Publication Officielle
+                                        </span>
+                                    @else
+                                        <span class="badge bg-warning text-dark px-3 py-1">
+                                            <i class="fas fa-hourglass-half me-1"></i> En cours de consolidation
+                                        </span>
+                                    @endif
+                                </div>
+
+                                @if ($consolidation)
+                                    <div class="d-flex align-items-center gap-2 text-muted small mb-2 flex-wrap">
+                                        <span><strong>{{ $consolidation['validees'] }} / {{ $consolidation['total'] }}</strong> validé(s)</span>
+                                        <span>•</span>
+                                        <span><strong>{{ $consolidation['transmises'] }}</strong> en revue DGESS</span>
+                                        <span>•</span>
+                                        <span><strong>{{ $consolidation['en_cours'] + $consolidation['en_attente'] + $consolidation['rejetees'] }}</strong> en attente de saisie</span>
+                                    </div>
+
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar {{ $consolidation['pourcentage'] == 100 ? 'bg-success' : 'bg-primary' }}" 
+                                            role="progressbar" style="width: {{ $consolidation['pourcentage'] }}%;" 
+                                            aria-valuenow="{{ $consolidation['pourcentage'] }}" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <div class="text-end small text-muted mt-1">Taux d'exhaustivité validé : <strong>{{ $consolidation['pourcentage'] }}%</strong></div>
+                                @endif
+                            </div>
+
+                            <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                                @if (auth()->user()->isAdmin() || auth()->user()->structure?->sigle === 'DGESS')
+                                    @if ($versionActive->isLocked())
+                                        @if (auth()->user()->isAdmin())
+                                            <form action="{{ route('versions.deverrouiller', $versionActive->id) }}" method="POST" class="d-inline"
+                                                onsubmit="return confirm('Attention : Déverrouiller l\'Annuaire permettra de nouveau la modification des données statistiques. Continuer ?')">
+                                                @csrf
+                                                <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm">
+                                                    <i class="fas fa-lock-open me-1"></i> Déverrouiller (Admin)
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @else
+                                        <form action="{{ route('versions.verrouiller', $versionActive->id) }}" method="POST" class="d-inline"
+                                            onsubmit="return confirm('Confirmez-vous le verrouillage officiel de cette édition de l\'Annuaire ? Toutes les données statistiques seront scellées.')">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success btn-sm shadow-sm fw-bold">
+                                                <i class="fas fa-shield-alt me-1"></i> Verrouiller pour Publication Officielle
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </section>
 

@@ -59,6 +59,7 @@ class AnnuaireController extends Controller implements HasMiddleware
             'totauxColonnes' => $donnees['totauxColonnes'],
             'totalGeneral' => $donnees['totalGeneral'],
             'assignations' => $donnees['assignations'],
+            'consolidation' => $donnees['version']?->tauxValidation() ?? null,
         ]);
     }
 

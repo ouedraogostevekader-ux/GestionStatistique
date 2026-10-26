@@ -26,11 +26,58 @@ class Version extends Model
         'code',
         'libelle',
         'annee',
+        'is_locked',
+        'date_verrouillage',
+        'locked_by',
+    ];
+
+    protected $casts = [
+        'is_locked' => 'boolean',
+        'date_verrouillage' => 'datetime',
     ];
 
     public function assignations()
     {
         return $this->hasMany(Assignation::class);
+    }
+
+    public function lockedBy()
+    {
+        return $this->belongsTo(User::class, 'locked_by');
+    }
+
+    public function isLocked(): bool
+    {
+        return (bool) $this->is_locked;
+    }
+
+    /**
+     * Calcul de l'état de consolidation de l'annuaire pour cette version
+     */
+    public function tauxValidation(): array
+    {
+        $total = $this->assignations()->count();
+        $validees = $this->assignations()->where('statut', 3)->count();
+        $transmises = $this->assignations()->where('statut', 2)->count();
+        $enCours = $this->assignations()->where('statut', 1)->count();
+        $rejetees = $this->assignations()->where('statut', 4)->count();
+        $enAttente = $this->assignations()->where('statut', 0)->count();
+
+        $pourcentage = $total > 0 ? round(($validees / $total) * 100) : 0;
+        $pourcentageTransmis = $total > 0 ? round((($validees + $transmises) / $total) * 100) : 0;
+
+        return [
+            'total' => $total,
+            'validees' => $validees,
+            'transmises' => $transmises,
+            'en_cours' => $enCours,
+            'rejetees' => $rejetees,
+            'en_attente' => $enAttente,
+            'pourcentage' => $pourcentage,
+            'pourcentage_transmis' => $pourcentageTransmis,
+            'est_complet' => $total > 0 && $validees === $total,
+            'est_verrouille' => $this->isLocked(),
+        ];
     }
 
     //Methode pour les logs

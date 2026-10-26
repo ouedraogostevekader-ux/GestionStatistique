@@ -329,6 +329,16 @@ class TableauController extends Controller implements HasMiddleware
             'donnees' => 'required|array'
         ]);
 
+        $assignation = Assignation::with('version')->findOrFail($request->assignation_id);
+
+        if ($assignation->statut === 3) {
+            return redirect()->back()->with('error', 'Cette soumission a été validée définitivement par la DGESS et ne peut plus être modifiée.');
+        }
+
+        if ($assignation->version?->isLocked()) {
+            return redirect()->back()->with('error', 'Cette version de l\'Annuaire est verrouillée pour publication officielle. Aucune modification n\'est autorisée.');
+        }
+
         DB::beginTransaction();
         try {
             foreach ($request->donnees as $cellule_id => $valeur) {
@@ -348,11 +358,14 @@ class TableauController extends Controller implements HasMiddleware
                 }
             }
 
+            // Transition automatique de statut vers 2 (Transmis / En attente de validation)
+            $assignation->update(['statut' => 2]);
+
             DB::commit();
-            return redirect()->route('tableaux.show', $id)->with('success', 'Données sauvegardées avec succès');
+            return redirect()->route('tableaux.show', $id)->with('success', 'Données sauvegardées avec succès. La soumission est en attente de validation par la DGESS.');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('error', 'Erreur lors de la sauvegarde');
+            return redirect()->back()->with('error', 'Erreur lors de la sauvegarde : ' . $e->getMessage());
         }
     }
 
@@ -578,9 +591,14 @@ class TableauController extends Controller implements HasMiddleware
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à soumettre des données pour cette structure.');
         }
 
-        // Vérifier si l'assignation est suspendue/expirée
-        if ($assignation->statut === 3 && !$user->isAdmin()) {
-            return redirect()->back()->with('error', 'Cette assignation est expirée ou suspendue. Impossible d\'importer des données.');
+        // Vérifier si l'assignation est déjà validée
+        if ($assignation->statut === 3) {
+            return redirect()->back()->with('error', 'Cette assignation a été validée définitivement par la DGESS. Impossible d\'importer de nouvelles données.');
+        }
+
+        // Vérifier si la version de l'Annuaire est verrouillée
+        if ($assignation->version?->isLocked()) {
+            return redirect()->back()->with('error', 'Cette version de l\'Annuaire est verrouillée pour publication officielle. Aucune modification n\'est autorisée.');
         }
 
         $result = $importService->importer(

@@ -164,6 +164,11 @@
         <div class="doc-title">
             <h1>Annuaire Statistique</h1>
             <div class="edition">Édition {{ $version->annee ?? '' }} (Version : {{ $version->code ?? 'N/A' }})</div>
+            @if ($version->isLocked())
+                <div class="edition" style="color: #15803d; font-size: 10px; font-weight: bold; margin-top: 4px; text-transform: uppercase;">
+                    ★ Édition Officielle Consolidée et Verrouillée par la DGESS le {{ $version->date_verrouillage ? \Carbon\Carbon::parse($version->date_verrouillage)->format('d/m/Y') : now()->format('d/m/Y') }} ★
+                </div>
+            @endif
         </div>
     </div>
 

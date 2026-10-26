@@ -220,6 +220,16 @@ Route::middleware('auth')->group(function () {
         Route::resource('annuaires', AnnuaireController::class);
         Route::resource('versions', VersionController::class);
 
+        // Validation, Rejet et Relances DGESS
+        Route::post('/assignations/{id}/valider', [AssignationController::class, 'valider'])->name('assignations.valider');
+        Route::post('/assignations/{id}/rejeter', [AssignationController::class, 'rejeter'])->name('assignations.rejeter');
+        Route::post('/assignations/{id}/relancer', [AssignationController::class, 'relancer'])->name('assignations.relancer');
+        Route::post('/assignations/relancer-retardataires', [AssignationController::class, 'relancerRetardataires'])->name('assignations.relancer-retardataires');
+
+        // Verrouillage et Déverrouillage officiel de l'Annuaire
+        Route::post('/versions/{id}/verrouiller', [VersionController::class, 'verrouiller'])->name('versions.verrouiller');
+        Route::post('/versions/{id}/deverrouiller', [VersionController::class, 'deverrouiller'])->name('versions.deverrouiller');
+
         // Routes pour exporter l'annuaire en word, pdf et excel
         Route::get('/annuaire/export/pdf', [AnnuaireController::class, 'exportPDF'])->name('annuaire.export.pdf');
         Route::get('/annuaire/export/word', [AnnuaireController::class, 'exportWord'])->name('annuaire.export.word');
