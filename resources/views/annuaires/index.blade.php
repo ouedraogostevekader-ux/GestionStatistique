@@ -16,20 +16,20 @@
                 <div class="col-md-7 text-md-end mt-2 mt-md-0">
                     @if ($versionActive)
                         <div class="btn-group shadow-sm" role="group">
-                            <a class="btn btn-success"
+                            <a class="btn btn-success btn-export-loader"
                                href="{{ route('annuaire.export.excel', ['version' => request('version', $versionActive->id), 'categorie' => request('categorie'), 'tableau' => request('tableau')]) }}"
                                title="Télécharger sous format Microsoft Excel">
-                                <i class="fas fa-file-excel me-1"></i> Exporter Excel (.xlsx)
+                                <i class="fas fa-file-excel me-1"></i> <span>Exporter Excel (.xlsx)</span>
                             </a>
-                            <a class="btn btn-danger"
+                            <a class="btn btn-danger btn-export-loader"
                                href="{{ route('annuaire.export.pdf', ['version' => request('version', $versionActive->id), 'categorie' => request('categorie'), 'tableau' => request('tableau')]) }}"
                                title="Télécharger le document PDF au format paysage">
-                                <i class="fas fa-file-pdf me-1"></i> Exporter PDF
+                                <i class="fas fa-file-pdf me-1"></i> <span>Exporter PDF</span>
                             </a>
-                            <a class="btn btn-primary"
+                            <a class="btn btn-primary btn-export-loader"
                                href="{{ route('annuaire.export.word', ['version' => request('version', $versionActive->id), 'categorie' => request('categorie'), 'tableau' => request('tableau')]) }}"
                                title="Télécharger sous format Microsoft Word">
-                                <i class="fas fa-file-word me-1"></i> Exporter Word (.docx)
+                                <i class="fas fa-file-word me-1"></i> <span>Exporter Word (.docx)</span>
                             </a>
                         </div>
                     @endif
@@ -180,4 +180,26 @@
             </div>
         @endif
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-export-loader').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const originalHtml = this.innerHTML;
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Génération en cours...';
+                    this.style.pointerEvents = 'none';
+                    this.style.opacity = '0.75';
+
+                    // Rétablissement automatique du bouton après 8 secondes (temps habituel de téléchargement)
+                    setTimeout(() => {
+                        this.innerHTML = originalHtml;
+                        this.style.pointerEvents = 'auto';
+                        this.style.opacity = '1';
+                    }, 8000);
+                });
+            });
+        });
+    </script>
+    @endpush
 @endsection

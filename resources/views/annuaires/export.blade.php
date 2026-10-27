@@ -9,10 +9,10 @@
             margin: 12mm 15mm 15mm 15mm;
         }
         body {
-            font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
-            font-size: 9.5px;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 9px;
             color: #2c3e50;
-            line-height: 1.3;
+            line-height: 1.25;
         }
         .header-section {
             width: 100%;
@@ -166,7 +166,7 @@
             <div class="edition">Édition {{ $version->annee ?? '' }} (Version : {{ $version->code ?? 'N/A' }})</div>
             @if ($version->isLocked())
                 <div class="edition" style="color: #15803d; font-size: 10px; font-weight: bold; margin-top: 4px; text-transform: uppercase;">
-                    ★ Édition Officielle Consolidée et Verrouillée par la DGESS le {{ $version->date_verrouillage ? \Carbon\Carbon::parse($version->date_verrouillage)->format('d/m/Y') : now()->format('d/m/Y') }} ★
+                    [ ÉDITION OFFICIELLE CONSOLIDÉE ET VERROUILLÉE PAR LA DGESS LE {{ $version->date_verrouillage ? \Carbon\Carbon::parse($version->date_verrouillage)->format('d/m/Y') : now()->format('d/m/Y') }} ]
                 </div>
             @endif
         </div>
