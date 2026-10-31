@@ -1,124 +1,119 @@
 <div class="card-body">
     <div class="table-responsive">
-        <table class="table table-bordered">
+        @php
+            $isTotalOrEnsemble = fn($nom) => in_array(mb_strtolower(trim($nom)), ['ensemble', 'total', 'total général', 'totaux']);
+            $lignesRacines = $tableau->lignesTableau->whereNull('parent_id')
+                ->filter(fn($l) => $l->ordre != 1 && !$isTotalOrEnsemble($l->nom_ligne));
+            $colonnesRacines = $tableau->colonnesTableau->whereNull('parent_id');
+            $headerLigne = $tableau->lignesTableau->firstWhere('ordre', 1);
+            $headerTitre = $headerLigne ? $headerLigne->nom_ligne : 'Libellé';
+            $hasSousColonnes = $colonnesRacines->contains(fn($c) => $c->enfants && $c->enfants->count() > 0);
+        @endphp
+        <table class="table table-bordered table-annuaire">
             <thead class="table-light">
                 <tr>
-                    {{-- <th rowspan="2">Libellé</th> --}}
-                    @foreach ($tableau->lignesTableau as $ligne)
-                        @if ($ligne->ordre == 1)
-                            <th>{{ $ligne->nom_ligne }}
-                            </th>
-                        @endif
-                    @endforeach
-                    @foreach ($tableau->colonnesTableau as $colonne)
-                        @if ($colonne->enfants->count() > 0)
+                    <th @if($hasSousColonnes) rowspan="2" @endif class="align-middle">
+                        {{ $headerTitre }}
+                    </th>
+                    @foreach ($colonnesRacines as $colonne)
+                        @if ($colonne->enfants && $colonne->enfants->count() > 0)
                             <th colspan="{{ $colonne->enfants->count() }}" class="text-center">
                                 {{ $colonne->colonne_ligne }}
                             </th>
                         @else
-                            <th rowspan="2" class="text-center">{{ $colonne->colonne_ligne }}
+                            <th @if($hasSousColonnes) rowspan="2" @endif class="text-center align-middle">
+                                {{ $colonne->colonne_ligne }}
                             </th>
                         @endif
                     @endforeach
-                    <th rowspan="2" class="text-center">Total</th>
+                    <th @if($hasSousColonnes) rowspan="2" @endif class="text-center align-middle">
+                        Total
+                    </th>
                 </tr>
-                <tr>
-                    @foreach ($tableau->colonnesTableau as $colonne)
-                        @foreach ($colonne->enfants as $sousColonne)
-                            <th class="text-center">{{ $sousColonne->colonne_ligne }}</th>
+                @if ($hasSousColonnes)
+                    <tr>
+                        @foreach ($colonnesRacines as $colonne)
+                            @if ($colonne->enfants && $colonne->enfants->count() > 0)
+                                @foreach ($colonne->enfants as $sousColonne)
+                                    <th class="text-center">{{ $sousColonne->colonne_ligne }}</th>
+                                @endforeach
+                            @endif
                         @endforeach
-                    @endforeach
-                </tr>
+                    </tr>
+                @endif
             </thead>
             <tbody>
-                @foreach ($tableau->lignesTableau as $ligne)
+                @foreach ($lignesRacines as $ligne)
                     <tr>
-                        @if ($ligne->ordre != 1)
-                            <td class="fw-bold">{{ $ligne->nom_ligne }}</td>
-                            @foreach ($tableau->colonnesTableau as $colonne)
-                                @if ($colonne->enfants->count() > 0)
-                                    @foreach ($colonne->enfants as $sousColonne)
-                                        @php
-                                            $cellule = \App\Models\Cellule::where('ligne_id', $ligne->id)
-                                                ->where('colonne_id', $sousColonne->id)
-                                                ->first();
-                                            $valeur = $cellule
-                                                ? \App\Models\SoumissionTableau::firstWhere('cellule_id', $cellule->id)
-                                                    ?->valeur
-                                                : '-';
-                                        @endphp
-                                        <td class="text-center">{{ $valeur ?? '-' }}</td>
-                                    @endforeach
-                                @else
-                                    @php
-                                        $cellule = \App\Models\Cellule::where('ligne_id', $ligne->id)
-                                            ->where('colonne_id', $colonne->id)
-                                            ->first();
-                                        $valeur = $cellule
-                                            ? \App\Models\SoumissionTableau::firstWhere('cellule_id', $cellule->id)
-                                                ?->valeur
-                                            : '-';
-                                    @endphp
-                                    <td class="text-center">{{ $valeur ?? '-' }}</td>
-                                @endif
-                            @endforeach
-                            <td class="total-ligne text-center fw-bold total-colonne">0.00</td>
-                        @endif
+                        <td class="fw-bold">{{ $ligne->nom_ligne }}</td>
+                        @foreach ($colonnesRacines as $colonne)
+                            @if ($colonne->enfants && $colonne->enfants->count() > 0)
+                                @foreach ($colonne->enfants as $sousColonne)
+                                    <td class="text-center">
+                                        {{ $matrice[$tableau->id][$ligne->id][$sousColonne->id] ?? '-' }}
+                                    </td>
+                                @endforeach
+                            @else
+                                <td class="text-center">
+                                    {{ $matrice[$tableau->id][$ligne->id][$colonne->id] ?? '-' }}
+                                </td>
+                            @endif
+                        @endforeach
+                        <td class="total-ligne text-center fw-bold">
+                            {{ isset($totauxLignes[$tableau->id][$ligne->id]) ? number_format($totauxLignes[$tableau->id][$ligne->id], 2, ',', ' ') : '0,00' }}
+                        </td>
                     </tr>
 
                     {{-- Sous-lignes --}}
-                    @foreach ($ligne->enfants as $sousLigne)
-                        <tr class="table-secondary">
-                            <td class="ps-4">{{ $sousLigne->nom_ligne }}</td>
-                            @foreach ($tableau->colonnesTableau as $colonne)
-                                @if ($colonne->enfants->count() > 0)
-                                    @foreach ($colonne->enfants as $sousColonne)
-                                        @php
-                                            $cellule = \App\Models\Cellule::where('ligne_id', $sousLigne->id)
-                                                ->where('colonne_id', $sousColonne->id)
-                                                ->first();
-                                            $valeur = $cellule
-                                                ? \App\Models\SoumissionTableau::firstWhere('cellule_id', $cellule->id)
-                                                    ?->valeur
-                                                : '-';
-                                        @endphp
-                                        <td class="text-center">{{ $valeur ?? '-' }}</td>
-                                    @endforeach
-                                @else
-                                    @php
-                                        $cellule = \App\Models\Cellule::where('ligne_id', $sousLigne->id)
-                                            ->where('colonne_id', $colonne->id)
-                                            ->first();
-                                        $valeur = $cellule
-                                            ? \App\Models\SoumissionTableau::firstWhere('cellule_id', $cellule->id)
-                                                ?->valeur
-                                            : '-';
-                                    @endphp
-                                    <td class="text-center">{{ $valeur ?? '-' }}</td>
-                                @endif
-                            @endforeach
-                            <td class="total-ligne text-center">0.00</td>
-                        </tr>
-                    @endforeach
+                    @if ($ligne->enfants && $ligne->enfants->count() > 0)
+                        @foreach ($ligne->enfants as $sousLigne)
+                            <tr class="table-secondary">
+                                <td class="ps-4">{{ $sousLigne->nom_ligne }}</td>
+                                @foreach ($colonnesRacines as $colonne)
+                                    @if ($colonne->enfants && $colonne->enfants->count() > 0)
+                                        @foreach ($colonne->enfants as $sousColonne)
+                                            <td class="text-center">
+                                                {{ $matrice[$tableau->id][$sousLigne->id][$sousColonne->id] ?? '-' }}
+                                            </td>
+                                        @endforeach
+                                    @else
+                                        <td class="text-center">
+                                            {{ $matrice[$tableau->id][$sousLigne->id][$colonne->id] ?? '-' }}
+                                        </td>
+                                    @endif
+                                @endforeach
+                                <td class="total-ligne text-center">
+                                    {{ isset($totauxLignes[$tableau->id][$sousLigne->id]) ? number_format($totauxLignes[$tableau->id][$sousLigne->id], 2, ',', ' ') : '0,00' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 @endforeach
+
                 {{-- Ligne Ensemble (Total) --}}
                 <tr class="table-primary fw-bold">
                     <td>Ensemble</td>
-                    @foreach ($tableau->colonnesTableau as $colonne)
-                        @if ($colonne->enfants->count() > 0)
+                    @foreach ($colonnesRacines as $colonne)
+                        @if ($colonne->enfants && $colonne->enfants->count() > 0)
                             @foreach ($colonne->enfants as $sousColonne)
                                 <td class="text-center">
-                                    <span class="total-colonne">0.00</span>
+                                    <span class="total-colonne">
+                                        {{ isset($totauxColonnes[$tableau->id][$sousColonne->id]) ? number_format($totauxColonnes[$tableau->id][$sousColonne->id], 2, ',', ' ') : '0,00' }}
+                                    </span>
                                 </td>
                             @endforeach
                         @else
                             <td class="text-center">
-                                <span class="total-colonne">0.00</span>
+                                <span class="total-colonne">
+                                    {{ isset($totauxColonnes[$tableau->id][$colonne->id]) ? number_format($totauxColonnes[$tableau->id][$colonne->id], 2, ',', ' ') : '0,00' }}
+                                </span>
                             </td>
                         @endif
                     @endforeach
                     <td class="text-center">
-                        <span class="total-general">0.00</span>
+                        <span class="total-general">
+                            {{ isset($totalGeneral[$tableau->id]) ? number_format($totalGeneral[$tableau->id], 2, ',', ' ') : '0,00' }}
+                        </span>
                     </td>
                 </tr>
             </tbody>

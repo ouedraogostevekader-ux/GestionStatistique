@@ -16,7 +16,7 @@ class VersionController extends Controller implements HasMiddleware
         return [
             new Middleware('permission:version-list', only: ['index', 'show']),
             new Middleware('permission:version-create', only: ['create', 'store']),
-            new Middleware('permission:version-edit', only: ['edit', 'update']),
+            new Middleware('permission:version-edit', only: ['edit', 'update', 'verrouiller', 'deverrouiller']),
             new Middleware('permission:version-delete', only: ['destroy']),
         ];
     }
@@ -59,7 +59,7 @@ class VersionController extends Controller implements HasMiddleware
      */
     public function show($id)
     {
-        $version = Version::findOrFail($id);
+        $version = Version::with(['assignations.tableau.categorie', 'assignations.structure'])->findOrFail($id);
         return view('versions.show', compact('version'));
     }
 
@@ -97,5 +97,45 @@ class VersionController extends Controller implements HasMiddleware
         $version = Version::findOrFail($id);
         $version->delete();
         return redirect()->route('versions.index')->with('success', 'Version supprimée avec succès.');
+    }
+
+    /**
+     * Verrouiller officiellement une version pour publication
+     */
+    public function verrouiller(Request $request, $id)
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin() && $user->structure?->sigle !== 'DGESS') {
+            abort(403, 'Seule la DGESS ou les administrateurs peuvent verrouiller une version pour publication officielle.');
+        }
+
+        $version = Version::findOrFail($id);
+        $version->update([
+            'is_locked' => true,
+            'date_verrouillage' => \Carbon\Carbon::now(),
+            'locked_by' => $user->id,
+        ]);
+
+        return redirect()->back()->with('success', "L'Annuaire pour la version {$version->code} ({$version->annee}) a été verrouillé pour publication officielle. Toutes les données sont désormais immuables.");
+    }
+
+    /**
+     * Déverrouiller exceptionnellement une version pour erratum
+     */
+    public function deverrouiller(Request $request, $id)
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin()) {
+            abort(403, 'Seul un administrateur système peut déverrouiller un Annuaire officiel.');
+        }
+
+        $version = Version::findOrFail($id);
+        $version->update([
+            'is_locked' => false,
+            'date_verrouillage' => null,
+            'locked_by' => null,
+        ]);
+
+        return redirect()->back()->with('warning', "L'Annuaire pour la version {$version->code} a été déverrouillé. Les modifications sont de nouveau autorisées.");
     }
 }

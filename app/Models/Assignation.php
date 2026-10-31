@@ -25,12 +25,18 @@ class Assignation extends Model
     public $incrementing = false;
 
     protected $fillable = [
-
         'tableau_id',
         'structure_id',
         'version_id',
         'source',
         'statut',
+        'motif_rejet',
+        'date_validation',
+        'valide_par',
+        'date_rejet',
+        'rejete_par',
+        'derniere_relance_at',
+        'relances_count',
         'responsable',
         'date_debut',
         'date_fin',
@@ -40,12 +46,33 @@ class Assignation extends Model
 
     protected $dates = [
         'date_debut',
-        'annee'
+        'annee',
+        'date_validation',
+        'date_rejet',
+        'derniere_relance_at'
+    ];
+
+    protected $casts = [
+        'statut' => 'integer',
+        'date_validation' => 'datetime',
+        'date_rejet' => 'datetime',
+        'derniere_relance_at' => 'datetime',
+        'relances_count' => 'integer',
     ];
 
     public function version()
     {
         return $this->belongsTo(Version::class);
+    }
+
+    public function validePar()
+    {
+        return $this->belongsTo(User::class, 'valide_par');
+    }
+
+    public function rejetePar()
+    {
+        return $this->belongsTo(User::class, 'rejete_par');
     }
 
     public static function boot()
@@ -85,8 +112,9 @@ class Assignation extends Model
         $statuts = [
             0 => 'En attente',
             1 => 'En cours',
-            2 => 'Terminé',
-            3 => 'Suspendu'
+            2 => 'Transmis / En attente de validation',
+            3 => 'Validé / Terminé',
+            4 => 'Rejeté / À corriger'
         ];
 
         return $statuts[$this->statut] ?? 'Inconnu';
@@ -95,41 +123,20 @@ class Assignation extends Model
 
     public static function determinerStatut($dateDebut, $dateFin)
     {
-        $now = Carbon::today(); // on compare uniquement la date sans l’heure
+        $now = Carbon::today();
 
-        // ✅ Vérification cohérente des dates
         $dateDebut = $dateDebut ? Carbon::parse($dateDebut) : null;
         $dateFin = $dateFin ? Carbon::parse($dateFin) : null;
 
-        /*
-        * Codes statut :
-        * 0 = En attente (pas encore commencée)
-        * 1 = En cours
-        * 3 = Expirée
-        */
-
-        // 🔹 Cas 1 : Pas de date de début définie
         if (!$dateDebut) {
-            return 0; // Considéré comme "en attente"
+            return 0; // En attente
         }
 
-        // 🔹 Cas 2 : Si la date de début est dans le futur par rapport à maintenant
         if ($dateDebut->isFuture() || $dateDebut->greaterThan($now)) {
-            return 0; // "Assignation en attente"
+            return 0; // En attente
         }
 
-        // 🔹 Cas 3 : Si la date de fin est définie et déjà passée
-        if ($dateFin && $now->greaterThan($dateFin)) {
-            return 3; // "Assignation expirée"
-        }
-
-        // 🔹 Cas 4 : Si la date actuelle est comprise dans l’intervalle
-        if ($dateDebut->lessThanOrEqualTo($now) && (!$dateFin || $now->lessThanOrEqualTo($dateFin))) {
-            return 1; // "En cours"
-        }
-
-        // 🔹 Cas par défaut (sécurité)
-        return 0;
+        return 1; // En cours
     }
 
 
@@ -139,10 +146,11 @@ class Assignation extends Model
     public function getStatutClassAttribute()
     {
         $classes = [
-            0 => 'warning',
+            0 => 'secondary',
             1 => 'info',
-            2 => 'success',
-            3 => 'danger'
+            2 => 'warning',
+            3 => 'success',
+            4 => 'danger'
         ];
 
         return $classes[$this->statut] ?? 'secondary';
@@ -171,15 +179,39 @@ class Assignation extends Model
      */
     public function isActive()
     {
-        return $this->statut === 1;
+        return (int) $this->statut === 1;
     }
 
     /**
-     * Vérifier si l'assignation est terminée
+     * Vérifier si l'assignation est terminée / validée
      */
     public function isCompleted()
     {
-        return $this->statut === 2;
+        return (int) $this->statut === 3;
+    }
+
+    /**
+     * Vérifier si l'assignation est validée par la DGESS
+     */
+    public function isValidated()
+    {
+        return (int) $this->statut === 3;
+    }
+
+    /**
+     * Vérifier si l'assignation est rejetée par la DGESS
+     */
+    public function isRejected()
+    {
+        return (int) $this->statut === 4;
+    }
+
+    /**
+     * Vérifier si l'assignation est transmise / en attente de validation
+     */
+    public function isSubmitted()
+    {
+        return (int) $this->statut === 2;
     }
 
     /**
@@ -187,7 +219,7 @@ class Assignation extends Model
      */
     public function isSuspended()
     {
-        return $this->statut === 3;
+        return false;
     }
 
     /**
@@ -195,7 +227,49 @@ class Assignation extends Model
      */
     public function isPending()
     {
-        return $this->statut === 0;
+        return (int) $this->statut === 0;
+    }
+
+    /**
+     * Vérifier si l'assignation est en retard
+     */
+    public function isEnRetard(): bool
+    {
+        if ((int) $this->statut === 3) {
+            return false;
+        }
+
+        if (empty($this->date_fin)) {
+            return false;
+        }
+
+        try {
+            return Carbon::parse($this->date_fin)->endOfDay()->isPast();
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Vérifier si l'échéance de l'assignation approche
+     */
+    public function isEcheanceProche(int $jours = 3): bool
+    {
+        if ((int) $this->statut === 3 || $this->isEnRetard()) {
+            return false;
+        }
+
+        if (empty($this->date_fin)) {
+            return false;
+        }
+
+        try {
+            $dateFin = Carbon::parse($this->date_fin)->endOfDay();
+            $now = Carbon::now();
+            return $dateFin->isFuture() && $now->diffInDays($dateFin, false) <= $jours;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -231,29 +305,77 @@ class Assignation extends Model
     }
 
     /**
-     * Scope pour les assignations terminées
+     * Scope pour les assignations transmises
      */
-    public function scopeCompleted($query)
+    public function scopeTransmises($query)
     {
         return $query->where('statut', 2);
     }
 
     /**
-     * Obtenir le progrès de l'assignation (à personnaliser selon vos besoins)
+     * Scope pour les assignations validées
+     */
+    public function scopeValidees($query)
+    {
+        return $query->where('statut', 3);
+    }
+
+    /**
+     * Scope pour les assignations rejetées
+     */
+    public function scopeRejetees($query)
+    {
+        return $query->where('statut', 4);
+    }
+
+    /**
+     * Scope pour les assignations en retard
+     */
+    public function scopeRetardataires($query)
+    {
+        return $query->where('statut', '!=', 3)
+            ->whereNotNull('date_fin')
+            ->where('date_fin', '<', Carbon::today()->toDateString());
+    }
+
+    /**
+     * Scope pour les assignations dont l'échéance est proche
+     */
+    public function scopeEcheanceProche($query, $jours = 3)
+    {
+        $today = Carbon::today()->toDateString();
+        $limite = Carbon::today()->addDays($jours)->toDateString();
+
+        return $query->where('statut', '!=', 3)
+            ->whereNotNull('date_fin')
+            ->where('date_fin', '>=', $today)
+            ->where('date_fin', '<=', $limite);
+    }
+
+    /**
+     * Scope pour les assignations terminées (rétrocompatibilité)
+     */
+    public function scopeCompleted($query)
+    {
+        return $query->where('statut', 3);
+    }
+
+    /**
+     * Obtenir le progrès de l'assignation
      */
     public function getProgressAttribute()
     {
-        // Cette méthode peut être personnalisée pour calculer le progrès
-        // basé sur les données saisies ou d'autres critères
-        switch ($this->statut) {
+        switch ((int) $this->statut) {
             case 0:
                 return 0;   // En attente
             case 1:
                 return 50;  // En cours
             case 2:
-                return 100; // Terminé
+                return 85;  // Transmis / En attente de validation
             case 3:
-                return 25;  // Suspendu
+                return 100; // Validé / Terminé
+            case 4:
+                return 30;  // Rejeté / À corriger
             default:
                 return 0;
         }

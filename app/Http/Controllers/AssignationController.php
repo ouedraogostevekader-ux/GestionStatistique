@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RelanceAssignationMail;
+use App\Mail\RejetAssignationMail;
+use App\Mail\ValidationAssignationMail;
 use App\Models\Assignation;
 use App\Models\SoumissionTableau;
 use App\Models\Structure;
 use App\Models\Tableau;
+use App\Models\User;
 use App\Models\Version;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Rule;
 
@@ -26,7 +32,7 @@ class AssignationController extends Controller implements HasMiddleware
         return [
             new Middleware('permission:assignation-list', only: ['index', 'show', 'dashboard']),
             new Middleware('permission:assignation-create', only: ['create', 'store', 'affectationM', 'storeM']),
-            new Middleware('permission:assignation-edit', only: ['edit', 'update']),
+            new Middleware('permission:assignation-edit', only: ['edit', 'update', 'valider', 'rejeter', 'relancer', 'relancerRetardataires']),
             new Middleware('permission:assignation-delete', only: ['destroy']),
         ];
     }
@@ -87,29 +93,41 @@ class AssignationController extends Controller implements HasMiddleware
             $baseQuery->where('structure_id', $request->structure_id);
         }
 
+        if ($request->filled('retard') && $request->retard == '1') {
+            $baseQuery->where('statut', '!=', 3)
+                ->whereNotNull('date_fin')
+                ->where('date_fin', '<', Carbon::today()->toDateString());
+        }
+
         // Statistiques
         $stats = [
             'total' => (clone $baseQuery)->count(),
             'en_attente' => (clone $baseQuery)->where('statut', 0)->count(),
             'en_cours' => (clone $baseQuery)->where('statut', 1)->count(),
-            'terminees' => (clone $baseQuery)->where('statut', 2)->count(),
-            'suspendues' => (clone $baseQuery)->where('statut', 3)->count(),
+            'transmises' => (clone $baseQuery)->where('statut', 2)->count(),
+            'validees' => (clone $baseQuery)->where('statut', 3)->count(),
+            'rejetees' => (clone $baseQuery)->where('statut', 4)->count(),
+            'retardataires' => (clone $baseQuery)->where('statut', '!=', 3)
+                ->whereNotNull('date_fin')
+                ->where('date_fin', '<', Carbon::today()->toDateString())
+                ->count(),
+            // Clés rétrocompatibles
+            'terminees' => (clone $baseQuery)->where('statut', 3)->count(),
+            'suspendues' => (clone $baseQuery)->where('statut', 4)->count(),
         ];
 
         $versions = Version::all();
 
-        // Assignations récentes
+        // Assignations (triées par date de création décroissante)
         $assignations = (clone $baseQuery)
             ->orderBy('created_at', 'desc')
-            ->where('statut', '<', 3)
-            //->limit(10)
             ->get();
 
-        // Assignations en retard (exemple - à adapter selon vos besoins)
+        // Assignations en retard
         $assignationsEnRetard = (clone $baseQuery)
-            ->where('statut', 3) // Pas terminées
+            ->where('statut', '!=', 3)
             ->whereNotNull('date_fin')
-            //->where('date_fin', '<', Carbon::now()->toDateString())
+            ->where('date_fin', '<', Carbon::today()->toDateString())
             ->get();
 
         // Structures (pour les admins)
@@ -393,40 +411,177 @@ class AssignationController extends Controller implements HasMiddleware
     }
 
     /**
-     * Changer le statut d'une assignation
+     * Valide définitivement une soumission par la DGESS
      */
-    // public function changeStatus(Request $request, $tableauId, $assignationId)
-    // {
-    //     $request->validate([
-    //         'statut' => 'required|integer|in:0,1,2,3'
-    //     ]);
+    public function valider(Request $request, $id)
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin() && $user->structure?->sigle !== 'DGESS' && !$user->can('assignation-edit')) {
+            abort(403, 'Seule la DGESS ou les administrateurs peuvent valider définitivement une soumission.');
+        }
 
-    //     try {
-    //         $assignation = Assignation::findOrFail($assignationId);
+        $assignation = Assignation::with(['tableau', 'structure', 'version'])->findOrFail($id);
 
-    //         // Vérifier que l'assignation appartient bien au tableau
-    //         if ($assignation->tableau_id != $tableauId) {
-    //             abort(404);
-    //         }
+        if ($assignation->version?->isLocked()) {
+            return redirect()->back()->with('error', 'Cette version de l\'Annuaire est verrouillée pour publication officielle. Aucune action n\'est autorisée.');
+        }
 
-    //         $assignation->update(['statut' => $request->statut]);
+        $assignation->update([
+            'statut' => 3, // Validé / Terminé
+            'valide_par' => $user->id,
+            'date_validation' => Carbon::now(),
+            'motif_rejet' => null,
+        ]);
 
-    //         $statutLabels = [
-    //             0 => 'En attente',
-    //             1 => 'En cours',
-    //             2 => 'Terminé',
-    //             3 => 'Suspendu'
-    //         ];
+        // Envoi de la notification email à la structure
+        $users = User::where('structure_id', $assignation->structure_id)->get();
+        foreach ($users as $destinataire) {
+            if ($destinataire->email) {
+                try {
+                    Mail::to($destinataire->email)->send(new ValidationAssignationMail($assignation));
+                } catch (\Throwable $e) {
+                    Log::warning("Échec envoi mail validation assignation {$assignation->id}: " . $e->getMessage());
+                }
+            }
+        }
 
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => "Le statut a été changé à '{$statutLabels[$request->statut]}'"
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Une erreur est survenue : ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+        return redirect()->back()->with('success', "La soumission pour le tableau '{$assignation->tableau->libelle}' a été validée définitivement avec succès par la DGESS.");
+    }
+
+    /**
+     * Rejette une soumission avec motif pour correction
+     */
+    public function rejeter(Request $request, $id)
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin() && $user->structure?->sigle !== 'DGESS' && !$user->can('assignation-edit')) {
+            abort(403, 'Seule la DGESS ou les administrateurs peuvent rejeter une soumission.');
+        }
+
+        $request->validate([
+            'motif_rejet' => 'required|string|min:10|max:2000',
+        ], [
+            'motif_rejet.required' => 'Le motif du rejet est obligatoire pour orienter la structure.',
+            'motif_rejet.min' => 'Le motif du rejet doit comporter au moins 10 caractères.',
+        ]);
+
+        $assignation = Assignation::with(['tableau', 'structure', 'version'])->findOrFail($id);
+
+        if ($assignation->version?->isLocked()) {
+            return redirect()->back()->with('error', 'Cette version de l\'Annuaire est verrouillée pour publication officielle. Aucune action n\'est autorisée.');
+        }
+
+        $assignation->update([
+            'statut' => 4, // Rejeté / À corriger
+            'motif_rejet' => $request->motif_rejet,
+            'rejete_par' => $user->id,
+            'date_rejet' => Carbon::now(),
+        ]);
+
+        // Envoi de la notification email motivée à la structure
+        $users = User::where('structure_id', $assignation->structure_id)->get();
+        foreach ($users as $destinataire) {
+            if ($destinataire->email) {
+                try {
+                    Mail::to($destinataire->email)->send(new RejetAssignationMail($assignation, $request->motif_rejet));
+                } catch (\Throwable $e) {
+                    Log::warning("Échec envoi mail rejet assignation {$assignation->id}: " . $e->getMessage());
+                }
+            }
+        }
+
+        return redirect()->back()->with('warning', "La soumission a été rejetée pour correction. Un email motivé a été transmis à la structure.");
+    }
+
+    /**
+     * Relance unitaire d'une structure pour une assignation
+     */
+    public function relancer(Request $request, $id)
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin() && $user->structure?->sigle !== 'DGESS' && !$user->can('assignation-edit')) {
+            abort(403, 'Seule la DGESS ou les administrateurs peuvent émettre des relances.');
+        }
+
+        $assignation = Assignation::with(['tableau', 'structure', 'version'])->findOrFail($id);
+
+        if ($assignation->statut === 3) {
+            return redirect()->back()->with('info', 'Cette assignation est déjà validée définitivement.');
+        }
+
+        $typeRelance = $assignation->isEnRetard() ? 'retard' : 'echeance_proche';
+
+        $users = User::where('structure_id', $assignation->structure_id)->get();
+        $emails = $users->pluck('email')->filter()->all();
+        if (empty($emails)) {
+            $emails = [config('mail.from.address', 'dsi.dgess@mid.gov.bf')];
+        }
+
+        foreach ($emails as $email) {
+            try {
+                Mail::to($email)->send(new RelanceAssignationMail($assignation, $typeRelance));
+            } catch (\Throwable $e) {
+                Log::warning("Échec envoi relance assignation {$assignation->id}: " . $e->getMessage());
+            }
+        }
+
+        $assignation->update([
+            'derniere_relance_at' => Carbon::now(),
+            'relances_count' => ($assignation->relances_count ?? 0) + 1,
+        ]);
+
+        return redirect()->back()->with('success', "Une relance officielle a été envoyée avec succès à {$assignation->structure->nom}.");
+    }
+
+    /**
+     * Relance groupée de toutes les structures retardataires
+     */
+    public function relancerRetardataires(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin() && $user->structure?->sigle !== 'DGESS' && !$user->can('assignation-edit')) {
+            abort(403, 'Seule la DGESS ou les administrateurs peuvent émettre des relances groupées.');
+        }
+
+        $assignations = Assignation::with(['tableau', 'structure', 'version'])
+            ->where('statut', '!=', 3)
+            ->whereNotNull('date_fin')
+            ->get();
+
+        $candidats = $assignations->filter(function ($a) {
+            return $a->isEnRetard() || $a->isEcheanceProche(3);
+        });
+
+        if ($candidats->isEmpty()) {
+            return redirect()->back()->with('info', "Aucune structure retardataire ou en échéance critique n'a été détectée.");
+        }
+
+        $count = 0;
+        foreach ($candidats as $assignation) {
+            $typeRelance = $assignation->isEnRetard() ? 'retard' : 'echeance_proche';
+
+            $users = User::where('structure_id', $assignation->structure_id)->get();
+            $emails = $users->pluck('email')->filter()->all();
+            if (empty($emails)) {
+                $emails = [config('mail.from.address', 'dsi.dgess@mid.gov.bf')];
+            }
+
+            foreach ($emails as $email) {
+                try {
+                    Mail::to($email)->send(new RelanceAssignationMail($assignation, $typeRelance));
+                } catch (\Throwable $e) {
+                    Log::warning("Échec envoi relance groupée {$assignation->id}: " . $e->getMessage());
+                }
+            }
+
+            $assignation->update([
+                'derniere_relance_at' => Carbon::now(),
+                'relances_count' => ($assignation->relances_count ?? 0) + 1,
+            ]);
+
+            $count++;
+        }
+
+        return redirect()->back()->with('success', "{$count} relance(s) officielle(s) ont été envoyées aux structures concernées.");
+    }
 }

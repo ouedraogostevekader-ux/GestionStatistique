@@ -188,9 +188,11 @@ Route::middleware('auth')->group(function () {
         Route::delete('/tableaux/{id}/destroy-ligne', [TableauController::class, 'destroyLigne'])->name('tableaux.destroy-ligne');
         Route::delete('/tableaux/{id}/destroy-colonne', [TableauController::class, 'destroyColonne'])->name('tableaux.destroy-colonne');
 
-        // Routes pour la saisie de données
+        // Routes pour la saisie de données et canevas Excel
         Route::get('/tableaux/{id}/saisie', [TableauController::class, 'saisirDonnees'])->name('tableaux.saisie');
         Route::post('/tableaux/{id}/save-donnees', [TableauController::class, 'saveDonnees'])->name('tableaux.save-donnees');
+        Route::get('/tableaux/{id}/canevas-excel', [TableauController::class, 'telechargerCanevas'])->name('tableaux.canevas-excel');
+        Route::post('/tableaux/{id}/import-excel', [TableauController::class, 'importerCanevas'])->name('tableaux.import-excel');
 
         // Routes pour supprimer lignes et colonnes
         Route::delete('/lignes/{id}', [LigneTableauController::class, 'destroy'])->name('lignes.destroy');
@@ -218,9 +220,20 @@ Route::middleware('auth')->group(function () {
         Route::resource('annuaires', AnnuaireController::class);
         Route::resource('versions', VersionController::class);
 
-        // Routes pour exporter l'annuaire en word et pdf
+        // Validation, Rejet et Relances DGESS
+        Route::post('/assignations/{id}/valider', [AssignationController::class, 'valider'])->name('assignations.valider');
+        Route::post('/assignations/{id}/rejeter', [AssignationController::class, 'rejeter'])->name('assignations.rejeter');
+        Route::post('/assignations/{id}/relancer', [AssignationController::class, 'relancer'])->name('assignations.relancer');
+        Route::post('/assignations/relancer-retardataires', [AssignationController::class, 'relancerRetardataires'])->name('assignations.relancer-retardataires');
+
+        // Verrouillage et Déverrouillage officiel de l'Annuaire
+        Route::post('/versions/{id}/verrouiller', [VersionController::class, 'verrouiller'])->name('versions.verrouiller');
+        Route::post('/versions/{id}/deverrouiller', [VersionController::class, 'deverrouiller'])->name('versions.deverrouiller');
+
+        // Routes pour exporter l'annuaire en word, pdf et excel
         Route::get('/annuaire/export/pdf', [AnnuaireController::class, 'exportPDF'])->name('annuaire.export.pdf');
         Route::get('/annuaire/export/word', [AnnuaireController::class, 'exportWord'])->name('annuaire.export.word');
+        Route::get('/annuaire/export/excel', [AnnuaireController::class, 'exportExcel'])->name('annuaire.export.excel');
     });
 });
 

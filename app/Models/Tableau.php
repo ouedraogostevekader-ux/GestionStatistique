@@ -51,9 +51,19 @@ class Tableau extends Model
         return $this->hasMany(LigneTableau::class, 'tableau_id');
     }
 
+    public function lignesRacines()
+    {
+        return $this->hasMany(LigneTableau::class, 'tableau_id')->whereNull('parent_id')->orderBy('ordre');
+    }
+
     public function colonnesTableau()
     {
         return $this->hasMany(ColonneTableau::class, 'tableau_id');
+    }
+
+    public function colonnesRacines()
+    {
+        return $this->hasMany(ColonneTableau::class, 'tableau_id')->whereNull('parent_id')->orderBy('ordre');
     }
 
     public function soumissionsTableau()

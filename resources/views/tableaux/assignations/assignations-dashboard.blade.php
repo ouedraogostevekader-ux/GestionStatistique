@@ -22,10 +22,18 @@
                         <label for="statut" class="form-label">Statut</label>
                         <select name="statut" id="statut" class="form-select form-select-sm">
                             <option value="">Tous les statuts</option>
-                            <option value="0" {{ request('statut') == '0' ? 'selected' : '' }}>En attente</option>
-                            <option value="1" {{ request('statut') == '1' ? 'selected' : '' }}>En cours</option>
-                            <option value="2" {{ request('statut') == '2' ? 'selected' : '' }}>Terminé</option>
-                            <option value="3" {{ request('statut') == '3' ? 'selected' : '' }}>Suspendu</option>
+                            <option value="0" {{ request('statut') === '0' ? 'selected' : '' }}>En attente</option>
+                            <option value="1" {{ request('statut') === '1' ? 'selected' : '' }}>En cours</option>
+                            <option value="2" {{ request('statut') === '2' ? 'selected' : '' }}>Transmis / En attente de validation</option>
+                            <option value="3" {{ request('statut') === '3' ? 'selected' : '' }}>Validé / Terminé</option>
+                            <option value="4" {{ request('statut') === '4' ? 'selected' : '' }}>Rejeté / À corriger</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="retard" class="form-label">Échéance</label>
+                        <select name="retard" id="retard" class="form-select form-select-sm">
+                            <option value="">Tous les délais</option>
+                            <option value="1" {{ request('retard') == '1' ? 'selected' : '' }}>⚠️ En retard uniquement</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -73,13 +81,24 @@
         </div>
         <!-- Liste des assignations -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0">Assignations récentes</h6>
-                @can('assignation-create')
-                    <a href="{{ route('tableaux.affectations') }}" class="btn btn-success">
-                        <i class="bi bi-plus-circle"></i> Assigner
-                    </a>
-                @endcan
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h6 class="card-title mb-0">Assignations de tableaux statistiques</h6>
+                <div class="d-flex align-items-center gap-2">
+                    @if (auth()->user()->isAdmin() || auth()->user()->structure?->sigle === 'DGESS' || auth()->user()->can('assignation-edit'))
+                        <form action="{{ route('assignations.relancer-retardataires') }}" method="POST" class="d-inline"
+                            onsubmit="return confirm('Confirmez-vous l\'envoi groupé de relances officielles à toutes les structures retardataires ?')">
+                            @csrf
+                            <button type="submit" class="btn btn-warning btn-sm shadow-sm text-dark fw-bold">
+                                <i class="bi bi-bell-fill"></i> Relancer les retardataires
+                            </button>
+                        </form>
+                    @endif
+                    @can('assignation-create')
+                        <a href="{{ route('tableaux.affectations') }}" class="btn btn-success btn-sm shadow-sm">
+                            <i class="bi bi-plus-circle"></i> Assigner
+                        </a>
+                    @endcan
+                </div>
             </div>
             <div class="card-body">
                 @if ($assignations->count() > 0)
@@ -113,6 +132,14 @@
                                             <span class="badge bg-{{ $assignation->statut_class }}">
                                                 {{ $assignation->statut_libelle }}
                                             </span>
+                                            @if ($assignation->isEnRetard())
+                                                <br><span class="badge bg-danger mt-1"><i class="bi bi-exclamation-triangle"></i> Retard</span>
+                                            @elseif ($assignation->isEcheanceProche())
+                                                <br><span class="badge bg-warning text-dark mt-1"><i class="bi bi-clock"></i> Échéance</span>
+                                            @endif
+                                            @if ($assignation->relances_count > 0)
+                                                <br><small class="text-muted"><i class="bi bi-bell"></i> {{ $assignation->relances_count }} relance(s)</small>
+                                            @endif
                                         </td>
                                         <td>
                                             <div class="progress" style="height: 8px;">
@@ -129,10 +156,12 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group">
+                                            <div class="d-flex align-items-center gap-1">
                                                 @can('assignation-list')
                                                     <a href="{{ route('assignations.show', $assignation->id) }}"
-                                                        class="btn btn-outline-info" title="Voir les détails de l'assignation">
+                                                        class="btn btn-sm btn-info text-white shadow-sm"
+                                                        style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                        title="Voir les détails de l'assignation" data-bs-toggle="tooltip">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
                                                 @endcan
@@ -140,8 +169,10 @@
                                                 @if ($assignation->statut == 0 || $assignation->statut == 3)
                                                     @can('assignation-edit')
                                                         <a href="{{ route('assignations.edit', $assignation->id) }}"
-                                                            class="btn btn-outline-warning" title="Modifier l'assignation">
-                                                            <i class="bi bi-pencil"></i>
+                                                            class="btn btn-sm btn-warning text-dark shadow-sm"
+                                                            style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                            title="Modifier l'assignation" data-bs-toggle="tooltip">
+                                                            <i class="bi bi-pencil-square"></i>
                                                         </a>
                                                     @endcan
                                                     @can('assignation-delete')
@@ -150,21 +181,42 @@
                                                             onsubmit="return confirm('Voulez-vous vraiment supprimer cette assignation ?')">
                                                             @csrf
                                                             @method ('DELETE')
-                                                            <button type="submit" class="btn btn-outline-danger"
-                                                                title="suppression de l'assignation">
-                                                                <i class="bi bi-archive"></i>
+                                                            <button type="submit" class="btn btn-sm btn-danger shadow-sm"
+                                                                style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                                title="Supprimer l'assignation" data-bs-toggle="tooltip">
+                                                                <i class="bi bi-trash-fill"></i>
                                                             </button>
                                                         </form>
                                                     @endcan
                                                 @endif
-                                                @if ($assignation->statut == 1)
-                                                    @can('soumission-create')
-                                                        <a href="{{ route('tableaux.saisie', $assignation->tableau_id) }}"
-                                                            class="btn btn-outline-success">
-                                                            <i class="bi bi-edit"></i> Saisir Données
-                                                        </a>
-                                                    @endcan
+                                                {{-- Bouton relance rapide pour DGESS / Admin --}}
+                                                @if ($assignation->statut != 3 && (auth()->user()->isAdmin() || auth()->user()->structure?->sigle === 'DGESS' || auth()->user()->can('assignation-edit')))
+                                                    <form action="{{ route('assignations.relancer', $assignation->id) }}" method="POST" class="d-inline"
+                                                        onsubmit="return confirm('Confirmez-vous l\'envoi d\'une relance à cette structure ?')">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning text-dark shadow-sm"
+                                                            style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                            title="Relancer cette structure" data-bs-toggle="tooltip">
+                                                            <i class="bi bi-bell-fill"></i>
+                                                        </button>
+                                                    </form>
                                                 @endif
+                                                @can('soumission-create')
+                                                    <a href="{{ route('tableaux.canevas-excel', ['id' => $assignation->tableau_id, 'assignation_id' => $assignation->id]) }}"
+                                                        class="btn btn-sm btn-success text-white shadow-sm"
+                                                        style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                        title="Télécharger le canevas Excel (.xlsx)" data-bs-toggle="tooltip">
+                                                        <i class="bi bi-file-earmark-excel-fill"></i>
+                                                    </a>
+                                                    @if (auth()->user()->structure_id === $assignation->structure_id && in_array($assignation->statut, [1, 2, 4]) && !$assignation->version?->isLocked())
+                                                        <a href="{{ route('tableaux.saisie', ['id' => $assignation->tableau_id, 'assignation_id' => $assignation->id]) }}"
+                                                            class="btn btn-sm btn-primary text-white shadow-sm"
+                                                            style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"
+                                                            title="Saisir ou importer des données" data-bs-toggle="tooltip">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </a>
+                                                    @endif
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>
@@ -181,65 +233,53 @@
                 @endif
             </div>
         </div>
-        <!-- Statistiques globales -->
-        <div class="row mb-4">
-            <div class="col-lg-3 col-md-6">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <h3 class="mb-0">{{ $stats['total'] }}</h3>
-                                <p class="mb-0 small">Total assignations</p>
-                            </div>
-                            <div class="ms-auto">
-                                <i class="bi bi-clipboard-check display-6"></i>
-                            </div>
-                        </div>
+        <!-- Statistiques globales enrichies -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="card bg-primary text-white shadow-sm">
+                    <div class="card-body p-3 text-center">
+                        <h3 class="mb-0 fw-bold">{{ $stats['total'] }}</h3>
+                        <p class="mb-0 small text-white-50">Total</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="card bg-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <h3 class="mb-0">{{ $stats['en_attente'] }}</h3>
-                                <p class="mb-0 small">En attente</p>
-                            </div>
-                            <div class="ms-auto">
-                                <i class="bi bi-clock display-6"></i>
-                            </div>
-                        </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="card bg-secondary text-white shadow-sm">
+                    <div class="card-body p-3 text-center">
+                        <h3 class="mb-0 fw-bold">{{ $stats['en_attente'] }}</h3>
+                        <p class="mb-0 small text-white-50">En attente</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="card bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <h3 class="mb-0">{{ $stats['en_cours'] }}</h3>
-                                <p class="mb-0 small">En cours</p>
-                            </div>
-                            <div class="ms-auto">
-                                <i class="bi bi-play-circle display-6"></i>
-                            </div>
-                        </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="card bg-info text-white shadow-sm">
+                    <div class="card-body p-3 text-center">
+                        <h3 class="mb-0 fw-bold">{{ $stats['en_cours'] }}</h3>
+                        <p class="mb-0 small text-white-50">En cours</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <h3 class="mb-0">{{ $stats['terminees'] }}</h3>
-                                <p class="mb-0 small">Terminées</p>
-                            </div>
-                            <div class="ms-auto">
-                                <i class="bi bi-check-circle display-6"></i>
-                            </div>
-                        </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="card bg-warning text-dark shadow-sm">
+                    <div class="card-body p-3 text-center">
+                        <h3 class="mb-0 fw-bold">{{ $stats['transmises'] }}</h3>
+                        <p class="mb-0 small fw-bold">En revue DGESS</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="card bg-success text-white shadow-sm">
+                    <div class="card-body p-3 text-center">
+                        <h3 class="mb-0 fw-bold">{{ $stats['validees'] }}</h3>
+                        <p class="mb-0 small text-white-50">Validées</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="card bg-danger text-white shadow-sm">
+                    <div class="card-body p-3 text-center">
+                        <h3 class="mb-0 fw-bold">{{ $stats['retardataires'] }}</h3>
+                        <p class="mb-0 small text-white-50">En retard</p>
                     </div>
                 </div>
             </div>

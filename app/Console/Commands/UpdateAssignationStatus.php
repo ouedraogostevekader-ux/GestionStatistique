@@ -26,7 +26,7 @@ class UpdateAssignationStatus extends Command
      */
     public function handle()
     {
-        Assignation::all()->each(function ($assignation) {
+        Assignation::whereIn('statut', [0, 1])->each(function ($assignation) {
             $assignation->update([
                 'statut' => Assignation::determinerStatut($assignation->date_debut, $assignation->date_fin),
             ]);
